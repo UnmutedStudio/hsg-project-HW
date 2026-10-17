@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <title>High Street Gym - Session Timetable</title>
+  </head>
+  <body>
+    <main class="timetable-page">
+      <% if (authenticatedUser) { %>
+        <%- include("partials/header_authenticated.ejs", {
+          authenticatedUser: authenticatedUser,
+          pageTitle: "Session Timetable"
+        }) %>
+      <% } else { %>
+        <%- include("partials/header_guest.ejs", {
+          authenticatedUser: null,
+          pageTitle: "Session Timetable"
+        }) %>
+      <% } %>
+      <% if (authenticatedUser) { %>
+      <%- include("partials/nav.ejs", {
+        authenticatedUser: authenticatedUser,
+        role: authenticatedUser.role
+      }) %>
+      <% } %>
+      <section class="page-intro">
+        <h2 class="text-2xl">Session Timetable</h2>
+        <p>
+          View the upcoming activities available at High Street Gym.
+        </p>
+      </section>
+      <section class="session-list">
+        <% if (sessionDetails.length == 0) { %>
+        <p>There are currently no sessions available.</p> 
+        <% } %>
+
+        <% for (let sessionDetail of sessionDetails) { %> 
+        <article class="session-card">
+          <h3><%= sessionDetail.activity.activityName %></h3>
+          <p> Trainer: 
+            <%= sessionDetail.trainer.firstName %> 
+            <%= sessionDetail.trainer.lastName %>
+          </p>
+          <p> Location: 
+            <%= sessionDetail.location.locationName %> 
+          </p>
+          <p><%= sessionDetail.session.dateSession.toLocaleDateString("en-AU", {
+              weekday: "short",
+              day: "numeric",
+              month: "short"
+            }) %> • <%= sessionDetail.session.timeSession.substring(0, 5) %></p>
+          <p>Duration: <%= sessionDetail.session.duration %> minutes
+          </p>
+          <!-- check whether member is already booked in a session-->
+          <% let isBooked = false; %>
+          <% for ( let booking of bookings) { %>
+            <% if (booking.booking.sessionId == sessionDetail.session.id) { %>
+              <% isBooked = true; %>
+            <% } %>
+          <% } %>
+
+          <div class="session-card-footer">
+          <!--conditional displaying of the book now link when spots are available for the authenticated user-->
+          <% if (authenticatedUser && authenticatedUser.role == "member") { %>
+            <% if (isBooked) { %>
+              <span class="session-status status-booked">Booked</span>
+            <% } else if (sessionDetail.session.availability > 0) { %>
+              <a href="/bookings/create/<%= sessionDetail.session.id %>" class="session-action">Book Now</a>
+           <% } %>
+          <% } %>
+              <p class="session-availability">
+          <%= sessionDetail.session.availability > 0 
+            ? sessionDetail.session.availability + " spots left" 
+            : "Full"
+          %>
+          </p>
+          </div>
+        </article>
+        <% } %>
+       </section>
+      <%- include("partials/footer.ejs") %>
+    </main>
+  </body>
+</html>
+
+

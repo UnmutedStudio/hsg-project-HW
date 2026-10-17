@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <title>High Street Gym - Confirmed Booking</title>
+  </head>
+  <body>
+    <main>
+      <%- include("partials/header_authenticated.ejs", {
+        authenticatedUser: authenticatedUser,
+        pageTitle: "Booking Confirmed!"
+      }) %>
+      <%- include("partials/nav.ejs", {
+        authenticatedUser: authenticatedUser,
+        role: authenticatedUser.role
+      }) %>
+      <section>
+        <h2 class="text-2xl">Booking Confirmed</h2>
+        <p>Your booking has been successfully confirmed.</p>
+      </section>
+      <section class="booking-layout">
+        <article class="session-card">
+          <h3><%= sessionDetail.activity.activityName %></h3>
+          <p>Trainer: <%= sessionDetail.trainer.firstName %> <%= sessionDetail.trainer.lastName %></p>
+          <p>Location:<%= sessionDetail.location.locationName %></p>
+          <p>Date: <%= sessionDetail.session.dateSession.toLocaleDateString("en-AU") %></p>
+          <p>Time: <%= sessionDetail.session.timeSession %></p>
+          <p>Duration: <%= sessionDetail.session.duration %> minutes</p>
+          <p>Booking status: <%= booking.bookingStatus %></p>
+          <a href="/bookings" class="link-button">View My Bookings</a>
+          <a href="/sessions" class="link-button">Back to Timetable</a>
+        </article> 
+      </section>
+      <%- include("partials/footer.ejs") %>
+    </main>
+  </body>
+</html>
+
+

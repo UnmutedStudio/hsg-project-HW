@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <title>High Street Gym - Community Blog</title>
+  </head>
+  <body>
+    <main class="blog-page">
+      <% if (authenticatedUser) { %>
+        <%- include("partials/header_authenticated.ejs", { authenticatedUser: authenticatedUser,
+        pageTitle: ""
+        }) %>
+      <% } else { %> 
+        <%- include("partials/header_guest.ejs", {
+          authenticatedUser: null,
+          pageTitle: "Community Blog"
+        }) %>
+      <% } %>
+      <%- include("partials/nav.ejs", {
+        authenticatedUser: authenticatedUser, 
+        role: authenticatedUser ? authenticatedUser.role : null, activePage: "blog-posts"
+      }) %>
+      <section class="blog-intro">
+        <h2 class="text-2xl">High Street Gym - Community Blog</h2>
+        <p>
+          Read health and fitness tips, nutrition guidelines, and success
+          stories from members and certified personal trainers.
+        </p>
+        <% if (authenticatedUser && 
+          (authenticatedUser.role == "member" ||
+           authenticatedUser.role == "trainer")
+        ) { %> <a href="/blog-posts/create" class="primary-button blog-create-button">Create Blog Post</a>
+        <% } %>
+      </section>
+      <section class="blog-post-list">
+        <% if (blogPosts.length == 0) { %>
+          <p>No blog posts were found</p>
+         <% } %>
+         <% for (let blogPost of blogPosts) { %>
+          <article class="blog-post-card">
+            <h3><%= blogPost.title %></h3>
+            <span>
+              <%= new Date(blogPost.dateCreated).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" }) %>
+            </span>
+            <p><%= blogPost.content %></p>
+        <!--conditional rendering against the authenticated user to delete own posts-->
+        <% if (authenticatedUser && blogPost.userId == authenticatedUser.id) { %>
+              <form action="/blog-posts/<%= blogPost.id%>/delete"
+              method="post"
+              >
+            <button type="submit" value="Delete Post" class="delete-button blog-delete-button">Delete Post</button>
+            </form>
+            <% } %>
+        </article>
+        <% } %>
+       </section>
+      <%- include("partials/footer.ejs") %>
+    </main>
+  </body>
+</html>

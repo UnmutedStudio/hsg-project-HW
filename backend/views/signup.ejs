@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <title>High Street Gym - Sign Up</title>
+  </head>
+  <body>
+    <main class="auth-page">
+      <%- include("partials/header_guest.ejs", {
+          pageTitle: "Sign Up"
+        }) %>
+      <section class="auth-card signup-card">
+        <img class="form-logo" src="/img/logo300px.png" alt="High Street Gym" >
+        <div class="auth-intro">
+          <h2 class="text-2xl">Welcome!</h2>
+          <p>Sign up to access all features of the app.</p>
+        </div>
+        <form
+          action="/signup"
+          method="post"
+          class="auth-form signup-form"
+        >
+          <label for="first-name" class="sr-only">First name:</label>
+          <input
+            type="text"
+            name="firstName"
+            id="first-name"
+            placeholder="First name*"
+            autocomplete="given-name"
+            required
+          />
+        <label for="last-name" class="sr-only">Last name:</label>
+          <input
+            type="text"
+            name="lastName"
+            id="last-name"
+            placeholder="Last name*"
+            autocomplete="family-name"
+            required
+          />
+          <label for="email" class="sr-only">Email:</label>
+          <input 
+          type="email" 
+          name="email" 
+          id="email" 
+          placeholder="Email*"
+          autocomplete="email" 
+          required
+          />
+          <label for="password" class="sr-only">Password:</label>
+          <input 
+          type="password" 
+          name="password" 
+          id="password" 
+          placeholder="Password*"
+          autocomplete="new-password" 
+          required
+          />
+          <label for="confirm-password" class="sr-only">Confirm password:</label>
+          <input 
+          type="password" 
+          name="confirmPassword" 
+          id="confirm-password"
+          placeholder="Confirm password*"
+          required
+          />
+          <small class="required-fields">*Required fields</small>
+          <!--Removed cancel button as returns to login <a href="/login" class="auth-button secondary-button">Cancel</a> -->
+          <button type="submit" class="auth-button login-button">Sign up</button>
+          <p class="not-mem">Already a member?</p>
+          <a href="/login" class="auth-button signup-button">Login</a>
+        </form>
+      </section>
+      <nav
+        class="login-page-links"
+        aria-label="login page"
+      >
+        <a href="/sessions">Session timetable</a>
+        <a href="/blog-posts">Blog posts</a>
+      </nav>
+      <%- include("partials/footer.ejs") %>
+    </main>
+  </body>
+</html>

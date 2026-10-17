@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+    <head>
+        <%- include("partials/head.ejs")  %>
+        <title>High Street Gym - Privacy policy</title>
+    </head>
+    <body>
+        <main>
+            <% if (typeof authenticatedUser !== "undefined" && authenticatedUser) { %>
+                <%- include("partials/header_authenticated.ejs", {
+                    authenticatedUser: authenticatedUser,
+                    pageTitle: "Privacy Policy"
+                }) %>
+            <% } else { %>
+                <%- include("partials/header_guest.ejs", {
+                    authenticatedUser: null,
+                    pageTitle: "Privacy Policy"
+            }) %>
+            <% } %>
+            <%- include("partials/nav.ejs", {
+                authenticatedUser:
+                    typeof authenticatedUser !== "undefined"
+                    ? authenticatedUser
+                    : null,
+                role:
+                    typeof authenticatedUser !== "undefined" && authenticatedUser
+                    ? authenticatedUser.role
+                    : null
+            }) %>
+            <section>
+                <article class="responsive-half margin-auto">
+                    <h2>Privacy Policy</h2>
+                    <h2>Effective Date: 1 October 2026</h2>
+                    <h3><b>1. Introduction</b></h3>
+                    <p>High Street Gym (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is committed to protecting your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, use our mobile app, or sign up for gym memberships and fitness services.</p>
+                    <p>By accessing our services or providing us with your personal data, you agree to the terms of this Privacy Policy.</p>
+                    <h3><b>2. What Information We Collect</b></h3>
+                    <p>We collect personal and sensitive information necessary to provide you with fitness training, manage memberships, and maintain safety. This may include:</p>
+                    <ul style="margin-left: 40px;" type="disc">
+                        <li><b>Identity &amp; Contact Details:</b> Full name, email address, and phone number.</li>
+                        <li><b>Emergency Contacts:</b> Name and phone number of your designated emergency contact.</li>
+                        <li><b>Financial &amp; Payment Data:</b> Bank account details, credit card numbers, billing history, and payment plan arrangements (processed via secure third-party payment gateways).</li>
+                        <li><b>Health &amp; Sensitive Information:</b> Medical history, injuries, physical limitations, health conditions, and medical clearances relevant to exercise and training. <i>Note: We collect sensitive health data only with your consent on site at one of our facilities.</i></li>
+                        <li><b>Operational Data:</b> Gym access control logs (entry/exit times), class bookings, attendance records, and fitness progression tracking.</li>
+                        <li><b>Images &amp; Surveillance:</b> CCTV footage inside/outside the facility for security, and photographs/videos taken during classes or events (with consent).</li>
+                        <li><b>Website &amp; Cookie Data:</b> IP address, browser type, device info, and tracking data via tools like Google Analytics.<br />
+                        &nbsp;</li>
+                    </ul>
+                    <h3><b>3. How We Collect Your Information</b></h3>
+                    <p>We collect information:</p>
+                    <ul style="margin-left: 40px;" type="disc">
+                        <li>Directly from you when you fill out membership forms, sign up online, book a class, or speak with staff/trainers.</li>
+                        <li>Automatically when you browse our website or use our mobile app (via cookies and analytics).<br />
+                        </li>
+                    </ul>
+                    <h3><b>4. How We Use Your Information</b></h3>
+                    <p>We use your information to:</p>
+                    <ul style="margin-left: 40px;" type="disc">
+                        <li>Administer and manage your gym membership, class bookings, and payments.</li>
+                        <li>Assess your health and safety readiness for physical exercise.</li>
+                        <li>Communicate with you regarding account updates, schedule changes, or customer support.</li>
+                        <li>Send you marketing materials, promotions, or newsletters (you can opt-out at any time).</li>
+                        <li>Ensure the safety and security of members and staff via CCTV monitoring.</li>
+                        <li>Comply with legal and regulatory obligations.<br />
+                        &nbsp;</li>
+                    </ul>
+                    <h3><b>5. Sharing and Disclosure of Information</b></h3>
+                    <p>We do not sell your personal data. We may share your information with:</p>
+                    <ul style="margin-left: 40px;" type="disc">
+                        <li>Service providers and software platforms that help us run our business (e.g., booking software, payment processors, IT and marketing providers).</li>
+                        <li>Professional advisors, legal authorities, or emergency services if required by law or in a medical emergency.</li>
+                        <li>Franchise networks or related corporate entities (if applicable).<br />
+                        &nbsp;</li>
+                    </ul>
+                    <h3><b>6. Data Security and Storage</b></h3>
+                    <ul style="margin-left: 40px;" type="disc">
+                        <li>We store your data securely using electronic firewalls, password protection, and restricted staff access.</li>
+                        <li>Physical documents containing sensitive details are stored in locked cabinets or securely digitized.</li>
+                        <li>We retain your personal data for as long as you are a member and for a reasonable period thereafter in accordance with Australian law, after which it is securely deleted or anonymized.<br />
+                        &nbsp;</li>
+                    </ul>
+                    <h3><b>7. Your Rights and Choices</b></h3>
+                    <p>You have the right to:</p>
+                    <ul style="margin-left: 40px;" type="disc">
+                        <li>Request access to the personal information we hold about you.</li>
+                        <li>Request correction of inaccurate or outdated information.</li>
+                        <li>Request deletion of your data (subject to active contract or legal retention needs).</li>
+                        <li>Opt out of receiving direct marketing communications at any time by clicking &quot;unsubscribe&quot; or contacting us directly.<br />
+                        &nbsp;</li>
+                    </ul>
+                    <h3><b>8. How to Contact Us</b></h3>
+                    <p>If you have questions about this Privacy Policy or wish to make a privacy complaint, please contact us at:</p>
+                    <div style="margin-left: 40px;"><b>Email:</b> privacy@hsgym.com</div>
+                    <div style="margin-left: 40px;"><b>Phone:</b> <a href="https://www.google.com/search?q=TAFE+southbank&amp;rlz=1C1GCEJ_en&amp;oq=TAFE+southbank&amp;gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIQCAEQLhivARjHARiABBiOBTIQCAIQLhivARjHARiABBiOBTIQCAMQLhivARjHARiABBiOBTIHCAQQABiABDIHCAUQABiABDIHCAYQABiABDIHCAcQABiABDIHCAgQABiABDIHCAkQABiABNIBCTI4NTNqMGoxNagCCLACAfEF2eNfDxuAzjrxBdnjXw8bgM46&amp;sourceid=chrome&amp;source=chrome.rb&amp;ie=UTF-8">1300 308 233</a></div>
+                    <div style="margin-left: 40px;"><b>Address:</b> 60 Tribune St, South Brisbane QLD 4101</div>
+                </article>
+            </section>
+            <%- include("partials/footer.ejs")  %>
+        </main>
+    </body>
+</html>

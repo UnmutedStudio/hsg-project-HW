@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <title>High Street Gym - Create Blog Post</title>
+  </head>
+  <body>
+    <main class="form-page">
+      <%- include("partials/header_authenticated.ejs", {
+        authenticatedUser: authenticatedUser,
+        pageTitle: "Create Blog Post"
+      }) %>
+      <%- include("partials/nav.ejs", {
+        authenticatedUser: authenticatedUser,
+        role: authenticatedUser.role
+      }) %>
+      <section class="form-card">
+        <img class="blog-form-logo" src="/img/logo300px.png" alt="High Street Gym">
+        <div class="form-intro">
+          <h2 class="text-2xl">Create Blog Post</h2>
+          <p>Share your health and fitness journey with the gym community.</p>
+        </div>
+        <form
+          action="/blog-posts/create"
+          method="post"
+          class="form-grid content-form"
+        >
+          <label for="title">Post Title:</label>
+          <input
+            type="text"
+            name="title"
+            id="title"
+            placeholder="Strength Training Tips"
+            maxlength="100"
+            required
+          />
+          <label for="content">Content for post:</label>
+          <textarea
+            name="content"
+            id="content"
+            rows="8"
+            placeholder="Share your post with the High Street Gym community..."
+            maxlength="1000"
+            required
+          ></textarea>
+          <div class="form-actions">
+            <a href="/blog-posts" class="link-button secondary-button">
+              Cancel
+            </a>
+            <button type="submit" class="primary-button">
+              Create Post
+            </button>
+          </div>
+        </form>
+      </section>
+      <%- include("partials/footer.ejs") %>
+    </main>
+  </body>
+</html>

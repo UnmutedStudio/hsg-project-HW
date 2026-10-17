@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+    <head>
+        <%- include("partials/head.ejs")  %>
+        <title>High Street Gym - Status</title>
+    </head>
+    <body>
+        <main>
+            <% if (typeof authenticatedUser !== "undefined" && authenticatedUser) { %>
+                <%- include("partials/header_authenticated.ejs", {
+                    authenticatedUser: authenticatedUser,
+                    pageTitle: "Status"
+                }) %>
+            <% } else { %>
+                <%- include("partials/header_guest.ejs", {
+                    authenticatedUser: null,
+                    pageTitle: "Status"
+            }) %>
+            <% } %>
+            <%- include("partials/nav.ejs", {
+                authenticatedUser:
+                    typeof authenticatedUser !== "undefined"
+                    ? authenticatedUser
+                    : null,
+                role:
+                    typeof authenticatedUser !== "undefined" && authenticatedUser
+                    ? authenticatedUser.role
+                    : null
+            }) %>
+            <section>
+                <article class="responsive-half margin-auto">
+                    <h2><%= status  %></h2>
+                    <% if (typeof message !== "undefined") { %>
+                     <p><%= message  %></p>
+                    <% } %>
+                </article>
+            </section>
+            <%- include("partials/footer.ejs")  %>
+        </main>
+    </body>
+</html>

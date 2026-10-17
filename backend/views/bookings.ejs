@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <title>High Street Gym - My Bookings</title>
+  </head>
+  <body>
+    <main>
+      <%- include("partials/header_authenticated.ejs", {
+      authenticatedUser: authenticatedUser, 
+      pageTitle: "My Bookings"
+      }) %>
+      <%- include("partials/nav.ejs", {
+        authenticatedUser: authenticatedUser,
+        role: authenticatedUser.role
+      }) %>
+
+    <section>
+      <h2 class="text-2xl">My Bookings</h2>
+        <p>View and manage your upcoming High Street Gym sessions.</p>
+      
+      <section class="booking-list">
+        <% if (bookingDetails.length == 0) { %>
+        <p>You do not currently have any bookings.</p>
+        <a href="/sessions">View Session Timetable</a>
+        <% } %>
+
+        <% for (let bookingDetail of bookingDetails) { %>
+        <article class="booking-card">
+          <h3><%= bookingDetail.activity.activityName %></h3>
+          <p> Trainer: <%= bookingDetail.trainer.firstName %> <%= bookingDetail.trainer.lastName %></p>
+          <p> Location: <%= bookingDetail.location.locationName %> </p>
+          <p>Date: <%= bookingDetail.session.dateSession.toLocaleDateString("en-AU") %></p>
+          <p>Time: <%= bookingDetail.session.timeSession %></p>
+          <p>Duration: <%= bookingDetail.session.duration %> minutes</p>
+          <p>Booking status: <%= bookingDetail.booking.bookingStatus %></p>
+          <% if (bookingDetail.booking.bookingStatus == "confirmed") { %>
+          <form   
+            action ="/bookings/<%= bookingDetail.booking.id %>/delete"
+            method="post"
+          >
+          <button
+            type="submit"
+            name="action"
+            value="delete"
+          >
+            Cancel Booking
+          </button>
+          </form>
+          <% } %>
+        </article>
+      <% } %>
+    </section>
+    </section>
+    <%- include("partials/footer.ejs") %>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+<header class="site-header">
+  <a href="/" class="site-banner">
+    <span class="brand-mark" aria-hidden="true">H</span>
+    <h1 class="site-title">High Street Gym
+    <% if (typeof pageTitle !== "undefined" && pageTitle) { %>
+      - <%= pageTitle %>
+    <% } %>
+    </h1>
+  </a>
+  <% if (typeof authenticatedUser !== "undefined" && authenticatedUser) { %>
+    <details class="profile-menu">
+      <summary class="profile-summary">
+        <img src="/img/icons/user.svg" alt="" class="profile-icon">
+        <span>
+          <%= authenticatedUser.firstName %>
+        </span>
+      </summary>
+      <div class="profile-dropdown">
+        <span class="profile-role">
+          <%= authenticatedUser.role %>
+      </span>
+      <a href="/logout">Logout</a>
+      </div>
+    </details>  
+  <% } %>
+</header>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <title>High Street Gym - Manage Users</title>
+  </head>
+  <body>
+    <main class="management-page">
+      <%- include("partials/header_authenticated.ejs", {
+        authenticatedUser: authenticatedUser,
+        pageTitle: "Manage Users"
+      }) %>
+      <%- include("partials/nav.ejs", {authenticatedUser: authenticatedUser, role: authenticatedUser.role, activePage: "users"}) %>
+      <section class="manage-heading">
+        <div>
+          <h2 class="text-2xl">Manage Users</h2>
+          <p><%= users.length %> records</p>
+        </div>
+        <a href="/users">Create New +</a>
+      </section>
+      <section class="management-filters">
+        <form
+          action="/users"
+          method="get"  
+          class="form-grid"
+        >
+        <label for="search-term">Search users:</label>
+          <input
+            type="search"
+            name="search_term"
+            id="search-term"
+            placeholder="Search users..."
+          />
+          <button type="submit">Search</button>
+          <a href="/users">Clear</a>
+        </form>
+      </section>
+        <section class="user-table columns-5">
+          <span class="data-list-heading">First Name</span>
+          <span class="data-list-heading">Last Name</span>
+          <span class="data-list-heading">Email</span>
+          <span class="data-list-heading">Role</span>
+          <span class="data-list-heading">Actions</span>
+          
+          <% if (users.length == 0) { %>
+            <p>No users were found.</p>
+          <% } %>
+
+          <% for(const user of users ) { %>
+            <div class="user-table-rows">
+              <span><%= user.firstName %></span>
+              <span><%= user.lastName %></span>
+              <span><%= user.email %></span>
+              <span><%= user.role %></span>
+              <span><a href="/users/<%= user.id %>" class="link-button">Edit</a>
+              </span>
+            </div>
+          <% } %>
+        </section>
+        <section class="new-user">
+          <% if (selectedUser.id == null) { %>
+            <h3>Create User</h3>
+          <% } else { %>
+            <h3>Edit User</h3>
+          <% } %>
+        <form
+          action="<%= selectedUser.id == null ? '/users' : '/users/' + selectedUser.id %>"
+          method="post"
+          class="form-grid"
+        >
+          <label for="first-name">First Name:</label>
+            <input
+              type="text"
+              name="firstName"
+              id="first-name"
+              value="<%= selectedUser.firstName %>"
+              required
+            />
+          <label for="last-name">Last Name:</label>
+          <input
+            type="text"
+            name="lastName"
+            id="last-name"
+            value="<%= selectedUser.lastName  %>"
+            required
+          />
+          <label for="email">Email:</label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              value="<%= selectedUser.email %>"
+              required
+            />
+          <label for="role">Role:</label>
+          <select name="role" id="role" required>
+            <option value="admin" <%= selectedUser.role =="admin" ? "selected" : ""   %>>Admin</option>
+            <option value="member" <%= selectedUser.role =="member" ? "selected" : ""   %>>Member</option>
+            <option value="trainer" <%= selectedUser.role =="trainer" ? "selected" : ""   %>>Trainer</option>
+          </select>
+          <label for="password">Password:</label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            <%= selectedUser.id == null ? "required" : ""  %>
+          />
+          <a href="/users" class="link-button two-col">clear</a>
+          <% if (selectedUser.id == null) { %>
+          <button 
+            class="two-col"
+            type="submit"
+            name="action"
+            value="create"
+          >
+          Create New User </button>
+        <% } else { %>
+          <button 
+            class="two-col"
+            type="submit"
+            name="action"
+            value="update"
+          >
+          Update User</button>
+          <button 
+            class="two-col"
+            type="submit"
+            name="action"
+            value="delete"
+          >Delete User</button>
+        <% } %>
+        </form>
+      </section>
+      <%- include("partials/footer.ejs") %>
+    </main>
+  </body>
+</html>

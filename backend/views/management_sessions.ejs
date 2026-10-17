@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <title>High Street Gym - Manage Sessions</title>
+  </head>
+  <body>
+    <main class="management-page">
+      <%- include("partials/header_authenticated.ejs", {
+        authenticatedUser: authenticatedUser,
+        pageTitle: "Manage Sessions",
+
+      }) %>
+      <%- include("partials/nav.ejs", {authenticatedUser: authenticatedUser, role: authenticatedUser.role, activePage: "sessions"}) %>
+      <section class="manage-heading">
+        <div>
+          <h2 class="text-2xl">Manage Sessions</h2>
+          <p><%= sessionDetails.length %> records</p>
+        </div>
+        <a href="/sessions/admin">Create New +</a>
+      </section>
+      <section class="management-filters">
+        <form
+          action="/sessions/admin"
+          method="get"  
+          class="form-grid"
+        >
+        <label for="search-term">Search sessions:</label>
+          <input
+            type="search"
+            name="search_term"
+            id="search-term"
+            placeholder="Search sessions..."
+          />
+          <button type="submit">Search</button>
+          <a href="/sessions/admin">Clear</a>
+        </form>
+      </section>
+        <section class="session-table columns-9">
+          <span class="data-list-heading">Activity</span>
+          <span class="data-list-heading">Trainer</span>
+          <span class="data-list-heading">Location</span>
+          <span class="data-list-heading">Date</span>
+          <span class="data-list-heading">Time</span>
+          <span class="data-list-heading">Duration</span>
+          <span class="data-list-heading">Status</span>
+          <span class="data-list-heading">Availability</span>
+          <span class="data-list-heading">Actions</span>
+          <% if (sessionDetails.length == 0) { %>
+            <p>No sessions were found.</p>
+          <% } %>
+          <% for(const sessionDetail of sessionDetails ) { %>
+            <div class="session-table-rows">
+              <span><%= sessionDetail.activity.activityName %></span>
+              <span><%= sessionDetail.trainer.firstName %> <%= sessionDetail.trainer.lastName %></span>
+              <span><%= sessionDetail.location.locationName %></span>
+              <span><%= sessionDetail.session.dateSession.toLocaleDateString("en-AU") %></span>
+              <span><%= sessionDetail.session.timeSession %></span>
+              <span><%= sessionDetail.session.duration %> minutes</span>
+              <span>Active</span>
+              <span><%= sessionDetail.session.availability %></span>
+              <span><a href="/sessions/admin/<%= sessionDetail.session.id %>" class="link-button">Edit</a></span>
+            </div>
+          <% } %>
+        </section>
+        <section class="new-session">
+          <% if (selectedSession.id == null) { %>
+            <h3>Create Session</h3>
+          <% } else { %>
+            <h3>Edit Session</h3>
+          <% } %>
+        <form
+          action="<%= selectedSession.id == null ? '/sessions/admin' : '/sessions/admin/' + selectedSession.id %>"
+          method="post"
+          class="form-grid"
+        >
+        <label for="activity-id">Activity:</label>
+        <select
+          name="activityId"
+          id="activity-id"
+          required
+        >
+        <option value="">Select activity</option>
+        <% for (const activity of activities) { %>
+        <option
+          value="<%= activity.id %>"
+          <%= selectedSession.activityId == activity.id
+            ? "selected"
+            : "" %>
+        ><%= activity.activityName %></option>
+        <% } %>
+        </select>
+          <label for="trainer-id">Trainer:</label>
+        <select
+          name="trainerId"
+          id="trainer-id"
+          required
+        >
+        <option value="">Select trainer</option>
+        <% for (const trainer of trainers) { %>
+        <option
+          value="<%= trainer.id %>"
+          <%= selectedSession.trainerId == trainer.id
+            ? "selected"
+            : "" %>
+        ><%= trainer.firstName %> <%= trainer.lastName %></option>
+        <% } %>
+        </select>
+          <label for="location-id">Location:</label>
+        <select
+          name="locationId"
+          id="location-id"
+          required
+        >
+        <option value="">Select location</option>
+        <% for (const location of locations) { %>
+        <option
+          value="<%= location.id %>"
+            <%= selectedSession.locationId == location.id
+              ? "selected"
+              : "" %>
+          ><%= location.locationName %></option>
+        <% } %>
+        </select>
+        <label for="date-session">Date:</label>
+          <input
+            type="date"
+            name="dateSession"
+            id="date-session"
+            value="<%= selectedSession.dateSession
+              ? selectedSession.dateSession.toISOString().substring(0,10)
+              : '' %>"
+            min="<%= new Date().toISOString().substring(0, 10) %>" 
+            required
+          />
+        <label for="time-session">Time:</label>
+          <input
+            type="time"
+            name="timeSession"
+            id="time-session"
+            value="<%= selectedSession.timeSession || '' %>"
+            required
+          />
+        <label for="duration">Duration in minutes:</label>
+          <input
+            type="number"
+            name="duration"
+            id="duration"
+            value="<%= selectedSession.duration || '' %>"
+            min="1"
+            required
+          />
+        <label for="availability">Available places:</label>
+          <input
+            type="number"
+            name="availability"
+            id="availability"
+            value="<%= selectedSession.availability || '' %>"
+            min="1"
+            required
+          />
+          <a href="/sessions" class="link-button two-col">clear</a>
+          <% if (selectedSession.id == null) { %>
+          <button 
+            class="two-col"
+            type="submit"
+            name="action"
+            value="create"
+          >
+          Create New Session </button>
+        <% } else { %>
+          <button 
+            class="two-col"
+            type="submit"
+            name="action"
+            value="update"
+          >
+          Update Session</button>
+          <button 
+            class="two-col"
+            type="submit"
+            name="action"
+            value="delete"
+          >Delete Session</button>
+        <% } %>
+        </form>
+      </section>
+      <%- include("partials/footer.ejs") %>
+    </main>
+  </body>
+</html>

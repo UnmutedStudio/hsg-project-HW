@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <title>High Street Gym - Manage Blog Posts</title>
+  </head>
+  <body>
+    <main class="management-page">
+      <%- include("partials/header_authenticated.ejs", {
+        authenticatedUser: authenticatedUser,
+        pageTitle: ""
+      }) %>
+      <%- include("partials/nav.ejs", {authenticatedUser: authenticatedUser, role: authenticatedUser.role, activePage: "blog-posts"}) %>
+      <section class="manage-heading">
+        <div>
+          <h2 class="text-2xl">Manage Blog Posts</h2>
+          <p><%= blogPosts.length %> records</p>
+        </div>
+        <a href="#blog-form" class="primary-button management-create-button">Create New +</a>
+      </section>
+      <section class="management-filters">
+        <form
+          action="/blog-posts/admin"
+          method="get"  
+          class=""management-filter-form"
+        >
+        <label for="search-term" class="sr-only">Search blog posts:</label>
+          <input
+            type="search"
+            name="search_term"
+            id="search-term"
+            placeholder="Search blog posts..."
+          />
+          <button type="submit" class="primary-button filter-button">Search</button>
+          <a href="/blog-posts/admin" class="secondary-button filter-button">Clear</a>
+          <details class="sort-menu" aria-label="Sort blog posts">
+            <summary class="management-sort">
+              Sort by title
+            </summary>
+          <div class="sort-menu-links">
+            <a href="/blog-posts/admin?sort=default">
+              Default</a>
+            <a href="/blog-posts/admin?sort=asc">
+              A-Z</a>
+            <a href="/blog-posts/admin?sort=desc">
+              Z-A</a>
+          </div>
+        </details>
+        </form>
+      </section>
+      <section class="new-location management-form-section" id="activity-form">
+        <a href="/blog-posts/admin" class="management-form-close" aria-label="Close form">x</a>
+        <% if (selectedBlogPost.id == null) { %>
+            <h3>Create Blog Post</h3>
+        <% } else { %>
+            <h3>Edit Blog Post</h3>
+          <% } %>
+        <form
+          action="<%= selectedBlogPost.id == null ? '/blog-posts/admin' : '/blog-posts/admin/' + selectedBlogPost.id %>"
+          method="post"
+          class="form-grid management-form"
+        >
+        <label for="title">Post Title:</label>
+          <input
+            type="text"
+            name="title"
+            id="title"
+            value="<%= selectedBlogPost.title %>"
+            minlength="2"
+            maxlength="100"
+            required
+          />
+        <% if (selectedBlogPost.id == null) { %>
+          <button 
+            class="primary-button two-col"
+            type="submit"
+            name="action"
+            value="create"
+          >
+          Create New Blog Post</button>
+        <% } else { %>
+          <button 
+            class="primary-button two-col"
+            type="submit"
+            name="action"
+            value="update"
+          >
+          Update Blog Post</button>
+        <% } %>
+        </form>
+      </section>
+      <section class="location-table columns-5 management-table">
+        <span class="data-list-heading">Post Title</span>
+        <span class="data-list-heading">Author</span>
+        <span class="data-list-heading">Date Created</span>
+        <span class="data-list-heading">Status</span>
+        <span class="data-list-heading">Actions</span>
+        <% if (blogPosts.length == 0) { %>
+          <p>No blog posts were found.</p>
+        <% } %>
+        <% for(const blogPost of blogPosts ) { %>
+          <div class="blog-table-rows">
+            <span>
+              <details> 
+                <summary><%= blogPost.title %></summary>
+                <p><%= blogPost.content %></p>
+              </details>
+            </span>
+            <span>Author details pending</span>
+            <span><%= blogPost.dateCreated.toLocaleDateString("en-AU") %></span> 
+            <span>Posted</span>
+            <span class="table-actions">
+              <a href="/blog-posts/admin<%= blogPost.id %>#blog-form" class="table-action">
+                Edit</a>
+              <details class="delete-confirmation">
+                <summary class="table-delete-action">
+                  Delete
+                </summary>
+                  <div class="delete-confirmation-box">
+                    <p>Delete this blog post?</p>  
+                    <form
+                      action="/blog-posts/admin<%= blogPosts.id %>"
+                      method="post"
+                    >
+                    <button
+                      type="submit"
+                      name="action"
+                      value="delete"
+                      class="delete-button table-delete-button"
+                    >Confirm delete
+                    </button>
+                  </form>
+                </div>
+              </details>
+            </span>
+          </div>
+        <% } %>
+      </section>
+      <%- include("partials/footer.ejs") %>
+    </main>
+  </body>
+</html>

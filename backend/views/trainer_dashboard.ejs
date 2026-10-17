@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <title>High Street Gym - Trainer Dashboard</title>
+  </head>
+  <body>
+    <main class="dashboard-page">
+      <%- include("partials/header_authenticated.ejs", {
+        authenticatedUser: authenticatedUser,
+        pageTitle: ""
+      }) %>
+      <%- include("partials/nav.ejs", {
+        authenticatedUser: authenticatedUser,
+        role: authenticatedUser.role,
+        activePage: "dashboard"
+      }) %>
+      <section class="admin-overview">
+        <article class="overview-card">
+          <span>Hello</span>
+          <h2 class="text-2xl">
+            <%= authenticatedUser.firstName %>
+          </h2>
+          <p>Welcome to the trainer dashboard.</p>
+        </article>
+      </section>
+
+      <section class="admin-section">
+        <h2 class="text-2xl">Quick Actions</h2>
+        <div class="admin-card-list">
+            <a href="/sessions/trainer">
+                <article class="admin-card">
+                    <h3>Sessions</h3>
+                    <p>Create, edit and schedule training sessions.</p>
+                </article>
+            </a>
+            <a href="/blog-posts">
+              <article class="admin-card">
+                  <h3>View Blog</h3>
+                  <p>View and create blog content.</p>
+              </article>
+            </a>
+        </div>
+      </section>
+      <%- include("partials/footer.ejs") %>
+    </main>
+  </body>
+</html>

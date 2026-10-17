@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <title>High Street Gym - Manage Locations</title>
+  </head>
+  <body>
+    <main class="management-page">
+      <%- include("partials/header_authenticated.ejs", {
+        authenticatedUser: authenticatedUser,
+        pageTitle: ""
+      }) %>
+      <%- include("partials/nav.ejs", {authenticatedUser: authenticatedUser, role: authenticatedUser.role, activePage: "locations"}) %>
+      <section class="manage-heading">
+        <div>
+          <h2 class="text-2xl">Manage Locations</h2>
+          <p><%= locations.length %> records</p>
+        </div>
+        <a href="#location-form" class="primary-button management-create-button">Create New +</a>
+      </section>
+      <section class="management-filters">
+        <form
+          action="/locations"
+          method="get"  
+          class="management-filter-form"
+        >
+        <label for="search-term" class="sr-only">Search locations:</label>
+          <input
+            type="search"
+            name="search_term"
+            id="search-term"
+            placeholder="Search locations..."
+          />
+          <button type="submit" class="primary-button filter-button">Search</button>
+          <a href="/locations" class="secondary-button filter-button">Clear</a>
+        <details class="sort-menu" aria-label="Sort locations">
+            <summary class="management-sort">
+              Sort by name
+            </summary>
+          <div class="sort-menu-links">
+            <a href="/locations?sort=default">
+              Default</a>
+            <a href="/locations?sort=asc">
+              A-Z</a>
+            <a href="/locations?sort=desc">
+              Z-A</a>
+          </div>
+        </details>
+        </form>
+      </section>
+      <section class="new-location management-form-section" id="location-form">
+        <a href="/locations" class="management-form-close" aria-label="Close form">x</a>
+        <% if (selectedLocation.id == null) { %>
+            <h3>Create Location</h3>
+        <% } else { %>
+            <h3>Edit Location</h3>
+          <% } %>
+        <form
+          action="<%= selectedLocation.id == null ? '/locations' : '/locations/' + selectedLocation.id %>"
+          method="post"
+          class="form-grid management-form"
+        >
+          <label for="location-name">Location Name:</label>
+            <input
+              type="text"
+              name="locationName"
+              id="location-name"
+              value="<%= selectedLocation.locationName %>"
+              minlength="2"
+              maxlength="50"
+              required
+            />
+        <% if (selectedLocation.id == null) { %>
+          <button 
+            class="primary-button two-col"
+            type="submit"
+            name="action"
+            value="create"
+          >
+          Create New Location</button>
+        <% } else { %>
+          <button 
+            class="primary-button two-col"
+            type="submit"
+            name="action"
+            value="update"
+          >
+          Update Location</button>
+        <% } %>
+        </form>
+      </section>
+      <section class="location-table columns-3 management-table">
+        <span class="data-list-heading">Location</span>
+        <span class="data-list-heading">Status</span>
+        <span class="data-list-heading">Actions</span>
+        <% if (locations.length == 0) { %>
+          <p>No locations were found.</p>
+        <% } %>
+
+        <% for(const location of locations ) { %>
+          <div class="location-table-rows">
+            <span><%= location.locationName %></span>
+            <span class="status-cell">
+              <span class="status-pill status-active">Active</span>
+            </span>
+            <span class="table-actions"><a href="/locations/<%= location.id %>#location-form" class="table-action">Edit</a>
+              <details class="delete-confirmation">
+                <summary class="table-delete-action">
+                  Delete
+                </summary>
+                <div class="delete-confirmation-box">
+                  <p>Delete this location?</p>  
+                  <form
+                    action="/locations/<%= location.id %>" 
+                    method="post"
+                  >
+                    <button
+                      type="submit"
+                      name="action"
+                      value="delete"
+                      class="delete-button table-delete-button"
+                    >Confirm delete
+                    </button>
+                  </form>
+                </div>
+              </details>
+            </span>
+          </div>
+        <% } %>
+      </section>
+      <%- include("partials/footer.ejs") %>
+    </main>
+  </body>
+</html>

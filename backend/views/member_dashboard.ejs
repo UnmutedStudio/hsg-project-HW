@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <title>High Street Gym - Member Dashboard</title>
+  </head>
+  <body>
+    <main class="dashboard-page">
+      <%- include("partials/header_authenticated.ejs", {
+        authenticatedUser: authenticatedUser,
+        pageTitle: ""
+      }) %>
+      <%- include("partials/nav.ejs", {
+        authenticatedUser: authenticatedUser,
+        role: authenticatedUser.role,
+        activePage: "dashboard"
+      }) %>
+      <section class="admin-overview">
+      <article class="overview-card">
+        <span>Hello</span>
+        <h2 class="text-2xl">
+          <%= authenticatedUser.firstName %>
+        </h2>
+        <p>Access your High Street Gym member features</p>
+      </article>
+    </section>
+    <section class="admin-section">
+      <h2 class="text-2xl">Quick Actions</h2>
+      <div class="admin-card-list">
+      <a href="/sessions" class="admin-card">
+        <article>
+          <h3>Book a Session</h3>
+          <p>View available activities and book a session.</p>
+        </article></a>
+        <a href="/bookings" class="admin-card">
+          <article>
+            <h3>My Bookings</h3>
+            <p>View and manage your session bookings.</p>
+          </article>
+        </a>
+      <a href="/blog-posts" class="admin-card">
+        <article>
+          <h3>Community Blog</h3>
+          <p>Read posts from the High Street Gym community.</p>
+        </article>
+      </a>
+
+      <a href="/blog-posts/create" class="admin-card">
+        <article>
+          <h3>Create Blog Post</h3>
+          <p>Share a post with the gym community.</p>
+        </article>
+      </a>
+      </div> 
+    </section>
+      <%- include("partials/footer.ejs") %>
+    </main>
+  </body>
+</html>

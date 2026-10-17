@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <title>High Street Gym - Manage Bookings</title>
+  </head>
+  <body>
+    <main class="management-page">
+      <%- include("partials/header_authenticated.ejs", {
+        authenticatedUser: authenticatedUser,
+        pageTitle: "Manage Bookings"
+      }) %>
+      <%- include("partials/nav.ejs", {authenticatedUser: authenticatedUser, role: authenticatedUser.role, activePage: "bookings"}) %>
+      <section class="manage-heading">
+        <div>
+          <h2 class="text-2xl">Manage Bookings</h2>
+          <p><%= bookingDetails.length %> records</p>
+        </div>
+        <a href="/bookings/admin">Create New +</a>
+      </section>
+      <section class="management-filters">
+        <form
+          action="/bookings/admin"
+          method="get"  
+          class="form-grid"
+        >
+        <label for="search-term">Search bookings:</label>
+          <input
+            type="search"
+            name="search_term"
+            id="search-term"
+            placeholder="Search bookings..."
+          />
+          <button type="submit">Search</button>
+          <a href="/bookings/admin">Clear</a>
+        </form>
+      </section>
+        <section class="booking-table columns-7">
+          <span class="data-list-heading">Member</span>
+          <span class="data-list-heading">Activity</span>
+          <span class="data-list-heading">Location</span>
+          <span class="data-list-heading">Date</span>
+          <span class="data-list-heading">Time</span>
+          <span class="data-list-heading">Status</span>
+          <span class="data-list-heading">Actions</span>
+          <% if (bookingDetails.length == 0) { %>
+            <p>No bookings were found.</p>
+          <% } %>
+
+          <% for(const bookingDetail of bookingDetails ) { %>
+            <div class="booking-table-rows">
+              <span>Member details pending</span>
+              <span><%= bookingDetail.activity.activityName %></span>
+              <span><%= bookingDetail.location.locationName %></span>
+              <span><%= bookingDetail.session.dateSession.toLocaleDateString("en-AU") %></span>
+              <span><%= bookingDetail.session.timeSession %></span>
+              <span><%= bookingDetail.booking.bookingStatus %></span>
+              <span><a href="/bookings/admin/<%= bookingDetail.booking.id %>" class="link-button">Edit</a>
+              </span>
+            </div>
+          <% } %>
+        </section>
+        <section class="new-booking">
+          <% if (selectedBooking.id == null) { %>
+            <h3>Create Booking</h3>
+          <% } else { %>
+            <h3>Edit Booking</h3>
+          <% } %>
+        <form
+          action="<%= selectedBooking.id == null ? '/bookings/admin' : '/bookings/admin/' + selectedBooking.id %>"
+          method="post"
+          class="form-grid"
+        >
+        <label for="user-id">Member:</label>
+          <select
+            name="userId"
+            id="user-id"
+            required
+          >
+            <option value="">Select member</option>
+            <% for (const member of members) { %>
+            <option
+              value="<%= member.id %>"
+              <%= selectedBooking.userId == member.id
+                ? "selected"
+                : "" %>
+            ><%= member.firstName %> <%= member.lastName %>
+            </option>
+        <% } %>
+        </select>
+        <label for="session-id">Session:</label>
+          <select
+            name="sessionId"
+            id="session-id"
+            required
+          >
+          <option value="">Select session</option>
+            <% for (const sessionDetail of sessionDetails) { %>
+              <option
+                value="<%= sessionDetail.session.id %>"
+                <%= selectedBooking.sessionId == sessionDetail.session.id
+                  ? "selected"
+                  : "" %>
+              > 
+                <%= sessionDetail.activity.activityName %> |
+                <%= sessionDetail.location.locationName %> |
+                <%= sessionDetail.session.dateSession.toLocaleDateString("en-AU") %> |
+                <%= sessionDetail.session.timeSession %>
+              </option>
+            <% } %>
+          </select>
+          <label for="booking-status">Booking Status:</label>
+          <select
+            name="bookingStatus"
+            id="booking-status"
+            required
+          >
+            <option
+              value="confirmed"
+              <%= selectedBooking.bookingStatus == "confirmed"
+                ? "selected"
+                : "" %>
+            >Confirmed</option>
+            <option
+              value="cancelled"
+              <%= selectedBooking.bookingStatus == "cancelled"
+                ? "selected"
+                : "" %>
+            >Cancelled</option>
+          </select>
+          <a href="/bookings/admin" class="link-button two-col">clear</a>
+          <% if (selectedBooking.id == null) { %>
+          <button 
+            class="two-col"
+            type="submit"
+            name="action"
+            value="create"
+          >Create New Booking</button>
+        <% } else { %>
+          <button 
+            class="two-col"
+            type="submit"
+            name="action"
+            value="update"
+          >Update Booking</button>
+          <button 
+            class="two-col"
+            type="submit"
+            name="action"
+            value="delete"
+          >Delete Booking</button>
+        <% } %>
+        </form>
+      </section>
+      <%- include("partials/footer.ejs") %>
+    </main>
+  </body>
+</html>
