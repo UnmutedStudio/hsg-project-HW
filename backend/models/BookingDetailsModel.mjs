@@ -18,14 +18,16 @@ export class BookingDetailsModel extends DatabaseModel {
    * @param {ActivityModel} activity | the activity details linked to the session
    * @param {LocationModel} location | the location linked to the session
    * @param {UserModel} trainer | the trainer that is linked to the session
+   * @param {UserModel} member | the member that is linked to the booking
    */
-  constructor(booking, session, activity, location, trainer) {
+  constructor(booking, session, activity, location, trainer, member) {
     super();
     this.booking = booking;
     this.session = session;
     this.activity = activity;
     this.location = location;
     this.trainer = trainer;
+    this.member = member;
   }
   /**
    * This model converts joined database rows into a BookingDetailsModel object
@@ -39,7 +41,8 @@ export class BookingDetailsModel extends DatabaseModel {
       SessionModel.tableToModel(row.sessions),
       ActivityModel.tableToModel(row.activities),
       LocationModel.tableToModel(row.locations),
-      UserModel.tableToModel(row.users),
+      UserModel.tableToModel(row.trainers),
+      UserModel.tableToModel(row.members),
     );
   }
   /**
@@ -67,7 +70,7 @@ export class BookingDetailsModel extends DatabaseModel {
           AND sessions.deleted = 0
           AND activities.deleted = 0
           AND locations.deleted = 0
-          AND users.deleted = 0
+         AND users.deleted = 0
         ORDER BY sessions.date_session, sessions.time_session
       `,
       [memberId],
@@ -88,16 +91,28 @@ export class BookingDetailsModel extends DatabaseModel {
         ON sessions.activity_id = activities.id
       INNER JOIN locations
         ON sessions.location_id = locations.id
-      INNER JOIN users
-        ON sessions.trainer_id = users.id
+      INNER JOIN users AS trainers
+        ON sessions.trainer_id = trainers.id
+      INNER JOIN users AS members
+        ON bookings.user_id = members.id
       WHERE bookings.deleted = 0
         AND sessions.deleted = 0
         AND activities.deleted = 0
         AND locations.deleted = 0
-        AND users.deleted = 0
+        AND trainers.deleted = 0
+        AND members.deleted = 0
       ORDER BY sessions.date_session, sessions.time_session
     `
     ).then((result) => result.map((row) => this.tableToModel(row)),
     );
   }
 }
+
+// testing area 
+// BookingDetailsModel.getAll()
+//   .then((bookings) => {
+//     console.log(bookings);
+//   })
+//   .catch((error) => {
+//     console.error(error);
+//   });

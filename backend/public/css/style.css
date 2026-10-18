@@ -622,10 +622,6 @@ main > section {
   outline: none;
 }
 
-.management-sort::-webkit-details-marker {
-  display: none;
-}
-
 .sort-menu-links {
   position: absolute;
   top: calc(100% + 0.35rem);

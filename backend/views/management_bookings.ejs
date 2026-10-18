@@ -49,7 +49,7 @@
 
           <% for(const bookingDetail of bookingDetails ) { %>
             <div class="booking-table-rows">
-              <span>Member details pending</span>
+              <span><%= bookingDetail.member.firstName %> <%= bookingDetail.member.lastName %></span>
               <span><%= bookingDetail.activity.activityName %></span>
               <span><%= bookingDetail.location.locationName %></span>
               <span><%= bookingDetail.session.dateSession.toLocaleDateString("en-AU") %></span>

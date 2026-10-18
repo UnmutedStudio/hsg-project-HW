@@ -22,7 +22,7 @@
         <form
           action="/blog-posts/admin"
           method="get"  
-          class=""management-filter-form"
+          class="management-filter-form"
         >
         <label for="search-term" class="sr-only">Search blog posts:</label>
           <input
@@ -48,12 +48,10 @@
         </details>
         </form>
       </section>
-      <section class="new-location management-form-section" id="activity-form">
+      <section class="new-location management-form-section" id="blog-form">
         <a href="/blog-posts/admin" class="management-form-close" aria-label="Close form">x</a>
         <% if (selectedBlogPost.id == null) { %>
             <h3>Create Blog Post</h3>
-        <% } else { %>
-            <h3>Edit Blog Post</h3>
           <% } %>
         <form
           action="<%= selectedBlogPost.id == null ? '/blog-posts/admin' : '/blog-posts/admin/' + selectedBlogPost.id %>"
@@ -70,6 +68,14 @@
             maxlength="100"
             required
           />
+          <label for="content">Post content:</label>
+          <textarea
+            name="content"
+            id="content"
+            minlength="2"
+            maxlength="1000"
+            required
+          ><%= selectedBlogPost.content %></textarea>
         <% if (selectedBlogPost.id == null) { %>
           <button 
             class="primary-button two-col"
@@ -78,14 +84,6 @@
             value="create"
           >
           Create New Blog Post</button>
-        <% } else { %>
-          <button 
-            class="primary-button two-col"
-            type="submit"
-            name="action"
-            value="update"
-          >
-          Update Blog Post</button>
         <% } %>
         </form>
       </section>
@@ -110,8 +108,6 @@
             <span><%= blogPost.dateCreated.toLocaleDateString("en-AU") %></span> 
             <span>Posted</span>
             <span class="table-actions">
-              <a href="/blog-posts/admin<%= blogPost.id %>#blog-form" class="table-action">
-                Edit</a>
               <details class="delete-confirmation">
                 <summary class="table-delete-action">
                   Delete
@@ -119,7 +115,7 @@
                   <div class="delete-confirmation-box">
                     <p>Delete this blog post?</p>  
                     <form
-                      action="/blog-posts/admin<%= blogPosts.id %>"
+                      action="/blog-posts/admin/<%= blogPost.id %>"
                       method="post"
                     >
                     <button

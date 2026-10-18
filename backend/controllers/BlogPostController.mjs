@@ -87,7 +87,6 @@ export class BlogPostController {
           });
         }); 
     }
-    console.log('Authenticated user: ' + JSON.stringify(req.authenticatedUser));
   }
   /**
    * This renders the form that creates a new blog post
@@ -109,11 +108,12 @@ export class BlogPostController {
     if (
       typeof formData.title !== 'string' ||
       formData.title.trim().length === 0 ||
-      formData.title.trim().length > 100
+      formData.title.trim().length > 100 ||
+      /["*:<>?\/\\|{}]/.test(formData.title)
     ) {
       res.status(400).render('status.ejs', {
         status: 'Invalid input provided.',
-        message: 'Please enter a blog post title between 1 and 100 characters.',
+        message: 'Please enter a title between 1 and 100 characters. Do not use these characters: " * : < > ? / \ | { }.',
         authenticatedUser: req.authenticatedUser,
       });
       return;
@@ -121,11 +121,12 @@ export class BlogPostController {
     if (
       typeof formData.content !== 'string' ||
       formData.content.trim().length === 0 ||
-      formData.content.trim().length > 1000
+      formData.content.trim().length > 1000 ||
+      /["*:<>?\/\\|{}]/.test(formData.content)
     ) {
       res.status(400).render('status.ejs', {
         status: 'Invalid input provided.',
-        message: 'Please ensure the content is between 1 and 1000 characters.',
+        message: 'Please ensure the content is between 1 and 1000 characters. " * : < > ? / \ | { }',
         authenticatedUser: req.authenticatedUser,
       });
       return;
@@ -257,11 +258,12 @@ export class BlogPostController {
     if (
       typeof formData.title !== 'string' ||
       formData.title.trim().length === 0 ||
-      formData.title.trim().length > 100
+      formData.title.trim().length > 100 ||
+      /["*:<>?\/\\|{}]/.test(formData.title)
     ) {
       res.status(400).render('status.ejs', {
         status: 'Invalid input provided.',
-        message: 'Please enter a blog post title between 1 and 100 characters.',
+        message: 'Please enter a title between 1 and 100 characters. Do not use these characters: " * : < > ? / \ | { }.',
         authenticatedUser: req.authenticatedUser,
       });
       return;
@@ -269,11 +271,12 @@ export class BlogPostController {
     if (
       typeof formData.content !== 'string' ||
       formData.content.trim().length === 0 ||
-      formData.content.trim().length > 1000
+      formData.content.trim().length > 1000 ||
+      /["*:<>?\/\\|{}]/.test(formData.content)
     ) {
       res.status(400).render('status.ejs', {
         status: 'Invalid input provided.',
-        message: 'Please ensure the content is between 1 and 1000 characters.',
+        message: 'Please ensure the content is between 1 and 1000 characters. Do not use these characters: " * : < > ? / \ | { }.',
         authenticatedUser: req.authenticatedUser,
       });
       return;
