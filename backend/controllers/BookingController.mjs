@@ -13,7 +13,6 @@ export class BookingController {
    * This express router contains all BookingController routes
    */
   static routes = express.Router();
-
   static {
     // Member bookings
     this.routes.get(

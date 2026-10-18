@@ -1,6 +1,9 @@
 import { DatabaseModel } from "./DatabaseModel.mjs";
 import mysql from "mysql2/promise";
-
+/**
+ * The booking model is used to manage the booking records for the high st gym application
+ * There are crud operations for creating, viewing, editing and deleting bookings.
+ */
 export class BookingModel extends DatabaseModel {
   /**
    * 
@@ -67,8 +70,8 @@ export class BookingModel extends DatabaseModel {
    * 
    * This returns a booking if a member has already booking into a specific session
    * 
-   * @param {*} userId || the uniquie user identifier
-   * @param {*} sessionId || the unique session identifer
+   * @param {number} userId || the uniquie user identifier
+   * @param {number} sessionId || the unique session identifer
    * @returns {Promise<BookingModel>}
    */
   static getByMemberSession(userId, sessionId) {

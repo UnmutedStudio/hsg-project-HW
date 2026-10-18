@@ -5,8 +5,11 @@ import { AuthenticationController } from './AuthenticationController.mjs';
  * This controller is for managing and displayin gthe blog posts for HIgh St Gym application.
  */
 export class BlogPostController {
+  /**
+   * 
+   * This express router contains all BlogPostController routes
+   */
   static routes = express.Router();
-
   static {
     this.routes.get('/', this.viewBlogPostList); // /blog posts/
     this.routes.get(

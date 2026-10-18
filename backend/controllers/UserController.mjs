@@ -177,6 +177,7 @@ export class UserController {
   /**
    * This handles CREATE, UPDATE and DELETE actions that are completed on the user management page
    * 
+   * @type {express.RequestHandler}
    */
   static handleUserManagement(req, res) {
     const selectedUserId = req.params.id;

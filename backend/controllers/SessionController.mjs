@@ -17,7 +17,6 @@ export class SessionController {
    * This express router contains all SessionController routes
    */
   static routes = express.Router();
-
   static {
     // Guest and member timetable
     this.routes.get('/', this.viewSessionTimetable);

@@ -5,8 +5,9 @@ import mysql from "mysql2/promise";
  */
 export class DatabaseModel {
   static connection;
-
-  //this creates the connection to my own high street gym MySQL DB and is used by all models
+  /**
+   * this creates the connection to my own high street gym MySQL DB and is used by all models
+   */
   static {
     this.connection = mysql.createPool({
       host: "localhost",

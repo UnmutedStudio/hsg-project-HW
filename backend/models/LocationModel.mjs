@@ -38,7 +38,7 @@ export class LocationModel extends DatabaseModel {
   /**
    * This returns all locations from the database.
    *
-   * @returns {Promise<LocationModel[]>}
+   * @returns {Promise<Array<LocationModel>>}
    */
   static getAll() {
     return this.query("SELECT * FROM locations WHERE deleted = 0").then(
@@ -50,7 +50,7 @@ export class LocationModel extends DatabaseModel {
    *Returns the locations if they match a search term
    *
    * @param {string} term | the search term used to find location name.
-   * @returns {Promise<LocationModel[]>}
+   * @returns {Promise<Array<LocationModel>>}
    */
   static getBySearch(term) {
     return this.query(

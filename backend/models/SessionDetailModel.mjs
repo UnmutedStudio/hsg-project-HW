@@ -89,7 +89,7 @@ export class SessionDetailModel extends DatabaseModel {
    * This returns all the acitive sessions belonging to a selected trainer
    * 
    * @param {number} trainerId | the trainers unique identifer
-   * @returns {Promise<ArraySessionDetailModel>>} the trainers session details.
+   * @returns {Promise<Array<SessionDetailModel>>} the trainers session details.
    */
   static getByTrainerId(trainerId) {
     return this.query(

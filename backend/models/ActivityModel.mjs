@@ -43,7 +43,7 @@ export class ActivityModel extends DatabaseModel {
   /**
    * This returns all activities from the database.
    *
-   * @returns {Promise<ActivityModel[]>}
+   * @returns {Promise<Array<ActivityModel>>}
    */
   static getAll() {
     return this.query("SELECT * FROM activities WHERE deleted = 0").then(
@@ -143,14 +143,14 @@ export class ActivityModel extends DatabaseModel {
 // .then((activities) => console.log(activities));
 
 // 2. TESTED get by ID using the below: COMPLETED
-ActivityModel.getById(1)
-  .then((activity) => {
-    console.log("Getting activity with id 1: ");
-    console.log(activity);
-  })
-  .catch((error) =>
-    console.error("There was an issue loading the activity: " + error),
-  );
+// ActivityModel.getById(11)
+//   .then((activity) => {
+//     console.log("Getting the new activity for AT2 testing by ID:");
+//     console.log(activity);
+//   })
+//   .catch((error) =>
+//     console.error("There was an issue loading the activity: " + error),
+//   );
 
 // 3. TEST get by search : COMPLETED
 // ActivityModel.getBySearch("yoga")
@@ -182,26 +182,27 @@ ActivityModel.getById(1)
 //   });
 
 // 5. TESTED Update by id: COMPLETED
-// ActivityModel.getById(8)
+// ActivityModel.getById(11)
 //   .then((activity) => {
-//     activity.activityName = "Strength and Conditioning";
-//     ActivityModel.update(activity)
-//       .then((result) => {
-//         console.log(result);
-//       })
-//       .catch((error) => {
-//         console.error("There was an issue saving the activity: " + error);
-//       });
+//     activity.activityName = "Jedi Advanced Training";
+//     activity.activityDescription = 
+//     "Advanced Jedi training focused on strength, balance and endurance."
+//     return ActivityModel.update(activity);
 //   })
-//   .catch((error) => {
-//     console.error(error);
-//   });
-
-// // 6. TESTED soft delete: COMPLETED
-// ActivityModel.delete(8)
 //   .then((result) => {
+//     console.log("Activity updated for AT2 integration test successfully:");
 //     console.log(result);
 //   })
 //   .catch((error) => {
-//     console.error(error);
+//     console.error("There was an issue saving the activity: " + error);
+//   });
+
+// // 6. TESTED soft delete: COMPLETED
+// ActivityModel.delete(11)
+//   .then((result) => {
+//     console.log("Activity successfully soft deleted for AT2:");
+//     console.log(result);
+//   })
+//   .catch((error) => {
+//     console.error("There was an issue deleting the activity: " + error);
 //   });

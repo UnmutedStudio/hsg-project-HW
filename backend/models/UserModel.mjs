@@ -1,5 +1,5 @@
 import { DatabaseModel } from "./DatabaseModel.mjs";
-import bcrypt from "bcryptjs";
+import mysql from 'mysql2/promise';
 /**
  * This User Model is for the High St Gym application.
  * It pulls user records from the user table from the database.
@@ -51,7 +51,7 @@ export class UserModel extends DatabaseModel {
   /**
    * This returns all the users from the database that have not been deleted.
    * 
-   * @returns {Promise<UserModel[]>}
+   * @returns {Promise<Array<UserModel>>}
    */
   static async getAll() {
     return this.query("SELECT * FROM users WHERE deleted = 0").then(
@@ -121,7 +121,7 @@ export class UserModel extends DatabaseModel {
    * CREATE - creates a new user in the databse
    * 
    * @param {UserModel} user | this is the user object which contains the values to add in
-   * @returns {Promise<any>}
+   * @returns {Promise<mysql.OkPacket>}
    */
   static async create(user) {
     return this.query(
@@ -143,7 +143,7 @@ export class UserModel extends DatabaseModel {
    * UPDATE - this updates a user record in the database
    * 
    * @param {UserModel} user | the user object that contains the values that will be updated
-   * @returns {Promise<any>}
+   * @returns {Promise<mysql.OkPacket>}
    */
   static async update(user) {
     return this.query(
@@ -167,7 +167,7 @@ export class UserModel extends DatabaseModel {
    * DELETE - this soft deletes a user and changes the delete tag to = 1
    * 
    * @param {number} id | the unique identifer for a user
-   * @returns {Promise<any>}
+   * @returns {Promise<mysql.OkPacket>}
    */
   static async delete(id) {
     return this.query(`UPDATE users SET deleted = 1 WHERE id = ?`, [id]);

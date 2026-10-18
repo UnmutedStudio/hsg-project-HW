@@ -151,7 +151,7 @@ export class SessionModel extends DatabaseModel {
   }
   /**
    * This returns active sessopms that are assided to trainer by their id/
-   * @param {*} trainerId | the unique identifier of the trainer
+   * @param {number} trainerId | the unique identifier of the trainer
    * @returns {Promise<Array<SessionModel>>}
    */
   static getByTrainerId(trainerId) {
@@ -220,6 +220,12 @@ export class SessionModel extends DatabaseModel {
   static delete(id) {
     return this.query(`UPDATE sessions SET deleted = 1 WHERE id = ?`, [id]);
   }
+  /**
+   * This updates the session that belongs to the aunthenticated trainer.
+   * 
+   * @param {SessionModel} session | The session object to be updated
+   * @returns {Promise<mysql.OkPacket>}
+   */
   static updateByTrainer(session) {
     return this.query(
       `
@@ -249,6 +255,13 @@ export class SessionModel extends DatabaseModel {
       ],
     );
   }
+  /**
+   * This allows a soft delete from the session that belongs to the authenticated trainer
+   * 
+   * @param {number} sessionId | the session unique identifier
+   * @param {number} trainerId | the teainer unique identifer
+   * @returns {Promise<mysql.OkPacket>}
+   */
   static deleteByTrainer(sessionId, trainerId) {
     return this.query(
       `
@@ -280,13 +293,13 @@ export class SessionModel extends DatabaseModel {
 // 3. TESTED create new session and insert into DB: COMPLETED
 // const newSession = new SessionModel(
 //   null,
-//   1,              //activityId
+//   9999,              //activityId
 //   1,              // locationID
 //   2,              // trainerID
-//   "2026-10-01",   // date
+//   "2026-10-19",   // date
 //   "10:00:00",     // time
 //   60,             // duration
-//   20,             // availability
+//   10,             // availability
 //   0,              // deleted
 // );
 

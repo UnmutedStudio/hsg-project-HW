@@ -73,6 +73,10 @@ export class BookingDetailsModel extends DatabaseModel {
       [memberId],
     ).then((result) => result.map((row) => this.tableToModel(row)));
   }
+  /**
+   * this returns all the bookings that are active with the corresponding details such as, session, activity, location and trainer. 
+   * @returns {Promise<Array<BookingDetailsModel>>} 
+   */
   static getAll() {
     return this.query(
       `

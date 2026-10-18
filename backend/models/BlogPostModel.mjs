@@ -50,7 +50,7 @@ export class BlogPostModel extends DatabaseModel {
   /**
    * This returns all blog posts from the database.
    *
-   * @returns {Promise<BlogPostModel[]>}
+   * @returns {Promise<Array<BlogPostModel>>}
    */
   static getAll() {
     return this.query("SELECT * FROM blog_posts WHERE deleted = 0").then(

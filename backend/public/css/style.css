@@ -1068,7 +1068,7 @@ main > section {
   border-top-left-radius: 0.65rem;
 }
 
-.management-table .data-list-heading:nth-child(3) {
+.management-table .data-list-heading:nth-child(4) {
   border-top-right-radius: 0.65rem;
 }
 
@@ -1276,7 +1276,11 @@ main > section {
 }
 
 .columns-4 {
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr 2.5fr 0.7fr 1fr;
+}
+
+.location-table.columns-4 {
+  grid-template-columns: 1fr 5fr 0.75fr 1fr;
 }
 
 .columns-5 {
