@@ -305,10 +305,26 @@ export class SessionController {
         });
         return;
       }
+      // time exists
       if (!formData.timeSession) {
         res.status(400).render('status.ejs', {
           status: 'Invalid input provided.',
           message: 'Please selected a time for the session',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      // then validate time is not in the past
+      const sessionDateTime = new Date(
+      `${formData.dateSession}T${formData.timeSession}`
+      );
+      // testing the time validation
+      //  console.log("Session:", sessionDateTime);
+      // console.log("Now:", new Date());
+      if (sessionDateTime < new Date()) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'The session cannot be scheduled in the past.',
           authenticatedUser: req.authenticatedUser,
         });
         return;
@@ -373,6 +389,82 @@ export class SessionController {
             });
         });
     } else if (action === 'update') {
+            if (!formData.activityId) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'Please select an activity for the session.',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      if (!formData.locationId) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'Please select a location for the session.',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      if (!formData.dateSession) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'Please ensure a date is selected for the session',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      const sessionDate = new Date(formData.dateSession + 'T00:00:00');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (Number.isNaN(sessionDate.getTime()) || sessionDate < today) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'The session date cannot be before today.',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      if (!formData.timeSession) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'Please selected a time for the session',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      const sessionDateTime = new Date(
+        `${formData.dateSession}T${formData.timeSession}`
+      );
+      if (sessionDateTime < new Date()) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'The session cannot be scheduled in the past.',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      if (
+        !/^[0-9]+$/.test(formData.availability) ||
+        Number(formData.availability) <= 0
+      ) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'Availability must be a number greater than 0',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      if (
+        !/^[0-9]+$/.test(formData.duration) ||
+        Number(formData.duration) <= 0
+      ) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'Duration must be a number greater than 0',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
       SessionModel.getDuplicateForUpdate(
         formData.locationId,
         formData.dateSession,
@@ -535,6 +627,20 @@ export class SessionController {
         });
         return;
       }
+      const sessionDateTime = new Date(
+      `${formData.dateSession}T${formData.timeSession}`
+      );
+      // testing the time validation
+      //  console.log("Session:", sessionDateTime);
+      // console.log("Now:", new Date());
+      if (sessionDateTime < new Date()) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'The session cannot be scheduled in the past.',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
       if (
         !/^[0-9]+$/.test(formData.availability) ||
         Number(formData.availability) <= 0
@@ -594,6 +700,82 @@ export class SessionController {
           });
       });
     } else if (action === 'update') {
+      if (!formData.activityId) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'Please select an activity for the session.',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      if (!formData.locationId) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'Please select a location for the session.',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      if (!formData.dateSession) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'Please ensure a date is selected for the session',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      const sessionDate = new Date(formData.dateSession + 'T00:00:00');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (Number.isNaN(sessionDate.getTime()) || sessionDate < today) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'The session date cannot be before today.',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      if (!formData.timeSession) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'Please selected a time for the session',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      const sessionDateTime = new Date(
+      `${formData.dateSession}T${formData.timeSession}`
+      )
+      if (sessionDateTime < new Date()) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'The session cannot be scheduled in the past.',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      if (
+        !/^[0-9]+$/.test(formData.availability) ||
+        Number(formData.availability) <= 0
+      ) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'Availability must be a number greater than 0',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      if (
+        !/^[0-9]+$/.test(formData.duration) ||
+        Number(formData.duration) <= 0
+      ) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'Duration must be a number greater than 0',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
       SessionModel.getDuplicateForUpdate(
         formData.locationId,
         formData.dateSession,

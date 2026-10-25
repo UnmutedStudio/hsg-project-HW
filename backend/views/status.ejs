@@ -9,12 +9,12 @@
             <% if (typeof authenticatedUser !== "undefined" && authenticatedUser) { %>
                 <%- include("partials/header_authenticated.ejs", {
                     authenticatedUser: authenticatedUser,
-                    pageTitle: "Status"
+                    pageTitle: status
                 }) %>
             <% } else { %>
                 <%- include("partials/header_guest.ejs", {
                     authenticatedUser: null,
-                    pageTitle: "Status"
+                    pageTitle: status
             }) %>
             <% } %>
             <%- include("partials/nav.ejs", {
@@ -27,13 +27,21 @@
                     ? authenticatedUser.role
                     : null
             }) %>
-            <section>
-                <article class="responsive-half margin-auto">
-                    <h2><%= status  %></h2>
-                    <% if (typeof message !== "undefined") { %>
-                     <p><%= message  %></p>
-                    <% } %>
-                </article>
+            <section class="status-page">
+            <article class="status-card responsive-half margin-auto">
+                <div class="status-logo">H</div>
+                <h2><%= status %></h2>
+                <% if (typeof message !== "undefined") { %>
+                    <p><%= message %></p>
+                <% } %>
+                <% if (status === "Logged out" ||
+                    status === "Unauthenticated"
+                ) { %>
+                <a href="/" class="primary-button">
+                    Login
+                </a>
+                <% } %>
+            </article>
             </section>
             <%- include("partials/footer.ejs")  %>
         </main>

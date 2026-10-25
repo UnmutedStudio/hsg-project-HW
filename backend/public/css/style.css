@@ -135,6 +135,20 @@ main > section {
   object-fit: contain;
 }
 
+.status-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background-color: var(--orange);
+  color: var(--white);
+  font-size: 1.75rem;
+}
+
+
 .brand-mark {
   display: inline-flex;
   align-items: center;
@@ -472,6 +486,8 @@ main > section {
   gap: 0.4rem;
   min-width: 0;
   min-height: 11rem;
+  max-width: 700px;
+  margin: 0 auto;
   padding: 0.85rem;
   border: 1px solid var(--navy);
   border-radius: 0.75rem;
@@ -1113,6 +1129,30 @@ main > section {
   background-color: #e3f4e8;
 }
 
+.status-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}
+
+.status-card {
+  padding: 2rem;
+  border: 1px solid #d6dee5;
+  border-radius: 0.75rem;
+  background-color: var(--white);
+  text-align: center;
+  box-shadow: 0 0.2rem 0.4rem rgb(18 18 18 / 8%);
+}
+
+.status-card h2 {
+  margin-bottom: 1rem;
+}
+
+.status-card p {
+  margin-bottom: 1.5rem;
+}
+
 .table-action {
   color: var(--navy);
   font-weight: 800;
@@ -1223,6 +1263,11 @@ main > section {
   gap: 1rem;
 }
 
+.booking-review-page .booking-layout {
+  min-height: 60vh;
+  align-content: start;
+}
+
 .responsive-half {
   width: 100%;
 }
@@ -1303,7 +1348,7 @@ main > section {
 .blog-table {
   display: grid;
   gap: 0;
-  overflow-x: auto;
+  overflow-x: visible;
 }
 
 .user-table-rows,
@@ -1556,11 +1601,11 @@ summary {
   }
 
   .booking-layout {
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   .form-grid {
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 2fr 1fr;
     align-items: center;
   }
 

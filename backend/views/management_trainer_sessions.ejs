@@ -108,7 +108,7 @@
             name="dateSession"
             id="date-session"
             value="<%= selectedSession.dateSession
-              ? selectedSession.dateSession.toISOString().substring(0,10)
+              ? selectedSession.dateSession.toLocaleDateString('en-CA')
               : '' %>"
             min="<%= new Date().toISOString().substring(0, 10) %>"  
             required

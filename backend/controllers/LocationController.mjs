@@ -64,6 +64,7 @@ export class LocationController {
           new LocationModel(
             null,
             "",
+            "",
             0,
           );
         res.render("management_locations.ejs", {
@@ -99,9 +100,19 @@ export class LocationController {
       });
       return;
     }
+    if (!/^[^<>{}]{2,200}$/.test(formData.locationAddress)) {
+      res.status(400).render("status.ejs", {
+        status: "Invalid input provided",
+        message:
+          "Please enter a valid location address between 2 and 200 characters.",
+        authenticatedUser: req.authenticatedUser,
+      });
+      return;
+    }
     const location = new LocationModel(
       selectedLocationId,
       formData.locationName,
+      formData.locationAddress,
       0,
     );
     if (action === "create") {

@@ -16,7 +16,7 @@
           <h2 class="text-2xl">Manage Locations</h2>
           <p><%= locations.length %> records</p>
         </div>
-        <a href="#location-form" class="primary-button management-create-button">Create New +</a>
+        <a href="/locations#location-form" class="primary-button management-create-button">Create New +</a>
       </section>
       <section class="management-filters">
         <form
@@ -70,6 +70,16 @@
               maxlength="50"
               required
             />
+          <label for="address">Address:</label>
+            <input
+              type="text"
+              name="locationAddress"
+              id="address"
+              value="<%= selectedLocation.locationAddress %>"
+              minlength="2"
+              maxlength="200"
+              required
+            />
         <% if (selectedLocation.id == null) { %>
           <button 
             class="primary-button two-col"
@@ -89,8 +99,9 @@
         <% } %>
         </form>
       </section>
-      <section class="location-table columns-3 management-table">
+      <section class="location-table columns-4 management-table">
         <span class="data-list-heading">Location</span>
+        <span class="data-list-heading">Address</span>
         <span class="data-list-heading">Status</span>
         <span class="data-list-heading">Actions</span>
         <% if (locations.length == 0) { %>
@@ -100,6 +111,7 @@
         <% for(const location of locations ) { %>
           <div class="location-table-rows">
             <span><%= location.locationName %></span>
+            <span><%= location.locationAddress %></span>
             <span class="status-cell">
               <span class="status-pill status-active">Active</span>
             </span>

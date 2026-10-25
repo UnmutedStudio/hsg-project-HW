@@ -5,7 +5,7 @@
     <title>High Street Gym - Review Booking</title>
   </head>
   <body>
-    <main>
+    <main class="booking-review-page">
       <%- include("partials/header_authenticated.ejs", {
         authenticatedUser: authenticatedUser,
         pageTitle: "Review booking"
@@ -27,15 +27,15 @@
           <p>Time: <%= sessionDetail.session.timeSession %></p>
           <p>Duration: <%= sessionDetail.session.duration %> minutes</p>
           <p>Available places: <%= sessionDetail.session.availability %></p>
-        </article>
         <form
           action="/bookings/create"
           method="post"
-          class="form-grid responsive-half margin-auto" >
+          class="session-card-footer" >
           <input type="hidden" name="sessionId" value="<%= sessionDetail.session.id %>" />
-          <a href="/sessions" class="link-button">Cancel</a>
-          <button type="submit" name="action" value="create">Confirm booking</button>
+          <a href="/sessions" class="secondary-button">Cancel</a>
+          <button type="submit" name="action" value="create" class="primary-button">Confirm booking</button>
         </form>
+        </article>
       </section>
       <%- include("partials/footer.ejs") %>
     </main>

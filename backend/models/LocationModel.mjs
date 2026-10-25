@@ -10,17 +10,20 @@ export class LocationModel extends DatabaseModel {
  * 
  * @param {number} id | the location unique identifier
  * @param {string} locationName | the location name
+ * @param {string} locationAddress | the location address
  * @param {number} deleted | shows deleted or not using a soft delete flag 0 = active or 1 = deleted 
  * 
  */
   constructor(
     id,
     locationName,
+    locationAddress,
     deleted,
   ) {
     super();
     this.id = id;
     this.locationName = locationName;
+    this.locationAddress = locationAddress;
     this.deleted = deleted;
   }
   /**
@@ -32,6 +35,7 @@ export class LocationModel extends DatabaseModel {
     return new LocationModel(
       Number(row["id"]),
       row["location_name"],
+      row["address"],
       row["deleted"],
     );
   }
@@ -57,9 +61,11 @@ export class LocationModel extends DatabaseModel {
       `
         SELECT * FROM locations 
         WHERE deleted = 0 
-        AND location_name LIKE ?
+        AND (
+        location_name LIKE ?
+        OR address LIKE ?
       `,
-      [`%${term}%`],
+      [`%${term}%`, `%${term}%`],
     ).then((result) => result.map((row) => this.tableToModel(row.locations)));
   }
 
@@ -88,11 +94,12 @@ export class LocationModel extends DatabaseModel {
     return this.query(
       `
         INSERT INTO locations
-        (location_name, deleted)
-        VALUES (?, ?)
+        (location_name, address, deleted)
+        VALUES (?, ?, ?)
       `,
       [
         location.locationName,
+        location.locationAddress,
         location.deleted,
       ],
     );
@@ -107,11 +114,12 @@ export class LocationModel extends DatabaseModel {
     return this.query(
       `
         UPDATE locations
-        SET location_name = ?, deleted = ?
+        SET location_name = ?, address = ?, deleted = ?
         WHERE id = ?
       `,
       [
         location.locationName,
+        location.locationAddress,
         location.deleted,
         location.id,
       ],
