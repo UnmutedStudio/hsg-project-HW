@@ -47,15 +47,39 @@ export class ActivityController {
     // Searches the list of all activites for the selected activity
     activityQuery
       .then((activities) => {
+        const activityFilters = [];
+          for (const activity of activities) {
+            if (!activityFilters.includes(activity.activityName)) {
+              activityFilters.push(activity.activityName);
+            }
+          }
+        const selectedActivityFilter =
+          req.query.activity_filter?.trim() ?? '';
+        if (selectedActivityFilter) {
+          activities = activities.filter(
+            (activity) =>
+              activity.activityName === selectedActivityFilter,
+          );
+        }  
         const sortOrder = req.query.sort ?? 'default';
-        if (sortOrder === 'asc') {
+        if (sortOrder === 'activity_asc') {
           activities.sort((a, b) =>
             a.activityName.localeCompare(b.activityName),
           );
         }
-        if (sortOrder === 'desc') {
+        if (sortOrder === 'activity_desc') {
           activities.sort((a, b) =>
             b.activityName.localeCompare(a.activityName),
+          );
+        }
+        if (sortOrder === 'description_asc') {
+          activities.sort((a, b) =>
+            a.activityDescription.localeCompare(b.activityDescription),
+          );
+        }
+        if (sortOrder === 'description_desc') {
+          activities.sort((a, b) =>
+            b.activityDescription.localeCompare(a.activityDescription),
           );
         }
         const selectedActivity =
@@ -64,8 +88,11 @@ export class ActivityController {
           new ActivityModel(null, '', '', 0);
         res.render('management_activities.ejs', {
           activities,
+          activityFilters,
+          selectedActivityFilter,
           selectedActivity,
           authenticatedUser: req.authenticatedUser,
+          sortOrder,
         });
       })
       .catch((error) => {

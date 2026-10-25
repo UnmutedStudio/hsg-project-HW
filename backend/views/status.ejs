@@ -28,8 +28,14 @@
                     : null
             }) %>
             <section class="status-page">
-            <article class="status-card responsive-half margin-auto">
-                <div class="status-logo">H</div>
+                <article class="status-card responsive-half margin-auto">
+                <div class="status-logo">
+                <% if (status === "Logged out" || status === "Unauthenticated") { %>
+                    ✓
+                <% } else { %>
+                    !
+                <% } %>
+                </div>
                 <h2><%= status %></h2>
                 <% if (typeof message !== "undefined") { %>
                     <p><%= message %></p>

@@ -16,57 +16,77 @@
           <h2 class="text-2xl">Manage Users</h2>
           <p><%= users.length %> records</p>
         </div>
-        <a href="/users">Create New +</a>
+        <a
+          href="/users#user-form"
+          class="primary-button management-create-button"
+        >
+          Create New +
+        </a>
       </section>
       <section class="management-filters">
         <form
           action="/users"
-          method="get"  
-          class="form-grid"
+          method="get"
+          class="management-filter-form"
         >
-        <label for="search-term">Search users:</label>
+        <label for="search-term" class="sr-only">
+          Search users:
+        </label>
           <input
             type="search"
             name="search_term"
             id="search-term"
             placeholder="Search users..."
           />
-          <button type="submit">Search</button>
-          <a href="/users">Clear</a>
+        <button type="submit" class="primary-button filter-button">
+          Search
+        </button>
+        <a href="/users" class="secondary-button filter-button">
+          Clear
+        </a>
+        <div class="activity-filter">
+          <select
+            name="user_filter"
+            class="management-filter-select"
+          >
+          <option value="">
+            All Roles
+          </option>
+            <% for (const role of userFilters) { %>
+              <option
+                value="<%= role %>"
+                <%= selectedUserFilter === role ? 'selected' : '' %>
+              >
+              <%= role %>
+              </option>
+            <% } %>
+          </select>
+          <button
+            type="submit"
+            class="primary-button filter-button"
+          >
+            Filter
+          </button>
+        </div>
         </form>
       </section>
-        <section class="user-table columns-5">
-          <span class="data-list-heading">First Name</span>
-          <span class="data-list-heading">Last Name</span>
-          <span class="data-list-heading">Email</span>
-          <span class="data-list-heading">Role</span>
-          <span class="data-list-heading">Actions</span>
-          
-          <% if (users.length == 0) { %>
-            <p>No users were found.</p>
-          <% } %>
-
-          <% for(const user of users ) { %>
-            <div class="user-table-rows">
-              <span><%= user.firstName %></span>
-              <span><%= user.lastName %></span>
-              <span><%= user.email %></span>
-              <span><%= user.role %></span>
-              <span><a href="/users/<%= user.id %>" class="link-button">Edit</a>
-              </span>
-            </div>
-          <% } %>
-        </section>
-        <section class="new-user">
-          <% if (selectedUser.id == null) { %>
-            <h3>Create User</h3>
-          <% } else { %>
-            <h3>Edit User</h3>
-          <% } %>
+      <section class="new-user management-form-section" id="user-form">
+        <a
+          href="/users"
+          class="management-form-close"
+          aria-label="Close form"
+        >
+          x
+        </a>
+        <% if (selectedUser.id == null) { %>
+          <h3>Create User</h3>
+        <% } else { %>
+          <h3>Edit User</h3>
+        <% } %>
         <form
           action="<%= selectedUser.id == null ? '/users' : '/users/' + selectedUser.id %>"
           method="post"
-          class="form-grid"
+          class="form-grid management-form"
         >
           <label for="first-name">First Name:</label>
             <input
@@ -105,10 +125,9 @@
             id="password"
             <%= selectedUser.id == null ? "required" : ""  %>
           />
-          <a href="/users" class="link-button two-col">clear</a>
           <% if (selectedUser.id == null) { %>
           <button 
-            class="two-col"
+            class="primary-button two-col"
             type="submit"
             name="action"
             value="create"
@@ -116,20 +135,89 @@
           Create New User </button>
         <% } else { %>
           <button 
-            class="two-col"
+            class="primary-button two-col"
             type="submit"
             name="action"
             value="update"
           >
           Update User</button>
-          <button 
-            class="two-col"
+          <!-- <button 
+            class="primary-button two-col"
             type="submit"
             name="action"
             value="delete"
-          >Delete User</button>
+          >Delete User</button> -->
         <% } %>
         </form>
+      </section>
+      <section class="user-table columns-5 management-table">
+        <span class="data-list-heading">
+          <a href="/users?sort=<%= sortOrder === 'first_name_asc' ? 'first_name_desc' : 'first_name_asc' %>">
+            First Name
+            <%= sortOrder === 'first_name_desc' ? '▼' : '▲' %>
+          </a>
+        </span>
+        <span class="data-list-heading">
+          <a href="/users?sort=<%= sortOrder === 'last_name_asc' ? 'last_name_desc' : 'last_name_asc' %>">
+            Last Name
+            <%= sortOrder === 'last_name_desc' ? '▼' : '▲' %>
+          </a>
+        </span>
+        <span class="data-list-heading">
+          <a href="/users?sort=<%= sortOrder === 'email_asc' ? 'email_desc' : 'email_asc' %>">
+            Email
+            <%= sortOrder === 'email_desc' ? '▼' : '▲' %>
+          </a>
+        </span>
+        <span class="data-list-heading">
+          <a href="/users?sort=<%= sortOrder === 'role_asc' ? 'role_desc' : 'role_asc' %>">
+            Role
+            <%= sortOrder === 'role_desc' ? '▼' : '▲' %>
+          </a>
+        </span>
+        <span class="data-list-heading">Actions</span>
+        <% if (users.length == 0) { %>
+          <div class="table-no-results">
+          No users were found.
+          </div>
+        <% } %>
+        <% for(const user of users ) { %>
+          <div class="user-table-rows">
+            <span><%= user.firstName %></span>
+            <span><%= user.lastName %></span>
+            <span><%= user.email %></span>
+            <span><%= user.role %></span>
+          <span class="table-actions">
+            <a
+              href="/users/<%= user.id %>#user-form"
+              class="table-action"
+            >
+              Edit
+            </a>
+            <details class="delete-confirmation">
+              <summary class="table-delete-action">
+                Delete
+              </summary>
+              <div class="delete-confirmation-box">
+                <p>Delete this user?</p>
+                <form
+                  action="/users/<%= user.id %>"
+                  method="post"
+                >
+                  <button
+                    type="submit"
+                    name="action"
+                    value="delete"
+                    class="delete-button table-delete-button"
+                  >
+                    Confirm delete
+                  </button>
+                </form>
+              </div>
+            </details>
+          </span>
+          </div>
+        <% } %>
       </section>
       <%- include("partials/footer.ejs") %>
     </main>

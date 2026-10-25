@@ -47,7 +47,32 @@ export class UserModel extends DatabaseModel {
       row["deleted"],
     );
   }
-
+  /**
+   * Returns the users that match the search term
+   *
+   * @param {string} term | the search term used to find user name.
+   * @returns {Promise<Array<UserModel>>}
+   */
+  static getBySearch(term) {
+    return this.query(
+      `
+        SELECT *
+        FROM users
+        WHERE deleted = 0
+        AND (
+          first_name LIKE ?
+          OR last_name LIKE ?
+          OR email LIKE ?
+          OR role LIKE ?
+        )
+      `,
+      [
+        `%${term}%`, `%${term}%`, `%${term}%`, `%${term}%`,
+      ],
+    ).then((result) =>
+      result.map((row) => this.tableToModel(row.users)),
+    );
+  }
   /**
    * This returns all the users from the database that have not been deleted.
    * 

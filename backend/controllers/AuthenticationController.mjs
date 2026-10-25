@@ -123,7 +123,7 @@ export class AuthenticationController {
     } else {
       res.status(401).render("status.ejs", {
         status: "Unautheticated",
-        message: "Please login to access the requested resource.",
+        message: "Please login to access the requested page.",
       });
     }
   }
@@ -149,7 +149,7 @@ export class AuthenticationController {
       } else {
         res.status(401).render("status.ejs", {
           status: "Unauthenticated",
-          message: "Please login to access the requested resource",
+          message: "Please login to access the requested page",
         });
       }
     };

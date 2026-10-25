@@ -62,13 +62,13 @@ export class LocationModel extends DatabaseModel {
         SELECT * FROM locations 
         WHERE deleted = 0 
         AND (
-        location_name LIKE ?
-        OR address LIKE ?
+          location_name LIKE ?
+          OR address LIKE ?
+        )
       `,
       [`%${term}%`, `%${term}%`],
     ).then((result) => result.map((row) => this.tableToModel(row.locations)));
   }
-
   /**
    *Returns the location by its unique identifer
    * 

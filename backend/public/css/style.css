@@ -148,6 +148,20 @@ main > section {
   font-size: 1.75rem;
 }
 
+.status-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background-color: var(--orange);
+  color: var(--white);
+  font-size: 2rem;
+  font-weight: 700;
+}
+
 
 .brand-mark {
   display: inline-flex;
@@ -276,10 +290,8 @@ main > section {
 
 .auth-page {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  grid-template-rows: auto 1fr auto auto;
   width: 100%;
-  height: 100vh;
-  height: 100dvh;
   min-height: 100vh;
   padding: 0;
   overflow-x: hidden;
@@ -1026,6 +1038,11 @@ main > section {
   white-space: nowrap;
 }
 
+.create-new-button {
+  width: auto;
+  flex: 0 0 auto;
+}
+
 .management-filter-form {
   display: grid;
   grid-template-columns: 1fr;
@@ -1067,6 +1084,22 @@ main > section {
   justify-content: center;
 }
 
+.activity-filter {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.management-filter-select {
+  flex: 1;
+  min-width: 0;
+  min-height: 3rem;
+}
+
+.activity-filter .filter-button {
+  flex-shrink: 0;
+}
+
 .management-table {
   border: 1px solid #d6dee5;
   border-radius: 0.75rem;
@@ -1080,7 +1113,7 @@ main > section {
   border-top-left-radius: 0.65rem;
 }
 
-.management-table .data-list-heading:nth-child(4) {
+.management-table .data-list-heading:last-of-type {
   border-top-right-radius: 0.65rem;
 }
 
@@ -1089,7 +1122,8 @@ main > section {
   text-align: right;
 }
 
-.management-table .location-table-rows > span:last-child {
+.management-table .location-table-rows > span:last-child,
+.management-table .user-table-rows > span:last-child {
   justify-content: flex-end;
   text-align: right;
 }
@@ -1098,14 +1132,16 @@ main > section {
   background-color: #f7f9fb;
 }
 
-.location-table-rows > span {
+.location-table-rows > span,
+.user-table-rows > span {
   display: flex;
   align-items: center;
   width: 100%;
   background-color: var(--white);
 }
 
-.location-table-rows:nth-of-type(even) > span {
+.location-table-rows:nth-of-type(even) > span
+.user-table-rows:nth-of-type(even) > span {
   background-color: #f5f7fa;
 }
 
@@ -1132,7 +1168,8 @@ main > section {
 .status-page {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding: 2rem 1rem;
   min-height: 50vh;
 }
 
@@ -1152,6 +1189,9 @@ main > section {
 .status-card p {
   margin-bottom: 1.5rem;
 }
+.status-card .primary-button {
+  margin-top: 1rem;
+}
 
 .table-action {
   color: var(--navy);
@@ -1170,7 +1210,12 @@ main > section {
   max-width: 1200px;
   margin: 0.75rem auto;
   position: relative;
-  padding: 1.25rem;
+  padding: 0.75rem 1rem;
+}
+
+.management-form {
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .management-form-section h3 {
@@ -1178,6 +1223,7 @@ main > section {
   color: var(--navy);
   font-weight: 800;
   padding-right: 2.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .management-form-section:target {
@@ -1207,7 +1253,7 @@ main > section {
 .management-form-close {
   position: absolute;
   top: 0.6rem;
-  right: 0.8rem;
+  right: 0.75rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1225,6 +1271,10 @@ main > section {
 .management-form-close:focus-visible {
   color: var(--white);
   background-color: var(--orange);
+}
+
+.management-form label {
+  width: 10rem;
 }
 
 .delete-button {
@@ -1248,7 +1298,7 @@ main > section {
 
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
 }
 
@@ -1325,7 +1375,7 @@ main > section {
 }
 
 .columns-5 {
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: 1fr 1fr 1.5fr 0.8fr 0.7fr;
 }
 
 .columns-7 {
@@ -1605,7 +1655,7 @@ summary {
   }
 
   .form-grid {
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
   }
 
@@ -1656,7 +1706,7 @@ summary {
   }
 
   .management-form-section {
-    max-width: 50rem;
+    max-width: 42rem;
   }
 
   .management-sort {

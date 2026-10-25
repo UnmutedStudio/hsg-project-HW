@@ -47,15 +47,43 @@ export class LocationController {
     // Searches the list of all locations for the selected locatioN
     locationQuery
       .then((locations) => {
+        const locationFilters = [];
+        for (const location of locations) {
+          if (!locationFilters.includes(location.locationName)) {
+            locationFilters.push(location.locationName);
+          }
+        }
+        const selectedLocationFilter =
+          req.query.location_filter?.trim() ?? '';
+
+        if (selectedLocationFilter) {
+          locations = locations.filter(
+            (location) =>
+              location.locationName === selectedLocationFilter,
+          );
+        }
         const sortOrder = req.query.sort ?? "default";
-          if (sortOrder === "asc") {
+          if (sortOrder === "location_asc") {
             locations.sort((a, b) =>
               a.locationName.localeCompare(b.locationName),
             );
           }
-          if (sortOrder === "desc") {
+
+          if (sortOrder === "location_desc") {
             locations.sort((a, b) =>
               b.locationName.localeCompare(a.locationName),
+            );
+          }
+
+          if (sortOrder === "address_asc") {
+            locations.sort((a, b) =>
+              a.locationAddress.localeCompare(b.locationAddress),
+            );
+          }
+
+          if (sortOrder === "address_desc") {
+            locations.sort((a, b) =>
+              b.locationAddress.localeCompare(a.locationAddress),
             );
           }
         const selectedLocation =
@@ -70,7 +98,10 @@ export class LocationController {
         res.render("management_locations.ejs", {
           locations,
           selectedLocation,
+          locationFilters,
+          selectedLocationFilter,
           authenticatedUser: req.authenticatedUser,
+          sortOrder,
         });
       })
       .catch((error) => {

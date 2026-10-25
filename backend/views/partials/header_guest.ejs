@@ -1,8 +1,14 @@
 <header class="site-header">
   <a href="/" class="site-banner">
-    <h1 class="site-title">High Street Gym - <%= typeof pageTitle !== "undefined" ? pageTitle : "" %></h1>
+    <span class="brand-mark" aria-hidden="true">H</span>
+    <h1 class="site-title">
+      High Street Gym - 
+      <%= typeof pageTitle !== "undefined" ? pageTitle : "" %>
+    </h1>
   </a>
   <% if (typeof authenticatedUser !== "undefined" && authenticatedUser) { %>
-    <span class="user-name"><%= authenticatedUser.firstName %> <%= authenticatedUser.lastName %></span>
+    <span class="user-name">
+      <%= authenticatedUser.firstName %> <%= authenticatedUser.lastName %>
+    </span>
   <% } %>
 </header>

@@ -33,19 +33,28 @@
           />
           <button type="submit" class="primary-button filter-button">Search</button>
           <a href="/activities" class="secondary-button filter-button">Clear</a>
-          <details class="sort-menu" aria-label="Sort activities">
-            <summary class="management-sort">
-              Sort by name
-            </summary>
-          <div class="sort-menu-links">
-            <a href="/activities?sort=default">
-              Default</a>
-            <a href="/activities?sort=asc">
-              A-Z</a>
-            <a href="/activities?sort=desc">
-              Z-A</a>
-          </div>
-        </details>
+            <div class="activity-filter">
+              <select
+                name="activity_filter"
+                class="management-filter-select"
+              >
+                <option value="">All Activities</option>
+                <% for (const activityName of activityFilters) { %>
+                <option
+                  value="<%= activityName %>"
+                  <%= selectedActivityFilter === activityName ? 'selected' : '' %>
+                >
+                  <%= activityName %>
+                </option>
+                <% } %>
+              </select>
+              <button
+                type="submit"
+                class="primary-button filter-button"
+              >
+                Filter
+              </button>
+            </div>
         </form>
       </section>
        <section class="new-location management-form-section" id="activity-form">
@@ -98,12 +107,24 @@
         </form>
       </section>
       <section class="location-table columns-4 management-table">
-        <span class="data-list-heading">Activity</span>
-        <span class="data-list-heading">Description</span>
+        <span class="data-list-heading">
+          <a href="/activities?sort=<%= sortOrder === 'activity_asc' ? 'activity_desc' : 'activity_asc' %>">
+            Activity
+            <%= sortOrder === 'activity_desc' ? '▼' : '▲' %>
+          </a>
+        </span>
+        <span class="data-list-heading">
+          <a href="/activities?sort=<%= sortOrder === 'description_asc' ? 'description_desc' : 'description_asc' %>">
+            Description
+            <%= sortOrder === 'description_desc' ? '▼' : '▲' %>
+          </a>
+        </span>
         <span class="data-list-heading">Status</span>
         <span class="data-list-heading">Actions</span>
         <% if (activities.length == 0) { %>
-          <p>No activities were found.</p>
+          <div class="table-no-results">
+          No activities were found.
+          </div>
         <% } %>
 
         <% for(const activity of activities ) { %>

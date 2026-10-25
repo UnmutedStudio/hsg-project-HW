@@ -144,8 +144,67 @@ export class UserController {
   static viewUserManagement(req, res) {
     const selectedUserId = req.params.id;
     // this searches a list of all the users for the Id of the one user that has been selected
-    UserModel.getAll()
+    const searchTerm = req.query.search_term?.trim() ?? "";
+    const userQuery = searchTerm
+      ? UserModel.getBySearch(searchTerm)
+      : UserModel.getAll();
+    userQuery
       .then((users) => {
+        const userFilters = [];
+        for (const user of users) {
+          if (!userFilters.includes(user.role)) {
+            userFilters.push(user.role);
+          }
+        }
+        const selectedUserFilter =
+          req.query.user_filter?.trim() ?? '';
+        if (selectedUserFilter) {
+          users = users.filter(
+            (user) =>
+              user.role === selectedUserFilter,
+          );
+        }
+        const sortOrder = req.query.sort ?? "default";
+          if (sortOrder === "first_name_asc") {
+            users.sort((a, b) =>
+              a.firstName.localeCompare(b.firstName),
+            );
+          }
+          if (sortOrder === "first_name_desc") {
+            users.sort((a, b) =>
+              b.firstName.localeCompare(a.firstName),
+            );
+          }
+          if (sortOrder === "last_name_asc") {
+            users.sort((a, b) =>
+              a.lastName.localeCompare(b.lastName),
+            );
+          }
+          if (sortOrder === "last_name_desc") {
+            users.sort((a, b) =>
+              b.lastName.localeCompare(a.lastName),
+            );
+          }
+          if (sortOrder === "email_asc") {
+            users.sort((a, b) =>
+              a.email.localeCompare(b.email),
+            );
+          }
+          if (sortOrder === "email_desc") {
+            users.sort((a, b) =>
+              b.email.localeCompare(a.email),
+            );
+          }
+          if (sortOrder === "role_asc") {
+            users.sort((a, b) =>
+              a.role.localeCompare(b.role),
+            );
+          }
+          if (sortOrder === "role_desc") {
+            users.sort((a, b) =>
+              b.role.localeCompare(a.role),
+            );
+          }
         const selectedUser =
           users.find((u) => u.id == selectedUserId) ??
           //uses an empty user object if no user is selected
@@ -161,7 +220,10 @@ export class UserController {
         res.render("management_users.ejs", {
           users,
           selectedUser,
+          userFilters,
+          selectedUserFilter,
           authenticatedUser: req.authenticatedUser,
+          sortOrder,
         });
       })
       .catch((error) => {

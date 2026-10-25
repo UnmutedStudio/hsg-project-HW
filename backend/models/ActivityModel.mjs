@@ -62,9 +62,12 @@ export class ActivityModel extends DatabaseModel {
       `
         SELECT * FROM activities 
         WHERE deleted = 0 
-        AND activity_name LIKE ?
+        AND (
+          activity_name LIKE ?
+          OR activity_description LIKE ?
+        )
       `,
-      [`%${term}%`],
+      [`%${term}%`, `%${term}%`],
     ).then((result) => result.map((row) => this.tableToModel(row.activities)));
   }
 
