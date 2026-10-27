@@ -12,7 +12,7 @@
         </a>
         <a href="/signup">
             <img src="/img/icons/dashboard.svg" alt="" class="nav-icon">
-            <span>Signup<span>
+            <span>Signup</span>
         </a>
         <a href="/login">
             <img src="/img/icons/logout.svg" alt="" class="nav-icon">
@@ -24,10 +24,28 @@
             <img src="/img/icons/dashboard.svg" alt="" class="nav-icon">
             <span>Dashboard</span>
         </a>
+
+        <a href="/activities" class="desktop-nav-only">
+            <span>Activities</span>
+        </a>
+
+        <a href="/bookings/admin" class="desktop-nav-only">
+            <span>Bookings</span>
+        </a>
+
+        <a href="/locations" class="desktop-nav-only">
+            <span>Locations</span>
+        </a>
+
+        <a href="/users" class="desktop-nav-only">
+            <span>Users</span>
+        </a>
+
         <a href="/sessions/admin" class="<%= currentPage === 'sessions' ? 'nav-active' : '' %>">
             <img src="/img/icons/sessions.svg" alt="" class="nav-icon">
             <span>Sessions</span>
         </a>
+
         <a href="/blog-posts/admin" class="<%= currentPage === 'blog-posts' ? 'nav-active' : '' %>">
             <img src="/img/icons/blog.svg" alt="" class="nav-icon">
             <span>Blog</span>

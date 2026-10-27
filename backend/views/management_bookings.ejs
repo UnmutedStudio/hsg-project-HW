@@ -16,60 +16,128 @@
           <h2 class="text-2xl">Manage Bookings</h2>
           <p><%= bookingDetails.length %> records</p>
         </div>
-        <a href="/bookings/admin">Create New +</a>
+        <a href="/bookings/admin#booking-form" class="primary-button management-create-button">
+          Create New +
+        </a>
       </section>
       <section class="management-filters">
         <form
           action="/bookings/admin"
           method="get"  
-          class="form-grid"
+          class="management-filter-form"
         >
-        <label for="search-term">Search bookings:</label>
+        <label for="search-term" class="sr-only">Search bookings:</label>
           <input
             type="search"
             name="search_term"
             id="search-term"
             placeholder="Search bookings..."
           />
-          <button type="submit">Search</button>
-          <a href="/bookings/admin">Clear</a>
+          <button
+            type="submit"
+            class="primary-button filter-button"
+          >
+            Search
+          </button>
+          <a href="/bookings/admin" class="secondary-button filter-button">Clear</a>
+          <div class="activity-filter">
+            <select
+              name="member_filter"
+              class="management-filter-select"
+            >
+              <option value="">All Members</option>
+              <% for (const memberName of memberFilters) { %>
+                <option
+                  value="<%= memberName %>"
+                  <%= selectedMemberFilter === memberName ? 'selected' : '' %>>
+                  <%= memberName %>
+                </option>
+              <% } %>
+            </select>
+          </div>
+          <div class="activity-filter">
+            <select
+              name="activity_filter"
+              class="management-filter-select"
+            >
+              <option value="">All Activities</option>
+              <% for (const activityName of activityFilters) { %>
+                <option
+                  value="<%= activityName %>"
+                  <%= selectedActivityFilter === activityName ? 'selected' : '' %>
+                >
+                  <%= activityName %>
+                </option>
+              <% } %>
+            </select>
+          </div>
+          <div class="activity-filter">
+            <select
+              name="trainer_filter"
+              class="management-filter-select"
+            >
+              <option value="">All Trainers</option>
+              <% for (const trainerName of trainerFilters) { %>
+                <option
+                  value="<%= trainerName %>"
+                  <%= selectedTrainerFilter === trainerName ? 'selected' : '' %>
+                >
+                  <%= trainerName %>
+                </option>
+              <% } %>
+            </select>
+          </div>
+          <div class="activity-filter">
+            <select
+              name="location_filter"
+              class="management-filter-select"
+            >
+              <option value="">All Locations</option>
+              <% for (const locationName of locationFilters) { %>
+                <option
+                  value="<%= locationName %>"
+                  <%= selectedLocationFilter === locationName ? 'selected' : '' %>
+                >
+                  <%= locationName %>
+                </option>
+              <% } %>
+            </select>
+          </div>
+          <div class="activity-filter">
+            <select
+              name="status_filter"
+              class="management-filter-select"
+            >
+              <option value="">All Statuses</option>
+              <% for (const statusName of statusFilters) { %>
+                <option
+                  value="<%= statusName %>"
+                  <%= selectedStatusFilter === statusName ? 'selected' : '' %>
+                >
+                  <%= statusName %>
+                </option>
+              <% } %>
+            </select>
+            <button
+              type="submit"
+              class="primary-button filter-button"
+            >
+              Filter
+            </button>
+          </div>
         </form>
       </section>
-        <section class="booking-table columns-7">
-          <span class="data-list-heading">Member</span>
-          <span class="data-list-heading">Activity</span>
-          <span class="data-list-heading">Location</span>
-          <span class="data-list-heading">Date</span>
-          <span class="data-list-heading">Time</span>
-          <span class="data-list-heading">Status</span>
-          <span class="data-list-heading">Actions</span>
-          <% if (bookingDetails.length == 0) { %>
-            <p>No bookings were found.</p>
-          <% } %>
-
-          <% for(const bookingDetail of bookingDetails ) { %>
-            <div class="booking-table-rows">
-              <span><%= bookingDetail.member.firstName %> <%= bookingDetail.member.lastName %></span>
-              <span><%= bookingDetail.activity.activityName %></span>
-              <span><%= bookingDetail.location.locationName %></span>
-              <span><%= bookingDetail.session.dateSession.toLocaleDateString("en-AU") %></span>
-              <span><%= bookingDetail.session.timeSession %></span>
-              <span><%= bookingDetail.booking.bookingStatus %></span>
-              <span><a href="/bookings/admin/<%= bookingDetail.booking.id %>" class="link-button">Edit</a>
-              </span>
-            </div>
-          <% } %>
-        </section>
-        <section class="new-booking">
-          <% if (selectedBooking.id == null) { %>
-            <h3>Create Booking</h3>
-          <% } else { %>
-            <h3>Edit Booking</h3>
-          <% } %>
+      <section class="new-booking management-form-section" id="booking-form">
+        <a href="/bookings/admin" class="management-form-close" aria-label="Close form">x</a>
+        <% if (selectedBooking.id == null) { %>
+          <h3>Create Booking</h3>
+        <% } else { %>
+          <h3>Edit Booking</h3>
+        <% } %>
         <form
           action="<%= selectedBooking.id == null ? '/bookings/admin' : '/bookings/admin/' + selectedBooking.id %>"
           method="post"
-          class="form-grid"
+          class="form-grid management-form"
         >
         <label for="user-id">Member:</label>
           <select
@@ -131,26 +199,100 @@
           <a href="/bookings/admin" class="link-button two-col">clear</a>
           <% if (selectedBooking.id == null) { %>
           <button 
-            class="two-col"
+            class="primary-button two-col"
             type="submit"
             name="action"
             value="create"
           >Create New Booking</button>
         <% } else { %>
           <button 
-            class="two-col"
+            class="primary-button two-col"
             type="submit"
             name="action"
             value="update"
           >Update Booking</button>
-          <button 
-            class="two-col"
-            type="submit"
-            name="action"
-            value="delete"
-          >Delete Booking</button>
         <% } %>
         </form>
+      </section>
+      <section class="booking-table columns-8 management-table">
+        <span class="data-list-heading">
+          <a href="/bookings/admin?sort=<%= sortOrder === 'member_asc' ? 'member_desc' : 'member_asc' %>">
+            Member<%= sortOrder === 'member_desc' ? '▼' : '▲' %>
+          </a>
+        </span>
+        <span class="data-list-heading">
+          <a href="/bookings/admin?sort=<%= sortOrder === 'activity_asc' ? 'activity_desc' : 'activity_asc' %>">
+            Activity<%= sortOrder === 'activity_desc' ? '▼' : '▲' %>
+          </a>
+        </span>
+        <span class="data-list-heading">
+          <a href="/bookings/admin?sort=<%= sortOrder === 'trainer_asc' ? 'trainer_desc' : 'trainer_asc' %>">
+            Trainer <%= sortOrder === 'trainer_desc' ? '▼' : '▲' %>
+          </a>
+        </span>
+        <span class="data-list-heading">
+          <a href="/bookings/admin?sort=<%= sortOrder === 'location_asc' ? 'location_desc' : 'location_asc' %>">
+            Location<%= sortOrder === 'location_desc' ? '▼' : '▲' %>
+          </a>
+        </span>
+        <span class="data-list-heading">
+          <a href="/bookings/admin?sort=<%= sortOrder === 'date_asc' ? 'date_desc' : 'date_asc' %>">
+            Date<%= sortOrder === 'date_desc' ? '▼' : '▲' %>
+          </a>
+        </span>
+        <span class="data-list-heading">
+          <a href="/bookings/admin?sort=<%= sortOrder === 'time_asc' ? 'time_desc' : 'time_asc' %>">
+            Time<%= sortOrder === 'time_desc' ? '▼' : '▲' %>
+          </a>
+        </span>
+        <span class="data-list-heading">
+          <a href="/bookings/admin?sort=<%= sortOrder === 'status_asc' ? 'status_desc' : 'status_asc' %>">
+            Status
+            <%= sortOrder === 'status_desc' ? '▼' : '▲' %>
+          </a>
+        </span>
+        <span class="data-list-heading">Actions</span>
+          <% if (bookingDetails.length == 0) { %>
+            <div class="table-no-results">
+              No bookings were found.
+            </div>
+          <% } %>
+          <% for(const bookingDetail of bookingDetails ) { %>
+            <div class="booking-table-rows">
+              <span><%= bookingDetail.member.firstName %> <%= bookingDetail.member.lastName %></span>            
+              <span><%= bookingDetail.activity.activityName %></span>
+              <span><%= bookingDetail.trainer.firstName %><%= bookingDetail.trainer.lastName %></span> 
+              <span><%= bookingDetail.location.locationName %></span>
+              <span><%= bookingDetail.session.dateSession.toLocaleDateString("en-AU") %></span>
+              <span><%= bookingDetail.session.timeSession %></span>
+              <span><%= bookingDetail.booking.bookingStatus %></span>
+              <span class="table-actions">
+                <a
+                  href="/bookings/admin/<%= bookingDetail.booking.id %>#booking-form"
+                  class="table-action">Edit</a>
+                <details class="delete-confirmation">
+                  <summary class="table-delete-action">Delete</summary>
+                  <div class="delete-confirmation-box">
+                    <p>Delete this booking?</p>
+                    <form
+                      action="/bookings/admin/<%= bookingDetail.booking.id %>"
+                      method="post"
+                    >
+                      <button
+                        type="submit"
+                        name="action"
+                        value="delete"
+                        class="delete-button table-delete-button"
+                      >
+                        Confirm delete
+                      </button>
+                    </form>
+                  </div>
+                </details>
+              </span>
+              </span>
+            </div>
+          <% } %>
       </section>
       <%- include("partials/footer.ejs") %>
     </main>

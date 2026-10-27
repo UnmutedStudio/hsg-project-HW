@@ -1,3 +1,4 @@
+/* base CCS is applied to mobile devices by default*/
 @import 'tailwindcss';
 @plugin "daisyui";
 
@@ -1045,8 +1046,13 @@ main > section {
 
 .management-filter-form {
   display: grid;
+  flex-direction: column;
+  align-items: stretch;
   grid-template-columns: 1fr;
   gap: 0.75rem;
+}
+.management-filter-form > * {
+  width: 100%;
 }
 
 .management-filter-form label {
@@ -1107,6 +1113,8 @@ main > section {
   width: calc(100% - 2rem);
   max-width: 1200px;
   margin: 0.75rem auto;
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .management-table .data-list-heading:first-child {
@@ -1398,7 +1406,6 @@ main > section {
 .blog-table {
   display: grid;
   gap: 0;
-  overflow-x: visible;
 }
 
 .user-table-rows,
@@ -1536,6 +1543,7 @@ summary {
   font-size: 0.7rem;
 }
 
+/* tablet/ipad*/ 
 @media screen and (min-width: 768px) {
   main > section {
     width: min(calc(100% - 3rem), 1200px);
@@ -1727,10 +1735,19 @@ summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-
+/* 
+Mobile navigation breakpoint.
+Screens under 900px use a fixed bottom nav with icons
+to improve use on phones and small tablets. 
+Extra desktop admin links are hidden to keep aligned with the design principles
+and keep the most common actions accessible.
+*/
 @media screen and (max-width: 899px) {
   main:not(.auth-page) {
     padding-bottom: 4rem;
+  }
+  .desktop-nav-only {
+    display: none !important;
   }
 
   .auth-page {
@@ -1762,6 +1779,7 @@ summary {
     justify-content: space-around;
     gap: 0;
     padding: 0.4rem;
+    height: 4.5rem;
   }
 
   .site-nav a {
@@ -1769,7 +1787,7 @@ summary {
     flex: 1;
     align-items: center;
     justify-content: center;
-    min-height: 3rem;
+    height: 100%;
     padding: 0.4rem 0.25rem;
     font-size: 0.7rem;
   }
@@ -1789,9 +1807,7 @@ summary {
     font-size: 1rem;
     white-space: normal;
   }
-  .desktop-nav-only {
-    display: none !important;
-  }
+
   .nav-icon {
     display: block;
     width: 1.5rem;
@@ -1842,6 +1858,16 @@ summary {
   .signup-card .not-mem {
     margin: 0.4rem 0;
   }
+
+  .user-table,
+  .activity-table,
+  .location-table,
+  .booking-table,
+  .session-table,
+  .blog-table {
+    min-width: 700px;
+  }
+
   .manage-heading {
     padding: 1rem;
   }
@@ -1885,7 +1911,7 @@ summary {
     padding: 1rem;
   }
 }
-
+/* desktop layouts */
 @media screen and (min-width: 900px) {
   main {
     padding-bottom: 0;
@@ -1974,6 +2000,11 @@ summary {
     background-color: var(--orange);
   }
 }
+/* small laptops and desktops with limited vertical space.
+This breakpoint reduces the size of the signup form and 
+footer spacing so the full page remains visible
+without heaps of scrolling.
+*/
 @media screen and (min-width: 900px) and (max-height: 900px) {
   .signup-card {
     margin: auto;
@@ -2012,6 +2043,7 @@ summary {
   }
 }
 
+/* Large desktop screens */
 @media screen and (min-width: 1100px) {
   .admin-card-list {
     grid-template-columns: repeat(3, minmax(0, 1fr));

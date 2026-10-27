@@ -178,8 +178,147 @@ export class SessionController {
    */
   static viewSessionManagement(req, res) {
     const selectedSessionId = req.params.id;
-    SessionDetailModel.getAll()
+    const searchTerm = req.query.search_term?.trim() ?? '';
+    const sessionQuery = searchTerm
+      ? SessionDetailModel.getBySearch(searchTerm)
+      : SessionDetailModel.getAll();
+    sessionQuery
       .then((sessionDetails) => {
+        const activityFilters = [];
+        for (const sessionDetail of sessionDetails) {
+          if (!activityFilters.includes(sessionDetail.activity.activityName)) {
+            activityFilters.push(sessionDetail.activity.activityName);
+          }
+        }
+        const trainerFilters = [];
+        for (const sessionDetail of sessionDetails) {
+          const trainerName = `${sessionDetail.trainer.firstName} ${sessionDetail.trainer.lastName}`;
+          if (!trainerFilters.includes(trainerName)) {
+            trainerFilters.push(trainerName);
+          }
+        }
+        const locationFilters = [];
+        for (const sessionDetail of sessionDetails) {
+          if (!locationFilters.includes(sessionDetail.location.locationName)) {
+            locationFilters.push(sessionDetail.location.locationName);
+          }
+        }
+        const dateFrom =
+          req.query.date_from?.trim() ?? '';
+        const dateTo =
+          req.query.date_to?.trim() ?? '';
+        if (dateFrom) {
+          sessionDetails = sessionDetails.filter(
+            (sessionDetail) =>
+              sessionDetail.session.dateSession >=
+              new Date(dateFrom),
+          );
+        }
+        if (dateTo) {
+          sessionDetails = sessionDetails.filter(
+            (sessionDetail) =>
+              sessionDetail.session.dateSession <=
+              new Date(dateTo),
+          );
+        }
+        const selectedActivityFilter = req.query.activity_filter?.trim() ?? '';
+        if (selectedActivityFilter) {
+          sessionDetails = sessionDetails.filter(
+            (sessionDetail) =>
+              sessionDetail.activity.activityName === selectedActivityFilter,
+          );
+        }
+        const sortOrder = req.query.sort ?? 'default';
+        if (sortOrder === 'activity_asc') {
+          sessionDetails.sort((a, b) =>
+            a.activity.activityName.localeCompare(b.activity.activityName),
+          );
+        }
+        if (sortOrder === 'activity_desc') {
+          sessionDetails.sort((a, b) =>
+            b.activity.activityName.localeCompare(a.activity.activityName),
+          );
+        }
+        if (sortOrder === 'trainer_asc') {
+          sessionDetails.sort((a, b) =>
+            `${a.trainer.firstName} ${a.trainer.lastName}`.localeCompare(
+              `${b.trainer.firstName} ${b.trainer.lastName}`,
+            ),
+          );
+        }
+        if (sortOrder === 'trainer_desc') {
+          sessionDetails.sort((a, b) =>
+            `${b.trainer.firstName} ${b.trainer.lastName}`.localeCompare(
+              `${a.trainer.firstName} ${a.trainer.lastName}`,
+            ),
+          );
+        }
+        if (sortOrder === 'location_asc') {
+          sessionDetails.sort((a, b) =>
+            a.location.locationName.localeCompare(b.location.locationName),
+          );
+        }
+        if (sortOrder === 'location_desc') {
+          sessionDetails.sort((a, b) =>
+            b.location.locationName.localeCompare(a.location.locationName),
+          );
+        }
+        if (sortOrder === 'date_asc') {
+          sessionDetails.sort(
+            (a, b) => a.session.dateSession - b.session.dateSession,
+          );
+        }
+        if (sortOrder === 'date_desc') {
+          sessionDetails.sort(
+            (a, b) => b.session.dateSession - a.session.dateSession,
+          );
+        }
+        if (sortOrder === 'time_asc') {
+          sessionDetails.sort((a, b) =>
+            a.session.timeSession.localeCompare(b.session.timeSession),
+          );
+        }
+        if (sortOrder === 'time_desc') {
+          sessionDetails.sort((a, b) =>
+            b.session.timeSession.localeCompare(a.session.timeSession),
+          );
+        }
+        if (sortOrder === 'duration_asc') {
+          sessionDetails.sort(
+            (a, b) => a.session.duration - b.session.duration,
+          );
+        }
+        if (sortOrder === 'duration_desc') {
+          sessionDetails.sort(
+            (a, b) => b.session.duration - a.session.duration,
+          );
+        }
+        if (sortOrder === 'availability_asc') {
+          sessionDetails.sort((a, b) =>
+            a.session.availability - b.session.availability,
+          );
+        }
+        if (sortOrder === 'availability_desc') {
+          sessionDetails.sort((a, b) =>
+            b.session.availability - a.session.availability,
+          );
+        }
+        const selectedTrainerFilter = req.query.trainer_filter?.trim() ?? '';
+        if (selectedTrainerFilter) {
+          sessionDetails = sessionDetails.filter(
+            (sessionDetail) =>
+              `${sessionDetail.trainer.firstName} ${sessionDetail.trainer.lastName}` ===
+              selectedTrainerFilter,
+          );
+        }
+        const selectedLocationFilter = req.query.location_filter?.trim() ?? '';
+        if (selectedLocationFilter) {
+          sessionDetails = sessionDetails.filter(
+            (sessionDetail) =>
+              sessionDetail.location.locationName === selectedLocationFilter,
+          );
+        }
+        
         //search the list of all sessions
         const selectedSessionDetail = sessionDetails.find(
           (sessionDetail) => sessionDetail.session.id == selectedSessionId,
@@ -205,7 +344,14 @@ export class SessionController {
                       activities,
                       locations,
                       trainers,
+                      activityFilters,
+                      trainerFilters,
+                      locationFilters,
+                      selectedActivityFilter,
+                      selectedTrainerFilter,
+                      selectedLocationFilter,
                       authenticatedUser: req.authenticatedUser,
+                      sortOrder,
                     });
                   })
                   .catch((error) => {
@@ -316,7 +462,7 @@ export class SessionController {
       }
       // then validate time is not in the past
       const sessionDateTime = new Date(
-      `${formData.dateSession}T${formData.timeSession}`
+        `${formData.dateSession}T${formData.timeSession}`,
       );
       // testing the time validation
       //  console.log("Session:", sessionDateTime);
@@ -359,7 +505,8 @@ export class SessionController {
         .then(() => {
           res.status(400).render('status.ejs', {
             status: 'Duplicate session already exists',
-            message:"There is a session already created with this location, date and time.",
+            message:
+              'There is a session already created with this location, date and time.',
             authenticatedUser: req.authenticatedUser,
           });
         })
@@ -389,7 +536,7 @@ export class SessionController {
             });
         });
     } else if (action === 'update') {
-            if (!formData.activityId) {
+      if (!formData.activityId) {
         res.status(400).render('status.ejs', {
           status: 'Invalid input provided.',
           message: 'Please select an activity for the session.',
@@ -433,7 +580,7 @@ export class SessionController {
         return;
       }
       const sessionDateTime = new Date(
-        `${formData.dateSession}T${formData.timeSession}`
+        `${formData.dateSession}T${formData.timeSession}`,
       );
       if (sessionDateTime < new Date()) {
         res.status(400).render('status.ejs', {
@@ -471,44 +618,45 @@ export class SessionController {
         formData.timeSession,
         selectedSessionId,
       )
-      .then(() => {
-        res.status(400).render("status.ejs", {
-          status: "Duplicate session already exists",
-          message: "There is a session already created with this location, date and time.",
-          authenticatedUser: req.authenticatedUser,
-        });
-      })
-      .catch((error) => {
-        if (error !== "not found") {
-          console.error(error);
-          res.status(500).render("status.ejs", {
-            status: "Database error",
-            message: "The session could not be checked for duplicates.",
+        .then(() => {
+          res.status(400).render('status.ejs', {
+            status: 'Duplicate session already exists',
+            message:
+              'There is a session already created with this location, date and time.',
             authenticatedUser: req.authenticatedUser,
           });
-          return;
-        }
-        SessionModel.update(session)
-          .then((result) => {
-            if (result.affectedRows > 0) {
-              res.redirect('/sessions/admin');
-            } else {
-              res.status(404).render('status.ejs', {
-                status: 'Session update error',
-                message: 'The session could not be found.',
-                authenticatedUser: req.authenticatedUser,
-              });
-            }
-          })
-          .catch((error) => {
+        })
+        .catch((error) => {
+          if (error !== 'not found') {
             console.error(error);
             res.status(500).render('status.ejs', {
               status: 'Database error',
-              message: 'The session could not be updated',
+              message: 'The session could not be checked for duplicates.',
               authenticatedUser: req.authenticatedUser,
             });
-          });
-      });
+            return;
+          }
+          SessionModel.update(session)
+            .then((result) => {
+              if (result.affectedRows > 0) {
+                res.redirect('/sessions/admin');
+              } else {
+                res.status(404).render('status.ejs', {
+                  status: 'Session update error',
+                  message: 'The session could not be found.',
+                  authenticatedUser: req.authenticatedUser,
+                });
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+              res.status(500).render('status.ejs', {
+                status: 'Database error',
+                message: 'The session could not be updated',
+                authenticatedUser: req.authenticatedUser,
+              });
+            });
+        });
     } else if (action === 'delete') {
       if (!selectedSessionId) {
         res.status(400).render('status.ejs', {
@@ -628,7 +776,7 @@ export class SessionController {
         return;
       }
       const sessionDateTime = new Date(
-      `${formData.dateSession}T${formData.timeSession}`
+        `${formData.dateSession}T${formData.timeSession}`,
       );
       // testing the time validation
       //  console.log("Session:", sessionDateTime);
@@ -668,37 +816,37 @@ export class SessionController {
         formData.dateSession,
         formData.timeSession,
       )
-      .then(() => {
-        res.status(400).render("status.ejs", {
-          status: "Duplicate session already exists",
-          message:
-            "There is a session already created with this location, date and time.",
-          authenticatedUser: req.authenticatedUser,
-        });
-      })
-      .catch((error) => {
-        if (error !== "not found") {
-          console.error(error);
-          res.status(500).render("status.ejs", {
-            status: "Database error",
-            message: "The session could not be checked for duplicates.",
+        .then(() => {
+          res.status(400).render('status.ejs', {
+            status: 'Duplicate session already exists',
+            message:
+              'There is a session already created with this location, date and time.',
             authenticatedUser: req.authenticatedUser,
           });
-          return;
-        }
-        SessionModel.create(session)
-          .then(() => {
-            res.redirect("/sessions/trainer");
-          })
-          .catch((createError) => {
-            console.error(createError);
-            res.status(500).render("status.ejs", {
-              status: "Database error",
-              message: "The session could not be created.",
+        })
+        .catch((error) => {
+          if (error !== 'not found') {
+            console.error(error);
+            res.status(500).render('status.ejs', {
+              status: 'Database error',
+              message: 'The session could not be checked for duplicates.',
               authenticatedUser: req.authenticatedUser,
             });
-          });
-      });
+            return;
+          }
+          SessionModel.create(session)
+            .then(() => {
+              res.redirect('/sessions/trainer');
+            })
+            .catch((createError) => {
+              console.error(createError);
+              res.status(500).render('status.ejs', {
+                status: 'Database error',
+                message: 'The session could not be created.',
+                authenticatedUser: req.authenticatedUser,
+              });
+            });
+        });
     } else if (action === 'update') {
       if (!formData.activityId) {
         res.status(400).render('status.ejs', {
@@ -744,8 +892,8 @@ export class SessionController {
         return;
       }
       const sessionDateTime = new Date(
-      `${formData.dateSession}T${formData.timeSession}`
-      )
+        `${formData.dateSession}T${formData.timeSession}`,
+      );
       if (sessionDateTime < new Date()) {
         res.status(400).render('status.ejs', {
           status: 'Invalid input provided.',
@@ -782,44 +930,45 @@ export class SessionController {
         formData.timeSession,
         selectedSessionId,
       )
-      .then(() => {
-        res.status(400).render("status.ejs", {
-          status: "Duplicate session already exists",
-          message: "There is a session already created with this location, date and time.",
-          authenticatedUser: req.authenticatedUser,
-        });
-      })
-      .catch((error) => {
-        if (error !== "not found") {
-          console.error(error);
-          res.status(500).render("status.ejs", {
-            status: "Database error",
-            message: "The session could not be checked for duplicates.",
+        .then(() => {
+          res.status(400).render('status.ejs', {
+            status: 'Duplicate session already exists',
+            message:
+              'There is a session already created with this location, date and time.',
             authenticatedUser: req.authenticatedUser,
           });
-          return;
-        }
-        SessionModel.update(session)
-          .then((result) => {
-            if (result.affectedRows > 0) {
-              res.redirect('/sessions/trainer');
-            } else {
-              res.status(404).render('status.ejs', {
-                status: 'Session update error',
-                message: 'The session could not be found.',
-                authenticatedUser: req.authenticatedUser,
-              });
-            }
-          })
-          .catch((error) => {
+        })
+        .catch((error) => {
+          if (error !== 'not found') {
             console.error(error);
             res.status(500).render('status.ejs', {
               status: 'Database error',
-              message: 'The session could not be updated',
+              message: 'The session could not be checked for duplicates.',
               authenticatedUser: req.authenticatedUser,
             });
-          });
-      });
+            return;
+          }
+          SessionModel.update(session)
+            .then((result) => {
+              if (result.affectedRows > 0) {
+                res.redirect('/sessions/trainer');
+              } else {
+                res.status(404).render('status.ejs', {
+                  status: 'Session update error',
+                  message: 'The session could not be found.',
+                  authenticatedUser: req.authenticatedUser,
+                });
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+              res.status(500).render('status.ejs', {
+                status: 'Database error',
+                message: 'The session could not be updated',
+                authenticatedUser: req.authenticatedUser,
+              });
+            });
+        });
     } else if (action === 'delete') {
       SessionModel.deleteByTrainer(selectedSessionId, req.authenticatedUser.id)
         .then((result) => {

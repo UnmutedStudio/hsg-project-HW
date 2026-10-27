@@ -62,6 +62,39 @@ export class SessionDetailModel extends DatabaseModel {
     );
   }
   /**
+   * 
+   * @param {string} term | the serach term  used to find details in the session
+   * @returns {Promise<Array<SessionDetailModel>>}
+   */
+  static getBySearch(term) {
+    return this.query(
+      `
+        SELECT *
+        FROM sessions
+        INNER JOIN activities
+          ON sessions.activity_id = activities.id
+        INNER JOIN locations
+          ON sessions.location_id = locations.id
+        INNER JOIN users
+          ON sessions.trainer_id = users.id
+        WHERE sessions.deleted = 0
+          AND activities.deleted = 0
+          AND locations.deleted = 0
+          AND users.deleted = 0
+          AND (
+            activities.activity_name LIKE ?
+            OR users.first_name LIKE ?
+            OR users.last_name LIKE ?
+            OR locations.location_name LIKE ?
+          )
+        ORDER BY sessions.date_session, sessions.time_session
+      `,
+      [`%${term}%`, `%${term}%`, `%${term}%`, `%${term}%`,],
+    ).then((result) =>
+      result.map((row) => this.tableToModel(row)),
+    );
+  }
+  /**
    * This reuturns one active session with the related details (activity, location and trainer)
    * @param {number} id | the session unique identifier
    * @returns {Promise<SessionDetailModel>}

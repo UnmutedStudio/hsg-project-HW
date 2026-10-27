@@ -158,11 +158,208 @@ export class BookingController {
    */
   static viewBookingManagement(req, res) {
     const selectedBookingId = req.params.id;
-
-    BookingDetailsModel.getAll()
+    const searchTerm = req.query.search_term?.trim() ?? "";
+    const bookingQuery = searchTerm
+      ? BookingDetailsModel.getBySearch(searchTerm)
+      : BookingDetailsModel.getAll();
+    bookingQuery
       .then((bookingDetails) => {
+        const memberFilters = [];
+        for (const bookingDetail of bookingDetails) {
+          const memberName =
+            `${bookingDetail.member.firstName} ${bookingDetail.member.lastName}`;
+          if (!memberFilters.includes(memberName)) {
+            memberFilters.push(memberName);
+          }
+        }
+        const selectedMemberFilter =
+          req.query.member_filter?.trim() ?? '';
+        if (selectedMemberFilter) {
+          bookingDetails = bookingDetails.filter(
+            (bookingDetail) =>
+              `${bookingDetail.member.firstName} ${bookingDetail.member.lastName}` ===
+              selectedMemberFilter,
+          );
+        }
+        const activityFilters = [];
+        for (const bookingDetail of bookingDetails) {
+          if (
+            !activityFilters.includes(
+              bookingDetail.activity.activityName,
+            )
+          ) {
+            activityFilters.push(
+              bookingDetail.activity.activityName,
+            );
+          }
+        }
+        const selectedActivityFilter =
+        req.query.activity_filter?.trim() ?? '';
+        if (selectedActivityFilter) {
+          bookingDetails = bookingDetails.filter(
+            (bookingDetail) =>
+              bookingDetail.activity.activityName ===
+              selectedActivityFilter,
+          );
+        }
+        const trainerFilters = [];
+        for (const bookingDetail of bookingDetails) {
+          const trainerName =
+            `${bookingDetail.trainer.firstName} ${bookingDetail.trainer.lastName}`;
+
+          if (!trainerFilters.includes(trainerName)) {
+            trainerFilters.push(trainerName);
+          }
+        }
+        const selectedTrainerFilter =
+        req.query.trainer_filter?.trim() ?? '';
+        if (selectedTrainerFilter) {
+          bookingDetails = bookingDetails.filter(
+            (bookingDetail) =>
+              `${bookingDetail.trainer.firstName} ${bookingDetail.trainer.lastName}` ===
+              selectedTrainerFilter,
+          );
+        }
+        const locationFilters = [];
+        for (const bookingDetail of bookingDetails) {
+          if (
+            !locationFilters.includes(
+              bookingDetail.location.locationName,
+            )
+          ) {
+            locationFilters.push(
+              bookingDetail.location.locationName,
+            );
+          }
+        }
+        const selectedLocationFilter =
+          req.query.location_filter?.trim() ?? '';
+        if (selectedLocationFilter) {
+          bookingDetails = bookingDetails.filter(
+            (bookingDetail) =>
+              bookingDetail.location.locationName ===
+              selectedLocationFilter,
+          );
+        }
+        const statusFilters = [];
+        for (const bookingDetail of bookingDetails) {
+          if (
+            !statusFilters.includes(
+              bookingDetail.booking.bookingStatus,
+            )
+          ) {
+            statusFilters.push(
+              bookingDetail.booking.bookingStatus,
+            );
+          }
+        }
+        const selectedStatusFilter =
+          req.query.status_filter?.trim() ?? '';
+        if (selectedStatusFilter) {
+          bookingDetails = bookingDetails.filter(
+            (bookingDetail) =>
+              bookingDetail.booking.bookingStatus ===
+              selectedStatusFilter,
+          );
+        }
+        const sortOrder = req.query.sort ?? "default";
+        if (sortOrder === "member_asc") {
+          bookingDetails.sort((a, b) =>
+            `${a.member.firstName} ${a.member.lastName}`.localeCompare(
+              `${b.member.firstName} ${b.member.lastName}`,
+            ),
+          );
+        }
+        if (sortOrder === "member_desc") {
+          bookingDetails.sort((a, b) =>
+            `${b.member.firstName} ${b.member.lastName}`.localeCompare(
+              `${a.member.firstName} ${a.member.lastName}`,
+            ),
+          );
+        }
+        if (sortOrder === "activity_asc") {
+          bookingDetails.sort((a, b) =>
+            a.activity.activityName.localeCompare(
+              b.activity.activityName,
+            ),
+          );
+        }
+        if (sortOrder === "activity_desc") {
+          bookingDetails.sort((a, b) =>
+            b.activity.activityName.localeCompare(
+              a.activity.activityName,
+            ),
+          );
+        }
+        if (sortOrder === "trainer_asc") {
+          bookingDetails.sort((a, b) =>
+            `${a.trainer.firstName} ${a.trainer.lastName}`.localeCompare(
+              `${b.trainer.firstName} ${b.trainer.lastName}`,
+            ),
+          );
+        }
+        if (sortOrder === "trainer_desc") {
+          bookingDetails.sort((a, b) =>
+            `${b.trainer.firstName} ${b.trainer.lastName}`.localeCompare(
+              `${a.trainer.firstName} ${a.trainer.lastName}`,
+            ),
+          );
+        }
+        if (sortOrder === "location_asc") {
+          bookingDetails.sort((a, b) =>
+            a.location.locationName.localeCompare(
+              b.location.locationName,
+            ),
+          );
+        }
+        if (sortOrder === "location_desc") {
+          bookingDetails.sort((a, b) =>
+            b.location.locationName.localeCompare(
+              a.location.locationName,
+            ),
+          );
+        }
+        if (sortOrder === "date_asc") {
+          bookingDetails.sort((a, b) =>
+            a.session.dateSession - b.session.dateSession,
+          );
+        }
+        if (sortOrder === "date_desc") {
+          bookingDetails.sort((a, b) =>
+            b.session.dateSession - a.session.dateSession,
+          );
+        }
+        if (sortOrder === "time_asc") {
+          bookingDetails.sort((a, b) =>
+            a.session.timeSession.localeCompare(
+              b.session.timeSession,
+            ),
+          );
+        }
+        if (sortOrder === "time_desc") {
+          bookingDetails.sort((a, b) =>
+            b.session.timeSession.localeCompare(
+              a.session.timeSession,
+            ),
+          );
+        }
+        if (sortOrder === "status_asc") {
+          bookingDetails.sort((a, b) =>
+            a.booking.bookingStatus.localeCompare(
+              b.booking.bookingStatus,
+            ),
+          );
+        }
+        if (sortOrder === "status_desc") {
+          bookingDetails.sort((a, b) =>
+            b.booking.bookingStatus.localeCompare(
+              a.booking.bookingStatus,
+            ),
+          );
+        }
         //search the list of all bookings
         const selectedBookingDetail = bookingDetails.find(
+
           (bookingDetail) => bookingDetail.booking.id == selectedBookingId,
         );
         const selectedBooking =
@@ -186,7 +383,18 @@ export class BookingController {
                 selectedBooking,
                 members,
                 sessionDetails,
+                memberFilters,
+                selectedMemberFilter,
+                activityFilters,
+                selectedActivityFilter,
+                trainerFilters,
+                selectedTrainerFilter,
+                locationFilters,
+                selectedLocationFilter,
+                statusFilters,
+                selectedStatusFilter,
                 authenticatedUser: req.authenticatedUser,
+                sortOrder,
               });
             })
             .catch((error) => {
