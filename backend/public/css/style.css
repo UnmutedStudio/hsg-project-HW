@@ -521,6 +521,147 @@ main > section {
   flex: 0 0 auto;
 }
 
+.date-range-label {
+  flex: 0 0 auto;
+  color: var(--navy);
+  font-size: 0.75rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.booking-card {
+  position: relative;
+  border: 1px solid var(--navy);
+}
+
+.booking-card-upcoming {
+  border-left: 0.35rem solid var(--orange);
+}
+
+.booking-card-completed {
+  border-left: 0.35rem solid #78838d;
+  background-color: #f7f9fb;
+}
+
+.booking-card .status-pill {
+  align-self: flex-start;
+}
+
+.status-completed {
+  color: #4e5963;
+  background-color: #e5e9ed;
+}
+
+.booking-card-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: auto;
+  padding-top: 0.75rem;
+}
+
+.booking-status-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #d6dee5;
+  border-radius: 0.75rem;
+  background-color: var(--white);
+  box-shadow: 0 0.2rem 0.5rem rgb(18 18 18 / 8%);
+}
+
+.booking-status-filter .management-filter-select {
+  flex: 0 0 12rem;
+  width: 12rem;
+  min-width: 12rem;
+  min-height: 2.6rem;
+  padding: 0.65rem 2rem 0.65rem 0.75rem;
+  border: 1px solid #c8c8c8;
+  border-radius: 0.5rem;
+  background-color: var(--white);
+  color: var(--dark);
+  font: inherit;
+}
+
+.booking-status-filter input[type='date'] {
+  flex: 0 0 10rem;
+  width: 10rem;
+  min-width: 10rem;
+}
+
+.booking-status-filter .filter-button {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 5rem;
+}
+
+.booking-status-filter input[type='date']:focus {
+  border-color: var(--orange);
+  outline: 3px solid rgb(255 143 41 / 25%);
+}
+
+.booking-date-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+}
+
+.booking-date-group input[type='date'] {
+  width: 10rem;
+  min-width: 10rem;
+  min-height: 2.6rem;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid #c8c8c8;
+  border-radius: 0.5rem;
+  background-color: var(--white);
+}
+
+.booking-filter-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.booking-filter-actions .filter-button {
+  width: auto;
+  min-width: 5rem;
+}
+.booking-status-filter {
+  justify-content: flex-end;
+}
+
+.booking-filter-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.5rem;
+  margin-left: 0;
+}
+
+.booking-cancel-button {
+  width: auto;
+  min-height: auto;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--orange);
+  border-radius: 0.5rem;
+  color: #9a5b00;
+  background-color: #fff3e8;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.booking-cancel-button:hover,
+.booking-cancel-button:focus-visible {
+  color: var(--white);
+  background-color: var(--orange);
+}
+
 .session-list {
   display: grid;
   grid-template-columns: 1fr;
@@ -1085,22 +1226,54 @@ main > section {
   text-decoration: underline;
 }
 
-.delete-confirmation-box {
-  position: absolute;
-  top: calc(100% + 0.5rem);
-  right: 0;
-  z-index: 20;
-  width: 12rem;
-  padding: 0.75rem;
+.delete-confirmation-popover {
+  position: relative;
+  width: min(18rem, calc(100% - 2rem));
+  padding: 1rem;
   border: 1px solid #d6dee5;
-  border-radius: 0.6rem;
+  border-radius: 0.75rem;
   background-color: var(--white);
-  box-shadow: 0 0.4rem 0.8rem rgb(18 18 18 / 18%);
+  box-shadow: 0 0.5rem 1.25rem rgb(18 18 18 / 25%);
 }
 
-.delete-confirmation-box p {
-  margin: 0 0 0.75rem;
-  font-size: 0.8rem;
+.delete-confirmation-popover::backdrop {
+  background-color: rgb(18 18 18 / 20%);
+}
+
+.delete-confirmation-popover {
+  width: min(18rem, calc(100% - 2rem));
+  margin: auto;
+  padding: 1rem;
+  border: 1px solid #d6dee5;
+  border-radius: 0.75rem;
+  background-color: var(--white);
+  box-shadow: 0 0.5rem 1.25rem rgb(18 18 18 / 25%);
+}
+
+.delete-confirmation-close {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--navy);
+  background-color: transparent;
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.delete-confirmation-close:hover,
+.delete-confirmation-close:focus-visible {
+  color: var(--white);
+  background-color: var(--orange);
 }
 
 .table-delete-button {
@@ -2249,6 +2422,10 @@ and keep the most common actions accessible.
     transform: translateX(-50%);
     align-items: center;
     justify-content: center;
+  }
+
+  .management-table {
+    overflow: visible;
   }
 
   .site-nav a {

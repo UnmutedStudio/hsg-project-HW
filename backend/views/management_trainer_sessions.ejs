@@ -21,75 +21,91 @@
       <section class="management-filters">
         <form
           action="/sessions/trainer"
-          method="get"  
-          class="management-filter-form"
+          method="get"
+          class="management-filter-form booking-filter-form"
         >
-          <input
-            type="date"
-            name="date_from"
-            id="date-from"
-          />
-          <input
-            type="date"
-            name="date_to"
-            id="date-to"
-          />
-        <label for="search-term" class="sr-only">Search sessions:</label>
-          <input
-            type="search"
-            name="search_term"
-            id="search-term"
-            placeholder="Search sessions..."
-          />
-          <button
-            type="submit"
-            class="primary-button filter-button"
-          >Search</button>
-          <a href="/sessions/trainer" class="secondary-button filter-button">
-            Clear
-          </a>
-          <div class="activity-filter">
-          <select
-            name="activity_filter"
-            class="management-filter-select"
-          >
-            <option value="">
-              All Activities
-            </option>
-            <% for (const activityName of activityFilters) { %>
-              <option
-                value="<%= activityName %>"
-                <%= selectedActivityFilter === activityName ? 'selected' : '' %>
-              >
-                <%= activityName %>
-              </option>
-            <% } %>
-          </select>
-        </div>
-        <div class="activity-filter">
-          <select
-            name="location_filter"
-            class="management-filter-select"
-          >
-            <option value="">
-              All Locations
-            </option>
-            <% for (const locationName of locationFilters) { %>
-              <option
-                value="<%= locationName %>"
-                <%= selectedLocationFilter === locationName ? 'selected' : '' %>
-              >
-                <%= locationName %>
-              </option>
-            <% } %>
-          </select>
-          <button
-            type="submit"
-            class="primary-button filter-button"
-          >
-            Filter
-          </button>
-        </div>
+          <label for="search-term" class="sr-only">
+            Search sessions:
+          </label>
+          <div class="crud-search-group">
+            <input
+              type="search"
+              name="search_term"
+              id="search-term"
+              placeholder="Search sessions..."
+            />
+            <button
+              type="submit"
+              class="primary-button filter-button"
+            >
+              Search
+            </button>
+            <a
+              href="/sessions/trainer"
+              class="secondary-button filter-button"
+            >
+              Clear
+            </a>
+          </div>
+          <div class="crud-filter-group">
+            <select
+              name="activity_filter"
+              class="management-filter-select"
+            >
+              <option value="">All Activities</option>
+              <% for (const activityName of activityFilters) { %>
+                <option
+                  value="<%= activityName %>"
+                  <%= selectedActivityFilter === activityName ? 'selected' : '' %>
+                >
+                  <%= activityName %>
+                </option>
+              <% } %>
+            </select>
+            <select
+              name="location_filter"
+              class="management-filter-select"
+            >
+              <option value="">All Locations</option>
+              <% for (const locationName of locationFilters) { %>
+                <option
+                  value="<%= locationName %>"
+                  <%= selectedLocationFilter === locationName ? 'selected' : '' %>
+                >
+                  <%= locationName %>
+                </option>
+              <% } %>
+            </select>
+            <span class="date-range-label">
+              Date range:
+            </span>
+            <label for="trainer-date-from" class="sr-only">
+              Start date
+            </label>
+            <input
+              type="date"
+              name="date_from"
+              id="trainer-date-from"
+              value="<%= dateFrom %>"
+              aria-label="Start date"
+            />
+            <label for="trainer-date-to" class="sr-only">
+              End date
+            </label>
+            <input
+              type="date"
+              name="date_to"
+              id="trainer-date-to"
+              value="<%= dateTo %>"
+              aria-label="End date"
+            />
+            <button
+              type="submit"
+              class="primary-button filter-button"
+            >
+              Filter
+            </button>
+          </div>
         </form>
       </section>
       <section class="new-session management-form-section" id="session-form">

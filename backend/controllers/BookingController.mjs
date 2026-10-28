@@ -72,8 +72,56 @@ export class BookingController {
   static viewMyBookings(req, res) {
     BookingDetailsModel.getByMemberId(req.authenticatedUser.id)
       .then((bookingDetails) => {
+      const selectedStatusFilter =
+        req.query.status_filter?.trim() ?? '';
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+        if (selectedStatusFilter) {
+          bookingDetails = bookingDetails.filter((bookingDetail) => {
+            const sessionDate = new Date(
+              bookingDetail.session.dateSession,
+            );
+            sessionDate.setHours(0, 0, 0, 0);
+            if (selectedStatusFilter === 'completed') {
+              return sessionDate < today;
+            }
+            if (selectedStatusFilter === 'upcoming') {
+              return (
+                sessionDate >= today &&
+                bookingDetail.booking.bookingStatus === 'confirmed'
+              );
+            }
+            if (selectedStatusFilter === 'cancelled') {
+              return (
+                bookingDetail.booking.bookingStatus === 'cancelled'
+              );
+            }
+            return true;
+          });
+        }
+      const dateFrom =
+        req.query.date_from?.trim() ?? '';
+      const dateTo =
+        req.query.date_to?.trim() ?? '';
+        if (dateFrom) {
+          bookingDetails = bookingDetails.filter(
+            (bookingDetail) =>
+              bookingDetail.session.dateSession >=
+              new Date(`${dateFrom}T00:00:00`),
+          );
+        }
+        if (dateTo) {
+          bookingDetails = bookingDetails.filter(
+            (bookingDetail) =>
+              bookingDetail.session.dateSession <=
+              new Date(`${dateTo}T23:59:59`),
+          );
+        }
         res.render('bookings.ejs', {
           bookingDetails,
+          selectedStatusFilter,
+          dateFrom,
+          dateTo,
           authenticatedUser: req.authenticatedUser,
         });
       })
@@ -262,6 +310,38 @@ export class BookingController {
               selectedStatusFilter,
           );
         }
+        const weekStart = new Date();
+          weekStart.setHours(0, 0, 0, 0);
+        const weekEnd = new Date(weekStart);
+          weekEnd.setDate(weekEnd.getDate() + 6);
+        const formatDateInput = (date) => {
+          const year = date.getFullYear();
+          const month = String(
+            date.getMonth() + 1,
+          ).padStart(2, '0');
+          const day = String(
+            date.getDate(),
+          ).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+        };
+        const dateFrom =
+          req.query.date_from?.trim() ||
+          formatDateInput(weekStart);
+        const dateTo =
+          req.query.date_to?.trim() ||
+          formatDateInput(weekEnd);
+        bookingDetails = bookingDetails.filter(
+          (bookingDetail) => {
+            const sessionDate =
+              bookingDetail.session.dateSession;
+            return (
+              sessionDate >=
+                new Date(`${dateFrom}T00:00:00`) &&
+              sessionDate <=
+                new Date(`${dateTo}T23:59:59`)
+            );
+          },
+        );
         const sortOrder = req.query.sort ?? "default";
         if (sortOrder === "member_asc") {
           bookingDetails.sort((a, b) =>
@@ -393,6 +473,8 @@ export class BookingController {
                 selectedLocationFilter,
                 statusFilters,
                 selectedStatusFilter,
+                dateFrom,
+                dateTo,
                 authenticatedUser: req.authenticatedUser,
                 sortOrder,
               });

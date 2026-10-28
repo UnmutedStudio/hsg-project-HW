@@ -150,26 +150,42 @@
             <span class="table-actions">
               <a href="/activities/<%= activity.id %>#activity-form" class="table-action">
                 Edit</a>
-              <details class="delete-confirmation">
-                <summary class="table-delete-action">
-                  Delete
-                </summary>
-                  <div class="delete-confirmation-box">
-                    <p>Delete this activity?</p>  
-                    <form
-                      action="/activities/<%= activity.id %>"
-                      method="post"
-                    >
-                    <button
-                      type="submit"
-                      name="action"
-                      value="delete"
-                      class="delete-button table-delete-button"
-                    >Confirm delete
-                    </button>
-                  </form>
-                </div>
-              </details>
+              <button
+                type="button"
+                class="table-delete-action"
+                popovertarget="delete-activity-<%= activity.id %>"
+              >
+                Delete
+              </button>
+              <div
+                id="delete-activity-<%= activity.id %>"
+                class="delete-confirmation-popover"
+                popover
+              >
+                <button
+                  type="button"
+                  class="delete-confirmation-close"
+                  popovertarget="delete-activity-<%= activity.id %>"
+                  popovertargetaction="hide"
+                  aria-label="Close delete confirmation"
+                >
+                  x
+                </button>
+                <p>Delete this activity?</p>
+                <form
+                  action="/activities/<%= activity.id %>"
+                  method="post"
+                >
+                  <button
+                    type="submit"
+                    name="action"
+                    value="delete"
+                    class="delete-button table-delete-button"
+                  >
+                    Confirm delete
+                  </button>
+                </form>
+              </div>
             </span>
           </div>
         <% } %>

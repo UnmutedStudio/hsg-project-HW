@@ -23,76 +23,67 @@
         <section class="management-filters">
           <form
             action="/sessions/admin"
-            method="get"  
-            class="management-filter-form"
+            method="get"
+            class="management-filter-form booking-filter-form"
           >
-          <input
-            type="date"
-            name="date_from"
-            id="date-from"
-          />
-          <input
-            type="date"
-            name="date_to"
-            id="date-to"
-          />
-          <button
-            type="submit"
-            class="primary-button filter-button"
-          >
-            Filter
-          </button>
-          <label for="search-term" class="sr-only">Search sessions:</label>
-            <input
-              type="search"
-              name="search_term"
-              id="search-term"
-              placeholder="Search sessions..."
-            />
-          <button type="submit" class="primary-button filter-button">
-            Search
-          </button>
-            <a href="/sessions/admin" class="secondary-button filter-button">
-              Clear
-            </a>
-            <div class="activity-filter">
-              <select name="activity_filter" class="management-filter-select">
-              <option value="">
-                All Activities
-              </option>
+            <label for="search-term" class="sr-only">
+              Search sessions:
+            </label>
+            <div class="crud-search-group">
+              <input
+                type="search"
+                name="search_term"
+                id="search-term"
+                placeholder="Search sessions..."
+              />
+              <button
+                type="submit"
+                class="primary-button filter-button"
+              >
+                Search
+              </button>
+              <a
+                href="/sessions/admin"
+                class="secondary-button filter-button"
+              >
+                Clear
+              </a>
+            </div>
+
+            <div class="crud-filter-group">
+              <select
+                name="activity_filter"
+                class="management-filter-select"
+              >
+                <option value="">All Activities</option>
                 <% for (const activityName of activityFilters) { %>
-                  <option value="<%= activityName %>" <%= selectedActivityFilter === activityName ? 'selected' : '' %>>
+                  <option
+                    value="<%= activityName %>"
+                    <%= selectedActivityFilter === activityName ? 'selected' : '' %>
+                  >
                     <%= activityName %>
                   </option>
                 <% } %>
               </select>
-            </div>
-            <div class="activity-filter">
               <select
                 name="trainer_filter"
                 class="management-filter-select"
               >
-                <option value="">
-                  All Trainers
-                </option>
+                <option value="">All Trainers</option>
                 <% for (const trainerName of trainerFilters) { %>
                   <option
                     value="<%= trainerName %>"
                     <%= selectedTrainerFilter === trainerName ? 'selected' : '' %>
-                  > 
+                  >
                     <%= trainerName %>
                   </option>
                 <% } %>
               </select>
-            <div class="activity-filter">
               <select
                 name="location_filter"
                 class="management-filter-select"
               >
-                <option value="">
-                  All Locations
-                </option>
-
+                <option value="">All Locations</option>
                 <% for (const locationName of locationFilters) { %>
                   <option
                     value="<%= locationName %>"
@@ -102,7 +93,29 @@
                   </option>
                 <% } %>
               </select>
-            </div>
+              <span class="date-range-label">
+                Date range:
+              </span>
+              <label for="date-from" class="sr-only">
+                Start date
+              </label>
+              <input
+                type="date"
+                name="date_from"
+                id="date-from"
+                value="<%= dateFrom %>"
+                aria-label="Start date"
+              />
+              <label for="date-to" class="sr-only">
+                End date
+              </label>
+              <input
+                type="date"
+                name="date_to"
+                id="date-to"
+                value="<%= dateTo %>"
+                aria-label="End date"
+              />
               <button
                 type="submit"
                 class="primary-button filter-button"
@@ -113,12 +126,12 @@
           </form>
         </section>
         <section class="new-session management-form-section" id="session-form">
-            <a href="/sessions/admin" class="management-form-close" aria-label="Close form">x</a>
-            <% if (selectedSession.id == null) { %>
-              <h3>Create Session</h3>
-            <% } else { %>
-              <h3>Edit Session</h3>
-            <% } %>
+          <a href="/sessions/admin" class="management-form-close" aria-label="Close form">x</a>
+          <% if (selectedSession.id == null) { %>
+            <h3>Create Session</h3>
+          <% } else { %>
+            <h3>Edit Session</h3>
+          <% } %>
           <form
             action="<%= selectedSession.id == null ? '/sessions/admin' : '/sessions/admin/' + selectedSession.id %>"
             method="post"
@@ -309,27 +322,41 @@
             >
               Edit
             </a>
-              <details class="delete-confirmation">
-                <summary class="table-delete-action">
-                  Delete
-                </summary>
-                <div class="delete-confirmation-box">
-                  <p>Delete this session?</p>
-                  <form
-                    action="/sessions/admin/<%= sessionDetail.session.id %>"
-                    method="post"
-                  >
-                    <button
-                      type="submit"
-                      name="action"
-                      value="delete"
-                      class="delete-button table-delete-button"
-                    >
-                      Confirm delete
-                    </button>
-                  </form>
-                </div>
-              </details>
+            <button
+              type="button"
+              class="table-delete-action"
+              popovertarget="delete-session-<%= sessionDetail.session.id %>"
+            >
+              Delete
+            </button>
+            <div
+              id="delete-session-<%= sessionDetail.session.id %>"
+              class="delete-confirmation-popover"
+              popover
+            >
+              <button
+                type="button"
+                class="delete-confirmation-close"
+                popovertarget="delete-session-<%= sessionDetail.session.id %>"
+                popovertargetaction="hide"
+                aria-label="Close delete confirmation"
+              >x
+              </button>
+              <p>Delete this session?</p>
+              <form
+                action="/sessions/trainer/<%= sessionDetail.session.id %>"
+                method="post"
+              >
+                <button
+                  type="submit"
+                  name="action"
+                  value="delete"
+                  class="delete-button table-delete-button"
+                >
+                  Confirm delete
+                </button>
+              </form>
+            </div>
             </span>
             </div>
           <% } %>

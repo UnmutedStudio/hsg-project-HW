@@ -6,9 +6,13 @@
         <a href="/sessions" class="<%= currentPage === 'sessions' ? 'nav-active' : '' %>">
             <img src="/img/icons/sessions.svg" alt="" class="nav-icon">
             <span>Sessions</span>
-        <a href="/blog-posts">
-            <img src="/img/icons/blog.svg" alt="" class="nav-icon">
-            <span>Blog</span>
+        </a>
+        <a
+        href="/blog-posts"
+        class="<%= currentPage === 'blog-posts' ? 'nav-active' : '' %>"
+        >
+        <img src="/img/icons/blog.svg" alt="" class="nav-icon">
+        <span>Blog</span>
         </a>
         <a href="/signup">
             <img src="/img/icons/dashboard.svg" alt="" class="nav-icon">
@@ -24,55 +28,87 @@
             <img src="/img/icons/dashboard.svg" alt="" class="nav-icon">
             <span>Dashboard</span>
         </a>
-        <a href="/activities" class="desktop-nav-only">
-            <span>Activities</span>
+        <a
+        href="/activities"
+        class="desktop-nav-only <%= currentPage === 'activities' ? 'nav-active' : '' %>"
+        >
+        <span>Activities</span>
         </a>
         <a href="/blog-posts/admin" class="<%= currentPage === 'blog-posts' ? 'nav-active' : '' %>">
             <img src="/img/icons/blog.svg" alt="" class="nav-icon">
             <span>Blog</span>
         </a>
-        <a href="/bookings/admin" class="desktop-nav-only">
-            <span>Bookings</span>
+        <a
+        href="/bookings/admin"
+        class="desktop-nav-only <%= currentPage === 'bookings' ? 'nav-active' : '' %>"
+        >
+        <span>Bookings</span>
         </a>
-        <a href="/locations" class="desktop-nav-only">
-            <span>Locations</span>
+        <a
+        href="/locations"
+        class="desktop-nav-only <%= currentPage === 'locations' ? 'nav-active' : '' %>"
+        >
+        <span>Locations</span>
         </a>
         <a href="/sessions/admin" class="<%= currentPage === 'sessions' ? 'nav-active' : '' %>">
             <img src="/img/icons/sessions.svg" alt="" class="nav-icon">
             <span>Sessions</span>
         </a>
-        <a href="/users" class="desktop-nav-only">
-            <span>Users</span>
+        <a
+        href="/users"
+        class="desktop-nav-only <%= currentPage === 'users' ? 'nav-active' : '' %>"
+        >
+        <span>Users</span>
         </a> 
     <% } %>
-    <% if (role == "member") { %>
-        <a href="/dashboard" class="<%= currentPage === 'dashboard' ? 'nav-active' : '' %>">
+        <% if (role == "member") { %>
+        <a href="/dashboard"
+            class="<%= currentPage === 'dashboard' ? 'nav-active' : '' %>">
             <img src="/img/icons/dashboard.svg" alt="" class="nav-icon">
             <span>Dashboard</span>
         </a>
-        <a href="/blog-posts" class="<%= currentPage === 'blog-posts' ? 'nav-active' : '' %>">
-            <img src="/img/icons/blog.svg" alt="" class="nav-icon">
-            <span>Blog</span>
-        </a>
-        <a href="/sessions" class="<%= currentPage === 'sessions' ? 'nav-active' : '' %>">
+        <a
+            href="/sessions"
+            class="<%= currentPage === 'sessions' ? 'nav-active' : '' %>">
             <img src="/img/icons/sessions.svg" alt="" class="nav-icon">
             <span>Sessions</span>
         </a>
-    <% } %>
-    <% if (role == "trainer") { %>
-        <a href="/trainer">
+        <a
+            href="/bookings"
+            class="<%= currentPage === 'bookings' ? 'nav-active' : '' %>">
+            <img src="/img/icons/sessions.svg" alt="" class="nav-icon">
+            <span>My Bookings</span>
+        </a>
+        <a
+            href="/blog-posts"
+            class="<%= currentPage === 'blog-posts' ? 'nav-active' : '' %>">
+            <img src="/img/icons/blog.svg" alt="" class="nav-icon">
+            <span>Blog</span>
+        </a>
+        <% } %>
+        <% if (role == "trainer") { %>
+        <a
+            href="/trainer"
+            class="<%= currentPage === 'dashboard' ? 'nav-active' : '' %>"
+        >
             <img src="/img/icons/dashboard.svg" alt="" class="nav-icon">
             <span>Dashboard</span>
         </a>
-        <a href="/blog-posts">
+        <a
+            href="/blog-posts"
+            class="<%= currentPage === 'blog-posts' ? 'nav-active' : '' %>"
+        >
             <img src="/img/icons/blog.svg" alt="" class="nav-icon">
             <span>Blog</span>
         </a>
-                <a href="/sessions/trainer">
+        <a
+            href="/sessions/trainer"
+            class="<%= currentPage === 'sessions' ? 'nav-active' : '' %>"
+        >
             <img src="/img/icons/sessions.svg" alt="" class="nav-icon">
             <span>Sessions</span>
         </a>
-    <% } %> 
+        <% } %>
     <% if (authenticatedUser) { %>
         <a href="/logout">
             <img src="/img/icons/logout.svg" alt="" class="nav-icon">

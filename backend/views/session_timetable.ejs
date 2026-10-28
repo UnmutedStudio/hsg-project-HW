@@ -19,7 +19,8 @@
       <% } %>
       <%- include("partials/nav.ejs", {
         authenticatedUser: authenticatedUser,
-        role: authenticatedUser ? authenticatedUser.role : null
+        role: authenticatedUser ? authenticatedUser.role : null,
+        activePage: "sessions"
       }) %>
       <section class="timetable-toolbar">
         <div class="page-intro">

@@ -12,44 +12,166 @@
       }) %>
       <%- include("partials/nav.ejs", {
         authenticatedUser: authenticatedUser,
-        role: authenticatedUser.role
+        role: authenticatedUser.role,
+        activePage: "bookings"
       }) %>
-
     <section>
       <h2 class="text-2xl">My Bookings</h2>
         <p>View and manage your upcoming High Street Gym sessions.</p>
-      
+      <form
+        action="/bookings"
+        method="get"
+        class="booking-status-filter"
+      >
+        <label for="status-filter" class="sr-only">
+          Filter bookings by status
+        </label>
+        <select
+          name="status_filter"
+          id="status-filter"
+          class="management-filter-select"
+        >
+          <option value="">
+            All Bookings
+          </option>
+          <option
+            value="upcoming"
+            <%= selectedStatusFilter === 'upcoming'
+              ? 'selected'
+              : '' %>
+          >
+            Upcoming
+          </option>
+          <option
+            value="completed"
+            <%= selectedStatusFilter === 'completed'
+              ? 'selected'
+              : '' %>
+          >
+            Completed
+          </option>
+          <option
+            value="cancelled"
+            <%= selectedStatusFilter === 'cancelled'
+              ? 'selected'
+              : '' %>
+          >
+            Cancelled
+          </option>
+        </select>
+        <div class="booking-date-group">
+        <span class="date-range-label">
+          Date range:
+        </span>
+        <label for="booking-date-from" class="sr-only">
+          Start date
+        </label>
+        <input
+          type="date"
+          name="date_from"
+          id="booking-date-from"
+          value="<%= dateFrom %>"
+          aria-label="Start date"
+        />
+        <label for="booking-date-to" class="sr-only">
+          End date
+        </label>
+        <input
+          type="date"
+          name="date_to"
+          id="booking-date-to"
+          value="<%= dateTo %>"
+          aria-label="End date"
+        />
+      </div>
+        <div class="booking-filter-actions">
+        <button
+          type="submit"
+          class="primary-button filter-button"
+        >
+          Filter
+        </button>
+
+        <a
+          href="/bookings"
+          class="secondary-button filter-button"
+        >
+          Clear
+        </a>
+      </div>
+      </form>
       <section class="booking-list">
         <% if (bookingDetails.length == 0) { %>
         <p>You do not currently have any bookings.</p>
         <a href="/sessions">View Session Timetable</a>
         <% } %>
-
         <% for (let bookingDetail of bookingDetails) { %>
-        <article class="booking-card">
-          <h3><%= bookingDetail.activity.activityName %></h3>
-          <p> Trainer: <%= bookingDetail.trainer.firstName %> <%= bookingDetail.trainer.lastName %></p>
-          <p> Location: <%= bookingDetail.location.locationName %> </p>
-          <p>Date: <%= bookingDetail.session.dateSession.toLocaleDateString("en-AU") %></p>
-          <p>Time: <%= bookingDetail.session.timeSession %></p>
-          <p>Duration: <%= bookingDetail.session.duration %> minutes</p>
-          <p>Booking status: <%= bookingDetail.booking.bookingStatus %></p>
-          <% if (bookingDetail.booking.bookingStatus == "confirmed") { %>
-          <form   
-            action ="/bookings/<%= bookingDetail.booking.id %>/delete"
-            method="post"
+          <%
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const sessionDate = new Date(
+              bookingDetail.session.dateSession
+            );
+            sessionDate.setHours(0, 0, 0, 0);
+            const isCompleted = sessionDate < today;
+            const displayStatus = isCompleted
+              ? "Completed"
+              : bookingDetail.booking.bookingStatus;
+          %>
+          <article
+            class="booking-card <%= isCompleted
+              ? 'booking-card-completed'
+              : 'booking-card-upcoming' %>"
           >
-          <button
-            type="submit"
-            name="action"
-            value="delete"
-          >
-            Cancel Booking
-          </button>
-          </form>
-          <% } %>
-        </article>
-      <% } %>
+            <h3><%= bookingDetail.activity.activityName %></h3>
+            <span class="status-pill <%= isCompleted
+              ? 'status-completed'
+              : 'status-active' %>"
+            >
+              <%= displayStatus %>
+            </span>
+            <p>
+              Trainer:
+              <%= bookingDetail.trainer.firstName %>
+              <%= bookingDetail.trainer.lastName %>
+            </p>
+            <p>
+              Location:
+              <%= bookingDetail.location.locationName %>
+            </p>
+            <p>
+              Date:
+              <%= bookingDetail.session.dateSession.toLocaleDateString("en-AU") %>
+            </p>
+            <p>
+              Time:
+              <%= bookingDetail.session.timeSession.substring(0, 5) %>
+            </p>
+            <p>
+              Duration:
+              <%= bookingDetail.session.duration %> minutes
+            </p>
+            <% if (
+              !isCompleted &&
+              bookingDetail.booking.bookingStatus === "confirmed"
+            ) { %>
+              <form
+                action="/bookings/<%= bookingDetail.booking.id %>/delete"
+                method="post"
+                class="booking-card-actions"
+              >
+                <button
+                  type="submit"
+                  name="action"
+                  value="delete"
+                  class="booking-cancel-button"
+                >
+                  Cancel Booking
+                </button>
+              </form>
+            <% } %>
+          </article>
+        <% } %>
     </section>
     </section>
     <%- include("partials/footer.ejs") %>

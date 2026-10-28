@@ -121,6 +121,29 @@
                 </option>
               <% } %>
             </select>
+            <span class="date-range-label">
+              Date range:
+            </span>
+            <label for="booking-date-from" class="sr-only">
+              Start date
+            </label>
+            <input
+              type="date"
+              name="date_from"
+              id="booking-date-from"
+              value="<%= dateFrom %>"
+              aria-label="Start date"
+            />
+            <label for="booking-date-to" class="sr-only">
+              End date
+            </label>
+            <input
+              type="date"
+              name="date_to"
+              id="booking-date-to"
+              value="<%= dateTo %>"
+              aria-label="End date"
+            />
             <button
               type="submit"
               class="primary-button filter-button"
@@ -272,26 +295,41 @@
                 <a
                   href="/bookings/admin/<%= bookingDetail.booking.id %>#booking-form"
                   class="table-action">Edit</a>
-                <details class="delete-confirmation">
-                  <summary class="table-delete-action">Delete</summary>
-                  <div class="delete-confirmation-box">
-                    <p>Delete this booking?</p>
-                    <form
-                      action="/bookings/admin/<%= bookingDetail.booking.id %>"
-                      method="post"
-                    >
-                      <button
-                        type="submit"
-                        name="action"
-                        value="delete"
-                        class="delete-button table-delete-button"
-                      >
-                        Confirm delete
-                      </button>
-                    </form>
-                  </div>
-                </details>
-              </span>
+              <button
+                type="button"
+                class="table-delete-action"
+                popovertarget="delete-booking-<%= bookingDetail.booking.id %>"
+              >
+                Delete
+              </button>
+              <div
+                id="delete-booking-<%= bookingDetail.booking.id %>"
+                class="delete-confirmation-popover"
+                popover
+              >
+                <button
+                  type="button"
+                  class="delete-confirmation-close"
+                  popovertarget="delete-booking-<%= bookingDetail.booking.id %>"
+                  popovertargetaction="hide"
+                  aria-label="Close delete confirmation"
+                >x
+                </button>
+                <p>Delete this booking?</p>
+                <form
+                  action="/bookings/admin/<%= bookingDetail.booking.id %>"
+                  method="post"
+                >
+                  <button
+                    type="submit"
+                    name="action"
+                    value="delete"
+                    class="delete-button table-delete-button"
+                  >
+                    Confirm delete
+                  </button>
+                </form>
+              </div>
               </span>
             </div>
           <% } %>

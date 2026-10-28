@@ -29,45 +29,49 @@
           method="get"
           class="management-filter-form"
         >
-        <label for="search-term" class="sr-only">
-          Search users:
-        </label>
-          <input
-            type="search"
-            name="search_term"
-            id="search-term"
-            placeholder="Search users..."
-          />
-        <button type="submit" class="primary-button filter-button">
-          Search
-        </button>
-        <a href="/users" class="secondary-button filter-button">
-          Clear
-        </a>
-        <div class="activity-filter">
-          <select
-            name="user_filter"
-            class="management-filter-select"
-          >
-          <option value="">
-            All Roles
-          </option>
-            <% for (const role of userFilters) { %>
-              <option
-                value="<%= role %>"
-                <%= selectedUserFilter === role ? 'selected' : '' %>
-              >
-              <%= role %>
-              </option>
-            <% } %>
-          </select>
-          <button
-            type="submit"
-            class="primary-button filter-button"
-          >
-            Filter
-          </button>
-        </div>
+          <label for="search-term" class="sr-only">
+            Search users:
+          </label>
+          <div class="crud-search-group">
+            <input
+              type="search"
+              name="search_term"
+              id="search-term"
+              placeholder="Search users..."
+            />
+            <button
+              type="submit"
+              class="primary-button filter-button"
+            >
+              Search
+            </button>
+            <a
+              href="/users"
+              class="secondary-button filter-button"
+            >
+              Clear
+            </a>
+            <select
+              name="user_filter"
+              class="management-filter-select"
+            >
+              <option value="">All Roles</option>
+              <% for (const role of userFilters) { %>
+                <option
+                  value="<%= role %>"
+                  <%= selectedUserFilter === role ? 'selected' : '' %>
+                >
+                  <%= role %>
+                </option>
+              <% } %>
+            </select>
+            <button
+              type="submit"
+              class="primary-button filter-button"
+            >
+              Filter
+            </button>
+          </div>
         </form>
       </section>
       <section class="new-user management-form-section" id="user-form">

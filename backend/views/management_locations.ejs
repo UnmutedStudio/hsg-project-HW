@@ -21,40 +21,52 @@
       <section class="management-filters">
         <form
           action="/locations"
-          method="get"  
+          method="get"
           class="management-filter-form"
         >
-        <label for="search-term" class="sr-only">Search locations:</label>
-          <input
-            type="search"
-            name="search_term"
-            id="search-term"
-            placeholder="Search locations..."
-          />
-          <button type="submit" class="primary-button filter-button">Search</button>
-          <a href="/locations" class="secondary-button filter-button">Clear</a>
-            <div class="activity-filter">
-              <select
-                name="location_filter"
-                class="management-filter-select"
-              >
-                <option value="">All Locations</option>
-                <% for (const locationName of locationFilters) { %>
+          <label for="search-term" class="sr-only">
+            Search locations:
+          </label>
+          <div class="crud-search-group">
+            <input
+              type="search"
+              name="search_term"
+              id="search-term"
+              placeholder="Search locations..."
+            />
+            <button
+              type="submit"
+              class="primary-button filter-button"
+            >
+              Search
+            </button>
+            <a
+              href="/locations"
+              class="secondary-button filter-button"
+            >
+              Clear
+            </a>
+            <select
+              name="location_filter"
+              class="management-filter-select"
+            >
+              <option value="">All Locations</option>
+              <% for (const locationName of locationFilters) { %>
                 <option
                   value="<%= locationName %>"
                   <%= selectedLocationFilter === locationName ? 'selected' : '' %>
                 >
                   <%= locationName %>
                 </option>
-                <% } %>
-              </select>
-              <button
-                type="submit"
-                class="primary-button filter-button"
-              >
-                Filter
-              </button>
-            </div>
+              <% } %>
+            </select>
+            <button
+              type="submit"
+              class="primary-button filter-button"
+            >
+              Filter
+            </button>
+          </div>
         </form>
       </section>
       <section class="new-location management-form-section" id="location-form">

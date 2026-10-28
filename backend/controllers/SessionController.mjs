@@ -258,10 +258,26 @@ export class SessionController {
               sessionDetail.location.locationName === selectedLocationFilter,
           );
         }
+        const weekStart = new Date();
+          weekStart.setHours(0, 0, 0, 0);
+        const weekEnd = new Date(weekStart);
+          weekEnd.setDate(weekEnd.getDate() + 6);
+        const formatDateInput = (date) => {
+          const year = date.getFullYear();
+          const month = String(
+            date.getMonth() + 1,
+          ).padStart(2, '0');
+          const day = String(
+            date.getDate(),
+          ).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+        };
         const dateFrom =
-          req.query.date_from?.trim() ?? '';
+          req.query.date_from?.trim() ||
+          formatDateInput(weekStart);
         const dateTo =
-          req.query.date_to?.trim() ?? '';
+          req.query.date_to?.trim() ||
+          formatDateInput(weekEnd);
         if (dateFrom) {
           sessionDetails = sessionDetails.filter(
             (sessionDetail) =>
@@ -436,8 +452,24 @@ export class SessionController {
             locationFilters.push(sessionDetail.location.locationName);
           }
         }
-        const dateFrom = req.query.date_from?.trim() ?? '';
-        const dateTo = req.query.date_to?.trim() ?? '';
+        const weekStart = new Date();
+          weekStart.setHours(0, 0, 0, 0);
+
+        const weekEnd = new Date(weekStart);
+          weekEnd.setDate(weekEnd.getDate() + 6);
+
+        const formatDateInput = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+        };
+        const dateFrom =
+          req.query.date_from?.trim() ||
+          formatDateInput(weekStart);
+        const dateTo =
+          req.query.date_to?.trim() ||
+          formatDateInput(weekEnd);  
         if (dateFrom) {
           sessionDetails = sessionDetails.filter(
             (sessionDetail) =>
