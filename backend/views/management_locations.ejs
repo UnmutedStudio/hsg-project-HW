@@ -152,26 +152,42 @@
               <% } %>
             </span>
             <span class="table-actions"><a href="/locations/<%= location.id %>#location-form" class="table-action">Edit</a>
-              <details class="delete-confirmation">
-                <summary class="table-delete-action">
-                  Delete
-                </summary>
-                <div class="delete-confirmation-box">
-                  <p>Delete this location?</p>  
-                  <form
-                    action="/locations/<%= location.id %>" 
-                    method="post"
+              <button
+                type="button"
+                class="table-delete-action"
+                popovertarget="delete-location-<%= location.id %>"
+              >
+                Delete
+              </button>
+              <div
+                id="delete-location-<%= location.id %>"
+                class="delete-confirmation-popover"
+                popover
+              >
+                <button
+                  type="button"
+                  class="delete-confirmation-close"
+                  popovertarget="delete-location-<%= location.id %>"
+                  popovertargetaction="hide"
+                  aria-label="Close delete confirmation"
+                >
+                  x
+                </button>
+                <p>Delete this location?</p>
+                <form
+                  action="/locations/<%= location.id %>"
+                  method="post"
+                >
+                  <button
+                    type="submit"
+                    name="action"
+                    value="delete"
+                    class="delete-button table-delete-button"
                   >
-                    <button
-                      type="submit"
-                      name="action"
-                      value="delete"
-                      class="delete-button table-delete-button"
-                    >Confirm delete
-                    </button>
-                  </form>
-                </div>
-              </details>
+                    Confirm delete
+                  </button>
+                </form>
+              </div>
             </span>
           </div>
         <% } %>

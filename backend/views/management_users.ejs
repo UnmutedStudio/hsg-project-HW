@@ -198,27 +198,42 @@
             >
               Edit
             </a>
-            <details class="delete-confirmation">
-              <summary class="table-delete-action">
-                Delete
-              </summary>
-              <div class="delete-confirmation-box">
-                <p>Delete this user?</p>
-                <form
-                  action="/users/<%= user.id %>"
-                  method="post"
+            <button
+              type="button"
+              class="table-delete-action"
+              popovertarget="delete-user-<%= user.id %>"
+            >
+              Delete
+            </button>
+            <div
+              id="delete-user-<%= user.id %>"
+              class="delete-confirmation-popover"
+              popover
+            >
+              <button
+                type="button"
+                class="delete-confirmation-close"
+                popovertarget="delete-user-<%= user.id %>"
+                popovertargetaction="hide"
+                aria-label="Close delete confirmation"
+              >
+                x
+              </button>
+              <p>Delete this user?</p>
+              <form
+                action="/users/<%= user.id %>"
+                method="post"
+              >
+                <button
+                  type="submit"
+                  name="action"
+                  value="delete"
+                  class="delete-button table-delete-button"
                 >
-                  <button
-                    type="submit"
-                    name="action"
-                    value="delete"
-                    class="delete-button table-delete-button"
-                  >
-                    Confirm delete
-                  </button>
-                </form>
-              </div>
-            </details>
+                  Confirm delete
+                </button>
+              </form>
+            </div>
           </span>
           </div>
         <% } %>

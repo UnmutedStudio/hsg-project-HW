@@ -231,19 +231,14 @@
             >
             Create New Session </button>
           <% } else { %>
-            <button 
-              class="two-col"
-              type="submit"
-              name="action"
-              value="update"
-            >
-            Update Session</button>
-            <button 
-              class="two-col"
-              type="submit"
-              name="action"
-              value="delete"
-            >Delete Session</button>
+          <button 
+            class="primary-button two-col"
+            type="submit"
+            name="action"
+            value="update"
+          >
+            Update Session
+          </button>
           <% } %>
           </form>
         </section>
@@ -344,7 +339,7 @@
               </button>
               <p>Delete this session?</p>
               <form
-                action="/sessions/trainer/<%= sessionDetail.session.id %>"
+                action="/sessions/admin/<%= sessionDetail.session.id %>"
                 method="post"
               >
                 <button

@@ -245,6 +245,39 @@ export class UserController {
     const selectedUserId = req.params.id;
     const formData = req.body;
     const action = formData.action;
+    if (action === "delete") {
+      if (!selectedUserId) {
+        res.status(400).render("status.ejs", {
+          status: "Invalid user ID",
+          message: "Please select a valid user to delete.",
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      UserModel.delete(selectedUserId)
+        .then((result) => {
+          if (result.affectedRows > 0) {
+            res.redirect("/users");
+          } else {
+            res.status(404).render("status.ejs", {
+              status: "User delete error",
+              message: "The user could not be found.",
+              authenticatedUser: req.authenticatedUser,
+            });
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+
+          res.status(500).render("status.ejs", {
+            status: "Database error",
+            message: "The user could not be deleted.",
+            authenticatedUser: req.authenticatedUser,
+          });
+        });
+
+      return;
+    }
     const passwordWasEntered =
       typeof formData.password === "string" &&
       formData.password.length > 0;
@@ -348,27 +381,6 @@ export class UserController {
           res.status(500).render("status.ejs", {
             status: "Database error",
             message: "The user could not be updated",
-            authenticatedUser: req.authenticatedUser,
-          });
-        });
-    } else if (action === "delete") {
-      UserModel.delete(user.id)
-        .then((result) => {
-          if (result.affectedRows > 0) {
-            res.redirect("/users");
-          } else {
-            res.status(500).render("status.ejs", {
-              status: "user delete error",
-              message: "The user could not be found.",
-              authenticatedUser: req.authenticatedUser,
-            });
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-          res.status(500).render("status.ejs", {
-            status: "Database error",
-            message: "The user could not be deleted.",
             authenticatedUser: req.authenticatedUser,
           });
         });

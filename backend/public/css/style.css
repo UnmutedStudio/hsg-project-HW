@@ -1228,6 +1228,7 @@ main > section {
 
 .delete-confirmation-popover {
   position: relative;
+  text-align: left;
   width: min(18rem, calc(100% - 2rem));
   padding: 1rem;
   border: 1px solid #d6dee5;
@@ -2230,15 +2231,6 @@ and keep the most common actions accessible.
     grid-template-columns: 1fr;
   }
 
-  .activity-table,
-  .user-table,
-  .location-table,
-  .session-table,
-  .booking-table,
-  .blog-table {
-    min-width: max-content;
-  }
-
   .management-form label {
     width: 100%;
   }
@@ -2386,6 +2378,184 @@ and keep the most common actions accessible.
   .blog-post-card {
     min-height: auto;
     padding: 1rem;
+  }
+  .booking-status-filter {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .booking-status-filter .management-filter-select {
+    grid-column: 1 / -1;
+    width: 100% !important;
+    max-width: none;
+  }
+
+  .booking-date-group {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .booking-date-group .date-range-label {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .booking-date-group input[type='date'] {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .booking-filter-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .booking-filter-actions .filter-button {
+    width: auto;
+    min-width: 5rem;
+  }
+
+  /* Activities and Locations mobile table scrolling */
+  .management-table.location-table.columns-4 {
+    grid-template-columns: 9rem 28rem 6rem 8rem;
+    width: calc(100% - 2rem);
+    max-width: calc(100% - 2rem);
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .management-table.location-table.columns-4::-webkit-scrollbar {
+    height: 0.5rem;
+  }
+
+  .management-table.location-table.columns-4::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background-color: var(--navy);
+  }
+  /* Mobile CRUD tables: preserve columns and scroll inside panel */
+  .management-table.user-table.columns-5 {
+    grid-template-columns: repeat(5, minmax(9rem, 1fr));
+    width: calc(100% - 2rem);
+    max-width: calc(100% - 2rem);
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Blog mobile table */
+  .management-table.location-table.columns-5 {
+    grid-template-columns: repeat(5, 9rem) !important;
+    width: calc(100% - 2rem);
+    max-width: calc(100% - 2rem);
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Admin and trainer Sessions mobile tables */
+  .management-table.session-table.columns-8 {
+    grid-template-columns: repeat(8, 8rem) !important;
+    width: calc(100% - 2rem);
+    max-width: calc(100% - 2rem);
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Bookings mobile table */
+  .management-table.booking-table.columns-8 {
+    grid-template-columns: repeat(8, 8rem) !important;
+    width: calc(100% - 2rem);
+    max-width: calc(100% - 2rem);
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Admin and Trainer Sessions mobile table scrolling */
+  .management-table.session-table.columns-8 {
+    display: grid;
+    grid-template-columns: repeat(8, 8rem) !important;
+    width: calc(100% - 2rem);
+    max-width: calc(100% - 2rem);
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .management-table.session-table.columns-9 {
+    display: grid;
+    grid-template-columns: repeat(9, 8rem) !important;
+    width: calc(100% - 2rem);
+    max-width: calc(100% - 2rem);
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Mobile Sessions and Bookings filter panels */
+  .booking-filter-form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .booking-filter-form .crud-search-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .booking-filter-form .crud-search-group input[type='search'] {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .booking-filter-form .crud-search-group .filter-button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .booking-filter-form .crud-filter-group {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .booking-filter-form .crud-filter-group .management-filter-select,
+  .booking-filter-form .crud-filter-group input[type='date'] {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .booking-filter-form .date-range-label {
+    width: 100%;
+    white-space: normal;
+  }
+
+  .booking-filter-form .crud-filter-group .filter-button {
+    width: 100%;
+    min-width: 0;
   }
 }
 /* desktop layouts */

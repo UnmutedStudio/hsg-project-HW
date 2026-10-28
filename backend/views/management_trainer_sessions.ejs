@@ -10,7 +10,11 @@
         authenticatedUser: authenticatedUser,
         pageTitle: "Manage My Sessions"
       }) %>
-      <%- include("partials/nav.ejs", {authenticatedUser: authenticatedUser, role: authenticatedUser.role}) %>
+      <%- include("partials/nav.ejs", {
+        authenticatedUser: authenticatedUser,
+        role: authenticatedUser.role,
+        activePage: "sessions"
+      }) %>
       <section class="manage-heading">
         <div>
           <h2 class="text-2xl">Manage My Sessions</h2>
@@ -277,27 +281,42 @@
               href="/sessions/trainer/<%= sessionDetail.session.id %>#session-form"
               class="table-action"
             >Edit</a>
-            <details class="delete-confirmation">
-              <summary class="table-delete-action">
-                Delete
-              </summary>
-              <div class="delete-confirmation-box">
-                <p>Delete this session?</p>
-                <form
-                  action="/sessions/trainer/<%= sessionDetail.session.id %>"
-                  method="post"
+            <button
+              type="button"
+              class="table-delete-action"
+              popovertarget="delete-trainer-session-<%= sessionDetail.session.id %>"
+            >
+              Delete
+            </button>
+            <div
+              id="delete-trainer-session-<%= sessionDetail.session.id %>"
+              class="delete-confirmation-popover"
+              popover
+            >
+              <button
+                type="button"
+                class="delete-confirmation-close"
+                popovertarget="delete-trainer-session-<%= sessionDetail.session.id %>"
+                popovertargetaction="hide"
+                aria-label="Close delete confirmation"
+              >
+                x
+              </button>
+              <p>Delete this session?</p>
+              <form
+                action="/sessions/trainer/<%= sessionDetail.session.id %>"
+                method="post"
+              >
+                <button
+                  type="submit"
+                  name="action"
+                  value="delete"
+                  class="delete-button table-delete-button"
                 >
-                  <button
-                    type="submit"
-                    name="action"
-                    value="delete"
-                    class="delete-button table-delete-button"
-                  >
-                    Confirm delete
-                  </button>
-                </form>
-              </div>
-            </details>
+                  Confirm delete
+                </button>
+              </form>
+            </div>
             </span>
           </div>
         <% } %>
