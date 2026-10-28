@@ -3,3 +3,21 @@ Investigate mobile nav height differences between pages.
 Likely caused by differing content heights or flex item sizing.
 Functionality is unaffected.
 */
+static getById(id) {
+  return this.query(
+    `
+      SELECT *
+      FROM blog_posts
+      INNER JOIN users
+        ON blog_posts.user_id = users.id
+      WHERE blog_posts.id = ?
+        AND blog_posts.deleted = 0
+        AND users.deleted = 0
+    `,
+    [id],
+  ).then((result) =>
+    result.length > 0
+      ? this.tableToModel(result[0])
+      : Promise.reject("not found"),
+  );
+}

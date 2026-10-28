@@ -24,22 +24,27 @@
           <p>Welcome to the trainer dashboard.</p>
         </article>
       </section>
-
       <section class="admin-section">
         <h2 class="text-2xl">Quick Actions</h2>
         <div class="admin-card-list">
-            <a href="/sessions/trainer">
-                <article class="admin-card">
-                    <h3>Sessions</h3>
-                    <p>Create, edit and schedule training sessions.</p>
-                </article>
-            </a>
-            <a href="/blog-posts">
+          <a href="/sessions/trainer">
               <article class="admin-card">
-                  <h3>View Blog</h3>
-                  <p>View and create blog content.</p>
+                  <h3>Sessions</h3>
+                  <p>Create, edit and schedule training sessions.</p>
               </article>
-            </a>
+          </a>
+          <a href="/blog-posts">
+            <article class="admin-card">
+                <h3>View Blog</h3>
+                <p>View and create blog content.</p>
+            </article>
+          </a>
+          <a href="/blog-posts/create" class="admin-card">
+            <article>
+              <h3>Create Blog Post</h3>
+              <p>Share a post with the gym community.</p>
+            </article>
+          </a>
         </div>
       </section>
       <%- include("partials/footer.ejs") %>

@@ -9,7 +9,7 @@
       <% if (authenticatedUser) { %>
         <%- include("partials/header_authenticated.ejs", {
           authenticatedUser: authenticatedUser,
-          pageTitle: "Session Timetable"
+          pageTitle: ""
         }) %>
       <% } else { %>
         <%- include("partials/header_guest.ejs", {
@@ -17,17 +17,93 @@
           pageTitle: "Session Timetable"
         }) %>
       <% } %>
-      <% if (authenticatedUser) { %>
       <%- include("partials/nav.ejs", {
         authenticatedUser: authenticatedUser,
-        role: authenticatedUser.role
+        role: authenticatedUser ? authenticatedUser.role : null
       }) %>
-      <% } %>
       <section class="page-intro">
         <h2 class="text-2xl">Session Timetable</h2>
         <p>
           View the upcoming activities available at High Street Gym.
         </p>
+      </section>
+      <section class="management-filters">
+        <form
+          action="/sessions"
+          method="get"
+          class="management-filter-form"
+        >
+          <div class="activity-filter">
+            <select
+              name="activity_filter"
+              class="management-filter-select"
+            >
+              <option value="">All Activities</option>
+              <% for (const activityName of activityFilters) { %>
+                <option
+                  value="<%= activityName %>"
+                  <%= selectedActivityFilter === activityName ? 'selected' : '' %>
+                >
+                  <%= activityName %>
+                </option>
+              <% } %>
+            </select>
+          </div>
+          <div class="activity-filter">
+            <select
+              name="trainer_filter"
+              class="management-filter-select"
+            >
+              <option value="">All Trainers</option>
+
+              <% for (const trainerName of trainerFilters) { %>
+                <option
+                  value="<%= trainerName %>"
+                  <%= selectedTrainerFilter === trainerName ? 'selected' : '' %>
+                >
+                  <%= trainerName %>
+                </option>
+              <% } %>
+            </select>
+          </div>
+          <div class="activity-filter">
+            <select
+              name="location_filter"
+              class="management-filter-select"
+            >
+            <option value="">All Locations</option>
+              <% for (const locationName of locationFilters) { %>
+                <option
+                  value="<%= locationName %>"
+                  <%= selectedLocationFilter === locationName ? 'selected' : '' %>
+                >
+                  <%= locationName %>
+                </option>
+              <% } %>
+            </select>
+          </div>
+          <input
+            type="date"
+            name="date_from"
+            id="date-from"
+            value="<%= dateFrom %>"
+          />
+          <input
+            type="date"
+            name="date_to"
+            id="date-to"
+            value="<%= dateTo %>"
+          />
+          <button
+            type="submit"
+            class="primary-button filter-button"
+          >
+            Filter
+          </button>
+          <a href="/sessions" class="secondary-button filter-button">
+            Clear
+          </a>
+        </form>
       </section>
       <section class="session-list">
         <% if (sessionDetails.length == 0) { %>

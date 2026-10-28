@@ -216,6 +216,7 @@ export class BlogPostController {
 
     BlogPostModel.getAll()
       .then((blogPosts) => {
+        const authorFilters = [];
         //search the list of all blog posts
         const selectedBlogPost =
           blogPosts.find((blogPost) => blogPost.id == selectedBlogPostId,) ??

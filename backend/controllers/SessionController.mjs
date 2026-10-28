@@ -73,39 +73,123 @@ export class SessionController {
   static viewSessionTimetable(req, res) {
     SessionDetailModel.getAll()
       .then((sessionDetails) => {
-        if (req.authenticatedUser && req.authenticatedUser.role === 'member') {
-          BookingDetailsModel.getByMemberId(req.authenticatedUser.id)
-            .then((bookings) => {
-              res.render('session_timetable.ejs', {
-                sessionDetails,
-                bookings,
-                authenticatedUser: req.authenticatedUser,
-              });
-            })
-            .catch((error) => {
-              console.error(error);
-              res.status(500).render('status.ejs', {
-                status: 'Database error',
-                message: 'Bookings could not be loaded.',
-                authenticatedUser: req.authenticatedUser,
-              });
-            });
-        } else {
-          res.render('session_timetable.ejs', {
-            sessionDetails,
-            bookings: [],
-            authenticatedUser: req.authenticatedUser,
-          });
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        sessionDetails = sessionDetails.filter(
+          (sessionDetail) =>
+            sessionDetail.session.dateSession >= today,
+        );
+        const activityFilters = [];
+        for (const sessionDetail of sessionDetails) {
+          if (!activityFilters.includes(sessionDetail.activity.activityName)) {
+            activityFilters.push(sessionDetail.activity.activityName);
+          }
         }
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).render('status.ejs', {
-          status: 'Database error',
-          message: 'Sessions could not be loaded.',
+        const trainerFilters = [];
+        for (const sessionDetail of sessionDetails) {
+          const trainerName = `${sessionDetail.trainer.firstName} ${sessionDetail.trainer.lastName}`;
+          if (!trainerFilters.includes(trainerName)) {
+            trainerFilters.push(trainerName);
+          }
+        }
+        const locationFilters = [];
+        for (const sessionDetail of sessionDetails) {
+          if (!locationFilters.includes(sessionDetail.location.locationName)) {
+            locationFilters.push(sessionDetail.location.locationName);
+          }
+        }
+        const selectedActivityFilter =
+        req.query.activity_filter?.trim() ?? '';
+        if (selectedActivityFilter) {
+          sessionDetails = sessionDetails.filter(
+            (sessionDetail) =>
+              sessionDetail.activity.activityName ===
+              selectedActivityFilter,
+          );
+        }
+      const selectedTrainerFilter =
+        req.query.trainer_filter?.trim() ?? '';
+      if (selectedTrainerFilter) {
+        sessionDetails = sessionDetails.filter(
+          (sessionDetail) =>
+            `${sessionDetail.trainer.firstName} ${sessionDetail.trainer.lastName}` ===
+            selectedTrainerFilter,
+        );
+      }
+      const selectedLocationFilter =
+        req.query.location_filter?.trim() ?? '';
+      if (selectedLocationFilter) {
+        sessionDetails = sessionDetails.filter(
+          (sessionDetail) =>
+            sessionDetail.location.locationName ===
+            selectedLocationFilter,
+        );
+      }
+      const dateFrom =
+        req.query.date_from?.trim() ?? '';
+      const dateTo =
+        req.query.date_to?.trim() ?? '';
+      if (dateFrom) {
+        sessionDetails = sessionDetails.filter(
+          (sessionDetail) =>
+            sessionDetail.session.dateSession >=
+            new Date(dateFrom),
+        );
+      }
+      if (dateTo) {
+        sessionDetails = sessionDetails.filter(
+          (sessionDetail) =>
+            sessionDetail.session.dateSession <=
+            new Date(dateTo),
+        );
+      }
+      if (req.authenticatedUser && req.authenticatedUser.role === 'member') {
+        BookingDetailsModel.getByMemberId(req.authenticatedUser.id)
+          .then((bookings) => {
+            res.render('session_timetable.ejs', {
+              sessionDetails,
+              bookings,
+              activityFilters,
+              trainerFilters,
+              locationFilters,
+              selectedActivityFilter,
+              selectedTrainerFilter,
+              selectedLocationFilter,
+              dateFrom,
+              dateTo,
+              authenticatedUser: req.authenticatedUser,
+            });
+          })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).render('status.ejs', {
+              status: 'Database error',
+              message: 'Bookings could not be loaded.',
+              authenticatedUser: req.authenticatedUser,
+            });
+          });
+      } else {
+        res.render('session_timetable.ejs', {
+          sessionDetails,
+          bookings: [],
+          activityFilters,
+          trainerFilters,
+          locationFilters,
+          selectedActivityFilter,
+          selectedTrainerFilter,
+          selectedLocationFilter,
           authenticatedUser: req.authenticatedUser,
         });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).render('status.ejs', {
+        status: 'Database error',
+        message: 'Sessions could not be loaded.',
+        authenticatedUser: req.authenticatedUser,
       });
+    });
   }
   /**
    * Render the trainer session time table for the authenticated user
@@ -116,6 +200,129 @@ export class SessionController {
     const selectedSessionId = req.params.id;
     SessionDetailModel.getByTrainerId(req.authenticatedUser.id)
       .then((sessionDetails) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        sessionDetails = sessionDetails.filter(
+          (sessionDetail) =>
+            sessionDetail.session.dateSession >= today,
+        );
+        const searchTerm = req.query.search_term?.trim() ?? '';
+        if (searchTerm) {
+          sessionDetails = sessionDetails.filter(
+            (sessionDetail) =>
+              sessionDetail.activity.activityName
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              sessionDetail.location.locationName
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()),
+          );
+        }
+        const activityFilters = [];
+        for (const sessionDetail of sessionDetails) {
+          if (!activityFilters.includes(sessionDetail.activity.activityName)) {
+            activityFilters.push(sessionDetail.activity.activityName);
+          }
+        }
+        const locationFilters = [];
+        for (const sessionDetail of sessionDetails) {
+          if (!locationFilters.includes(sessionDetail.location.locationName)) {
+            locationFilters.push(sessionDetail.location.locationName);
+          }
+        }
+        const selectedActivityFilter = req.query.activity_filter?.trim() ?? '';
+        if (selectedActivityFilter) {
+          sessionDetails = sessionDetails.filter(
+            (sessionDetail) =>
+              sessionDetail.activity.activityName === selectedActivityFilter,
+          );
+        }
+        const selectedLocationFilter = req.query.location_filter?.trim() ?? '';
+        if (selectedLocationFilter) {
+          sessionDetails = sessionDetails.filter(
+            (sessionDetail) =>
+              sessionDetail.location.locationName === selectedLocationFilter,
+          );
+        }
+        const dateFrom =
+          req.query.date_from?.trim() ?? '';
+        const dateTo =
+          req.query.date_to?.trim() ?? '';
+        if (dateFrom) {
+          sessionDetails = sessionDetails.filter(
+            (sessionDetail) =>
+              sessionDetail.session.dateSession >=
+              new Date(dateFrom),
+          );
+        }
+        if (dateTo) {
+          sessionDetails = sessionDetails.filter(
+            (sessionDetail) =>
+              sessionDetail.session.dateSession <=
+              new Date(dateTo),
+          );
+        }   
+        const sortOrder = req.query.sort ?? 'default';
+        if (sortOrder === 'activity_asc') {
+          sessionDetails.sort((a, b) =>
+            a.activity.activityName.localeCompare(b.activity.activityName),
+          );
+        }
+        if (sortOrder === 'activity_desc') {
+          sessionDetails.sort((a, b) =>
+            b.activity.activityName.localeCompare(a.activity.activityName),
+          );
+        }
+        if (sortOrder === 'location_asc') {
+          sessionDetails.sort((a, b) =>
+            a.location.locationName.localeCompare(b.location.locationName),
+          );
+        }
+        if (sortOrder === 'location_desc') {
+          sessionDetails.sort((a, b) =>
+            b.location.locationName.localeCompare(a.location.locationName),
+          );
+        }
+        if (sortOrder === 'date_asc') {
+          sessionDetails.sort(
+            (a, b) => a.session.dateSession - b.session.dateSession,
+          );
+        }
+        if (sortOrder === 'date_desc') {
+          sessionDetails.sort(
+            (a, b) => b.session.dateSession - a.session.dateSession,
+          );
+        }
+        if (sortOrder === 'time_asc') {
+          sessionDetails.sort((a, b) =>
+            a.session.timeSession.localeCompare(b.session.timeSession),
+          );
+        }
+        if (sortOrder === 'time_desc') {
+          sessionDetails.sort((a, b) =>
+            b.session.timeSession.localeCompare(a.session.timeSession),
+          );
+        }
+        if (sortOrder === 'duration_asc') {
+          sessionDetails.sort(
+            (a, b) => a.session.duration - b.session.duration,
+          );
+        }
+        if (sortOrder === 'duration_desc') {
+          sessionDetails.sort(
+            (a, b) => b.session.duration - a.session.duration,
+          );
+        }
+        if (sortOrder === 'availability_asc') {
+          sessionDetails.sort(
+            (a, b) => a.session.availability - b.session.availability,
+          );
+        }
+        if (sortOrder === 'availability_desc') {
+          sessionDetails.sort(
+            (a, b) => b.session.availability - a.session.availability,
+          );
+        }
         const selectedSessionDetail = sessionDetails.find(
           (sessionDetail) => sessionDetail.session.id == selectedSessionId,
         );
@@ -141,7 +348,14 @@ export class SessionController {
                   selectedSession,
                   activities,
                   locations,
+                  activityFilters,
+                  locationFilters,
+                  selectedActivityFilter,
+                  selectedLocationFilter,
+                  dateFrom,
+                  dateTo, 
                   authenticatedUser: req.authenticatedUser,
+                  sortOrder,
                 });
               })
               .catch((error) => {
@@ -184,6 +398,11 @@ export class SessionController {
       : SessionDetailModel.getAll();
     sessionQuery
       .then((sessionDetails) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        sessionDetails = sessionDetails.filter(
+          (sessionDetail) => sessionDetail.session.dateSession >= today,
+        );
         const activityFilters = [];
         for (const sessionDetail of sessionDetails) {
           if (!activityFilters.includes(sessionDetail.activity.activityName)) {
@@ -203,22 +422,18 @@ export class SessionController {
             locationFilters.push(sessionDetail.location.locationName);
           }
         }
-        const dateFrom =
-          req.query.date_from?.trim() ?? '';
-        const dateTo =
-          req.query.date_to?.trim() ?? '';
+        const dateFrom = req.query.date_from?.trim() ?? '';
+        const dateTo = req.query.date_to?.trim() ?? '';
         if (dateFrom) {
           sessionDetails = sessionDetails.filter(
             (sessionDetail) =>
-              sessionDetail.session.dateSession >=
-              new Date(dateFrom),
+              sessionDetail.session.dateSession >= new Date(dateFrom),
           );
         }
         if (dateTo) {
           sessionDetails = sessionDetails.filter(
             (sessionDetail) =>
-              sessionDetail.session.dateSession <=
-              new Date(dateTo),
+              sessionDetail.session.dateSession <= new Date(dateTo),
           );
         }
         const selectedActivityFilter = req.query.activity_filter?.trim() ?? '';
@@ -294,13 +509,13 @@ export class SessionController {
           );
         }
         if (sortOrder === 'availability_asc') {
-          sessionDetails.sort((a, b) =>
-            a.session.availability - b.session.availability,
+          sessionDetails.sort(
+            (a, b) => a.session.availability - b.session.availability,
           );
         }
         if (sortOrder === 'availability_desc') {
-          sessionDetails.sort((a, b) =>
-            b.session.availability - a.session.availability,
+          sessionDetails.sort(
+            (a, b) => b.session.availability - a.session.availability,
           );
         }
         const selectedTrainerFilter = req.query.trainer_filter?.trim() ?? '';
@@ -318,7 +533,6 @@ export class SessionController {
               sessionDetail.location.locationName === selectedLocationFilter,
           );
         }
-        
         //search the list of all sessions
         const selectedSessionDetail = sessionDetails.find(
           (sessionDetail) => sessionDetail.session.id == selectedSessionId,
@@ -350,6 +564,8 @@ export class SessionController {
                       selectedActivityFilter,
                       selectedTrainerFilter,
                       selectedLocationFilter,
+                      dateFrom,
+                      dateTo, 
                       authenticatedUser: req.authenticatedUser,
                       sortOrder,
                     });

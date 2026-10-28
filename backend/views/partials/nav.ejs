@@ -24,59 +24,53 @@
             <img src="/img/icons/dashboard.svg" alt="" class="nav-icon">
             <span>Dashboard</span>
         </a>
-
         <a href="/activities" class="desktop-nav-only">
             <span>Activities</span>
         </a>
-
         <a href="/bookings/admin" class="desktop-nav-only">
             <span>Bookings</span>
         </a>
-
+        <a href="/blog-posts/admin" class="<%= currentPage === 'blog-posts' ? 'nav-active' : '' %>">
+            <img src="/img/icons/blog.svg" alt="" class="nav-icon">
+            <span>Blog</span>
+        </a>
         <a href="/locations" class="desktop-nav-only">
             <span>Locations</span>
         </a>
-
-        <a href="/users" class="desktop-nav-only">
-            <span>Users</span>
-        </a>
-
         <a href="/sessions/admin" class="<%= currentPage === 'sessions' ? 'nav-active' : '' %>">
             <img src="/img/icons/sessions.svg" alt="" class="nav-icon">
             <span>Sessions</span>
         </a>
-
-        <a href="/blog-posts/admin" class="<%= currentPage === 'blog-posts' ? 'nav-active' : '' %>">
+        <a href="/users" class="desktop-nav-only">
+            <span>Users</span>
+        </a> 
+    <% } %>
+    <% if (role == "member") { %>
+        <a href="/dashboard" class="<%= currentPage === 'dashboard' ? 'nav-active' : '' %>">
+            <img src="/img/icons/dashboard.svg" alt="" class="nav-icon">
+            <span>Dashboard</span>
+        </a>
+        <a href="/blog-posts" class="<%= currentPage === 'blog-posts' ? 'nav-active' : '' %>">
             <img src="/img/icons/blog.svg" alt="" class="nav-icon">
             <span>Blog</span>
         </a>
-    <% } %>
-    <% if (role == "member") { %>
         <a href="/sessions" class="<%= currentPage === 'sessions' ? 'nav-active' : '' %>">
             <img src="/img/icons/sessions.svg" alt="" class="nav-icon">
             <span>Sessions</span>
         </a>
-        <a href="/blog-posts/admin" class="<%= currentPage === 'blog-posts' ? 'nav-active' : '' %>">
-            <img src="/img/icons/blog.svg" alt="" class="nav-icon">
-            <span>Blog</span>
-        </a>
-        <a href="/admin" class="<%= currentPage === 'dashboard' ? 'nav-active' : '' %>">
-            <img src="/img/icons/dashboard.svg" alt="" class="nav-icon">
-            <span>Dashboard</span>
-        </a>
     <% } %>
     <% if (role == "trainer") { %>
-        <a href="/sessions/trainer">
-            <img src="/img/icons/sessions.svg" alt="" class="nav-icon">
-            <span>Sessions</span>
+        <a href="/trainer">
+            <img src="/img/icons/dashboard.svg" alt="" class="nav-icon">
+            <span>Dashboard</span>
         </a>
         <a href="/blog-posts">
             <img src="/img/icons/blog.svg" alt="" class="nav-icon">
             <span>Blog</span>
         </a>
-        <a href="/trainer">
-            <img src="/img/icons/dashboard.svg" alt="" class="nav-icon">
-            <span>Dashboard</span>
+                <a href="/sessions/trainer">
+            <img src="/img/icons/sessions.svg" alt="" class="nav-icon">
+            <span>Sessions</span>
         </a>
     <% } %> 
     <% if (authenticatedUser) { %>

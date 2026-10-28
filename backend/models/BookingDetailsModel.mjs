@@ -63,14 +63,17 @@ export class BookingDetailsModel extends DatabaseModel {
           ON sessions.activity_id = activities.id
         INNER JOIN locations
           ON sessions.location_id = locations.id
-        INNER JOIN users
-          ON sessions.trainer_id = users.id
+        INNER JOIN users AS trainers
+          ON sessions.trainer_id = trainers.id
+        INNER JOIN users AS members
+          ON bookings.user_id = members.id
         WHERE bookings.user_id = ?
           AND bookings.deleted = 0
           AND sessions.deleted = 0
           AND activities.deleted = 0
           AND locations.deleted = 0
-         AND users.deleted = 0
+          AND trainers.deleted = 0
+          AND members.deleted = 0
         ORDER BY sessions.date_session, sessions.time_session
       `,
       [memberId],
