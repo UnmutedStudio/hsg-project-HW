@@ -314,9 +314,9 @@ main > section {
   flex-direction: column;
   align-self: center;
   width: calc(100% - 2rem);
-  max-width: 24rem;
+  max-width: 27rem;
   margin: 1rem auto;
-  padding: 1.5rem 2rem;
+  padding: 1.25rem 1.75rem;
   border: 1px solid var(--grey);
   border-radius: 1rem;
   background-color: var(--white);
@@ -469,7 +469,7 @@ main > section {
 .admin-card-list {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
+  gap: 0.5rem;
   margin: 1.25rem 0;
 }
 
@@ -485,10 +485,46 @@ main > section {
   background-color: var(--white);
   box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
 }
+
+/* Bookings CRUD filter layout */
+.booking-filter-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+.booking-filter-form .crud-search-group,
+.booking-filter-form .crud-filter-group {
+  display: flex;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.booking-filter-form .crud-search-group {
+  flex-wrap: nowrap;
+}
+
+.booking-filter-form .crud-search-group input[type='search'] {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+}
+
+.booking-filter-form .crud-filter-group {
+  flex-wrap: wrap;
+}
+
+.booking-filter-form .filter-button {
+  width: auto;
+  min-width: 5rem;
+  flex: 0 0 auto;
+}
+
 .session-list {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.9rem;
+  gap: 0.6rem;
   width: calc(100% - 2rem);
   margin: 0 auto 2rem;
 }
@@ -498,7 +534,6 @@ main > section {
   flex-direction: column;
   gap: 0.4rem;
   min-width: 0;
-  min-height: 11rem;
   max-width: 700px;
   margin: 0 auto;
   padding: 0.85rem;
@@ -533,6 +568,108 @@ main > section {
   justify-content: space-between;
   gap: 0.75rem;
   margin-top: auto;
+}
+
+.booking-page-header {
+  max-width: 30rem;
+  margin: 1.5rem auto;
+  text-align: center;
+}
+
+.booking-review-page .booking-layout {
+  display: flex;
+  justify-content: center;
+}
+
+
+.booking-confirmed-card {
+  width: 20rem !important;
+  max-width: 24rem !important;
+  margin: 0 auto !important;
+  padding: 2rem 2.5rem;
+}
+
+.booking-review-card {
+  width: 20rem !important;
+  max-width: 24rem !important;
+  margin: 0 auto !important;
+  padding: 2rem 2.5rem;
+}
+
+.session-card .booking-review-card {
+  min-height: unset !important;
+  height: auto !important;
+}
+
+.booking-review-card p {
+  margin: 0.25rem 0;
+}
+
+.booking-review-card,
+.booking-confirmed-card {
+  min-height: unset !important;
+}
+
+.booking-review-page .status-pill {
+  margin: 0.75rem 0;
+  align-self: flex-start;
+}
+
+.booking-review-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.booking-review-actions .primary-button,
+.booking-review-actions .secondary-button {
+  width: 100%;
+}
+
+.booking-confirmed-page .booking-layout {
+  justify-content: center;
+}
+
+.booking-confirmed-page .session-card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.booking-confirmed-page .session-card-footer .primary-button,
+.booking-confirmed-page .session-card-footer .secondary-button {
+  width: 100%;
+}
+
+.booking-confirmed-page .booking-layout {
+  display: flex;
+  justify-content: center;
+}
+
+.booking-confirmed-page .booking-confirmed-card {
+  width: 100%;
+  max-width: 24rem;
+  margin: 0 auto;
+}
+.booking-confirmed-page .booking-confirmed-layout {
+  display: flex;
+  justify-content: center;
+}
+
+.booking-review-card,
+.booking-confirmed-card {
+  min-height: auto;
+}
+
+.booking-confirmed-card .status-pill {
+  align-self: flex-start;
+}
+
+.booking-pending-pill {
+  color: #9a5b00;
+  background-color: #ffe5bf;
 }
 
 /*card display items*/
@@ -1051,9 +1188,9 @@ main > section {
   grid-template-columns: 1fr;
   gap: 0.75rem;
 }
-.management-filter-form > * {
+/* .management-filter-form > * {
   width: 100%;
-}
+} */
 
 .management-filter-form label {
   color: var(--navy);
@@ -1095,6 +1232,14 @@ main > section {
   gap: 0.5rem;
   align-items: center;
 }
+
+.activity-filter label {
+  color: var(--navy);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+
 
 .management-filter-select {
   flex: 1;
@@ -1141,7 +1286,11 @@ main > section {
 }
 
 .location-table-rows > span,
-.user-table-rows > span {
+.user-table-rows > span,
+.activity-table-rows > span,
+.session-table-rows > span,
+.booking-table-rows > span,
+.blog-table-rows > span {
   display: flex;
   align-items: center;
   width: 100%;
@@ -1321,11 +1470,14 @@ main > section {
   gap: 1rem;
 }
 
-.booking-review-page .booking-layout {
-  min-height: 60vh;
-  align-content: start;
+.booking-layout {
+  justify-content: center;
 }
 
+.booking-review-page .session-card {
+  max-width: 700px;
+  margin: 0 auto;
+}
 .responsive-half {
   width: 100%;
 }
@@ -1344,6 +1496,78 @@ main > section {
 }
 .timetable-page .site-footer {
   margin-top: auto;
+}
+
+.timetable-page .management-filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.timetable-card {
+  min-height: 9rem;
+  max-width: none;
+  width: 100%;
+  min-height: 13rem;
+}
+
+.timetable-toolbar {
+  width: calc(100% - 2rem);
+  max-width: 1200px;
+  margin: 1.5rem auto;
+  margin-bottom: 1rem;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  background-color: var(--white);
+  box-shadow: 0 0.2rem 0.5rem rgb(18 18 18 / 10%);
+}
+
+.timetable-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.filter-group label {
+  color: var(--navy);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.timetable-filter-bar .activity-filter {
+  align-items: flex-start;
+}
+
+.timetable-filter-bar .primary-button,
+.timetable-filter-bar .secondary-button {
+  width: auto;
+  min-width: 6rem;
+}
+
+.timetable-filter-bar .activity-filter,
+.timetable-filter-bar .filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.timetable-filter-bar .management-filter-select,
+.timetable-filter-bar input[type="date"] {
+  min-width: 10rem;
+  min-height: 2.6rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #c8c8c8;
+  border-radius: 0.5rem;
+  background-color: var(--white);
 }
 
 .page-intro {
@@ -1426,6 +1650,20 @@ main > section {
 .blog-table-rows > span {
   padding: 0.75rem;
   border-bottom: 1px solid #d6dee5;
+}
+
+.management-table > .data-list-heading {
+  display: flex;
+  align-items: center;
+  min-height: 3rem;
+  color: var(--white);
+  background-color: var(--navy);
+}
+
+.management-table > .data-list-heading a {
+  width: 100%;
+  color: var(--white);
+  text-decoration: none;
 }
 
 .data-list-heading {
@@ -1587,9 +1825,9 @@ summary {
   }
 
   .auth-card {
-    max-width: 27rem;
+    max-width: 24rem;
     margin: auto;
-    padding: 1.75rem 2.5rem;
+    padding: 1.5rem 2rem;
   }
 
   .form-logo {
@@ -1687,22 +1925,54 @@ summary {
   .management-filter-form {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.75rem;
+    flex-wrap: nowrap;
+  }
+  .booking-filter-form .crud-filter-group {
+    flex-wrap: nowrap;
+  }
+
+  .booking-filter-form .crud-filter-group .management-filter-select {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+  }
+
+  .crud-search-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     width: 100%;
   }
 
-  .management-filter-form input {
+  .crud-search-group input[type="search"] {
     flex: 1;
-    min-width: 0;
+    min-width: 14rem;
   }
-  .management-filter-form > input[type='search'] {
-    flex: 1 1 20rem;
-    width: auto;
-    min-width: 10rem;
+
+  .crud-search-group .management-filter-select {
+    width: 12rem;
+    flex: 0 0 auto;
+  }
+
+  .management-filter-form > input[type="search"] {
+    width: 18rem;
+    flex: 0 0 18rem;
+  }
+
+  .management-filter-form .management-filter-select {
+    width: 12rem;
+    flex: 0 0 12rem;
   }
 
   .management-filter-form .filter-button {
+    width: auto;
+    min-width: 5rem;
     flex: 0 0 auto;
+  }
+
+  .management-filter-form .filter-button {
     width: auto;
     min-width: 5rem;
   }
@@ -1711,6 +1981,17 @@ summary {
     flex: 0 0 11rem;
     width: 11rem;
     margin-left: auto;
+  }
+
+  .management-filter-form .activity-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+  }
+
+  .management-filter-form .management-filter-select {
+    width: 10rem;
   }
 
   .management-form-section {
@@ -1750,6 +2031,9 @@ and keep the most common actions accessible.
     display: none !important;
   }
 
+  .management-page {
+    overflow-x: hidden;
+  }
   .auth-page {
     padding-bottom: 0;
   }
@@ -1767,6 +2051,27 @@ and keep the most common actions accessible.
 
   .auth-page .footer-copyright {
     display: none;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-table,
+  .user-table,
+  .location-table,
+  .session-table,
+  .booking-table,
+  .blog-table {
+    min-width: max-content;
+  }
+
+  .management-form label {
+    width: 100%;
+  }
+
+  .form-grid .two-col {
+    grid-column: auto;
   }
 
   .site-nav {
@@ -1859,15 +2164,14 @@ and keep the most common actions accessible.
     margin: 0.4rem 0;
   }
 
-  .user-table,
-  .activity-table,
-  .location-table,
-  .booking-table,
-  .session-table,
-  .blog-table {
-    min-width: 700px;
+  .columns-4,
+  .columns-5,
+  .columns-7,
+  .columns-8,
+  .columns-9 {
+    grid-template-columns: 1fr;
   }
-
+  
   .manage-heading {
     padding: 1rem;
   }
@@ -2042,7 +2346,6 @@ without heaps of scrolling.
     padding: 0.5rem 1rem;
   }
 }
-
 /* Large desktop screens */
 @media screen and (min-width: 1100px) {
   .admin-card-list {

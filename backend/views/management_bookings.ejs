@@ -23,24 +23,33 @@
       <section class="management-filters">
         <form
           action="/bookings/admin"
-          method="get"  
-          class="management-filter-form"
+          method="get"
+          class="management-filter-form booking-filter-form"
         >
-        <label for="search-term" class="sr-only">Search bookings:</label>
-          <input
-            type="search"
-            name="search_term"
-            id="search-term"
-            placeholder="Search bookings..."
-          />
-          <button
-            type="submit"
-            class="primary-button filter-button"
-          >
-            Search
-          </button>
-          <a href="/bookings/admin" class="secondary-button filter-button">Clear</a>
-          <div class="activity-filter">
+          <label for="search-term" class="sr-only">
+            Search bookings:
+          </label>
+          <div class="crud-search-group">
+            <input
+              type="search"
+              name="search_term"
+              id="search-term"
+              placeholder="Search bookings..."
+            />
+            <button
+              type="submit"
+              class="primary-button filter-button"
+            >
+              Search
+            </button>
+            <a
+              href="/bookings/admin"
+              class="secondary-button filter-button"
+            >
+              Clear
+            </a>
+          </div>
+          <div class="crud-filter-group">
             <select
               name="member_filter"
               class="management-filter-select"
@@ -49,18 +58,18 @@
               <% for (const memberName of memberFilters) { %>
                 <option
                   value="<%= memberName %>"
-                  <%= selectedMemberFilter === memberName ? 'selected' : '' %>>
+                  <%= selectedMemberFilter === memberName ? 'selected' : '' %>
+                >
                   <%= memberName %>
                 </option>
               <% } %>
             </select>
-          </div>
-          <div class="activity-filter">
             <select
               name="activity_filter"
               class="management-filter-select"
             >
               <option value="">All Activities</option>
+
               <% for (const activityName of activityFilters) { %>
                 <option
                   value="<%= activityName %>"
@@ -70,8 +79,6 @@
                 </option>
               <% } %>
             </select>
-          </div>
-          <div class="activity-filter">
             <select
               name="trainer_filter"
               class="management-filter-select"
@@ -86,8 +93,6 @@
                 </option>
               <% } %>
             </select>
-          </div>
-          <div class="activity-filter">
             <select
               name="location_filter"
               class="management-filter-select"
@@ -102,8 +107,6 @@
                 </option>
               <% } %>
             </select>
-          </div>
-          <div class="activity-filter">
             <select
               name="status_filter"
               class="management-filter-select"
@@ -196,7 +199,6 @@
                 : "" %>
             >Cancelled</option>
           </select>
-          <a href="/bookings/admin" class="link-button two-col">clear</a>
           <% if (selectedBooking.id == null) { %>
           <button 
             class="primary-button two-col"

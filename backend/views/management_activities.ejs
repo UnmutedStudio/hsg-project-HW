@@ -24,37 +24,46 @@
           method="get"  
           class="management-filter-form"
         >
-        <label for="search-term" class="sr-only">Search activities:</label>
-          <input
-            type="search"
-            name="search_term"
-            id="search-term"
-            placeholder="Search activities..."
-          />
-          <button type="submit" class="primary-button filter-button">Search</button>
-          <a href="/activities" class="secondary-button filter-button">Clear</a>
-            <div class="activity-filter">
-              <select
-                name="activity_filter"
-                class="management-filter-select"
+          <div class="crud-search-group">
+            <input
+              type="search"
+              name="search_term"
+              id="search-term"
+              placeholder="Search activities..."
+            />
+            <button
+              type="submit"
+              class="primary-button filter-button"
+            >
+              Search
+            </button>
+            <a
+              href="/activities"
+              class="secondary-button filter-button"
+            >
+              Clear
+            </a>
+            <select
+              name="activity_filter"
+              class="management-filter-select"
+            >
+              <option value="">All Activities</option>
+              <% for (const activityName of activityFilters) { %>
+              <option
+                value="<%= activityName %>"
+                <%= selectedActivityFilter === activityName ? 'selected' : '' %>
               >
-                <option value="">All Activities</option>
-                <% for (const activityName of activityFilters) { %>
-                <option
-                  value="<%= activityName %>"
-                  <%= selectedActivityFilter === activityName ? 'selected' : '' %>
-                >
-                  <%= activityName %>
-                </option>
-                <% } %>
-              </select>
-              <button
-                type="submit"
-                class="primary-button filter-button"
-              >
-                Filter
-              </button>
-            </div>
+                <%= activityName %>
+              </option>
+              <% } %>
+            </select>
+            <button
+              type="submit"
+              class="primary-button filter-button"
+            >
+              Filter
+            </button>
+          </div>
         </form>
       </section>
        <section class="new-location management-form-section" id="activity-form">

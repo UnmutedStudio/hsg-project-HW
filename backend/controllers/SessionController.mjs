@@ -71,6 +71,18 @@ export class SessionController {
    * @type {express.RequestHandler}
    */
   static viewSessionTimetable(req, res) {
+    if (
+      req.authenticatedUser &&
+      ["admin", "trainer"].includes(req.authenticatedUser.role)
+    ) {
+      res.status(403).render("status.ejs", {
+        status: "Access forbidden",
+        message:
+          "Please use your session management page from your dashboard instead.",
+        authenticatedUser: req.authenticatedUser,
+      });
+      return;
+    }
     SessionDetailModel.getAll()
       .then((sessionDetails) => {
         const today = new Date();
@@ -178,6 +190,8 @@ export class SessionController {
           selectedActivityFilter,
           selectedTrainerFilter,
           selectedLocationFilter,
+          dateFrom,
+          dateTo,
           authenticatedUser: req.authenticatedUser,
         });
       }
@@ -681,7 +695,7 @@ export class SessionController {
         `${formData.dateSession}T${formData.timeSession}`,
       );
       // testing the time validation
-      //  console.log("Session:", sessionDateTime);
+      // console.log("Session:", sessionDateTime);
       // console.log("Now:", new Date());
       if (sessionDateTime < new Date()) {
         res.status(400).render('status.ejs', {

@@ -1,5 +1,6 @@
 import express from 'express';
 import { BlogPostModel } from '../models/BlogPostModel.mjs';
+import { BlogPostDetailModel } from '../models/BlogPostDetailModel.mjs';
 import { AuthenticationController } from './AuthenticationController.mjs';
 /**
  * This controller is for managing and displayin gthe blog posts for HIgh St Gym application.
@@ -55,7 +56,7 @@ export class BlogPostController {
    */
   static viewBlogPostList(req, res) {
     if (req.query.search_term) {
-      BlogPostModel.getBySearch(req.query.search_term)
+      BlogPostDetailModel.getBySearch(req.query.search_term)
         .then((blogPosts) => {
           res.render('blog_post_list.ejs', {
             blogPosts,
@@ -71,7 +72,7 @@ export class BlogPostController {
           });
         });  
     } else {
-      BlogPostModel.getAll()
+      BlogPostDetailModel.getAll()
         .then((blogPosts) => {
           res.render('blog_post_list.ejs', {
             blogPosts,
@@ -213,16 +214,90 @@ export class BlogPostController {
    */
   static viewBlogPostManagement(req, res) {
     const selectedBlogPostId = req.params.id;
-
-    BlogPostModel.getAll()
+    const searchTerm = req.query.search_term?.trim() ?? "";
+    const blogQuery = searchTerm
+      ? BlogPostDetailModel.getBySearch(searchTerm)
+      : BlogPostDetailModel.getAll();
+    blogQuery
       .then((blogPosts) => {
         const authorFilters = [];
+        for (const blogPostDetail of blogPosts) {
+          const authorName =
+            `${blogPostDetail.user.firstName} ${blogPostDetail.user.lastName}`;
+
+          if (!authorFilters.includes(authorName)) {
+            authorFilters.push(authorName);
+          }
+        }
+        const selectedAuthorFilter =
+          req.query.author_filter?.trim() ?? '';
+        if (selectedAuthorFilter) {
+          blogPosts = blogPosts.filter(
+            (blogPostDetail) =>
+              `${blogPostDetail.user.firstName} ${blogPostDetail.user.lastName}` ===
+              selectedAuthorFilter,
+          );
+        }
+        const dateFrom =
+          req.query.date_from?.trim() ?? '';
+        const dateTo =
+          req.query.date_to?.trim() ?? '';
+        if (dateFrom) {
+          blogPosts = blogPosts.filter(
+            (blogPostDetail) =>
+              new Date(blogPostDetail.blogPost.dateCreated) >=
+              new Date(`${dateFrom}T00:00:00`),
+          );
+        }
+        if (dateTo) {
+          blogPosts = blogPosts.filter(
+            (blogPostDetail) =>
+              new Date(blogPostDetail.blogPost.dateCreated) <=
+              new Date(`${dateTo}T23:59:59`),
+          );
+        }
+        const sortOrder = req.query.sort ?? "default";
+        if (sortOrder === "title_asc") {
+          blogPosts.sort((a, b) =>
+            a.blogPost.title.localeCompare(b.blogPost.title),
+          );
+        }
+        if (sortOrder === "title_desc") {
+          blogPosts.sort((a, b) =>
+            b.blogPost.title.localeCompare(a.blogPost.title),
+          );
+        }
+        if (sortOrder === "author_asc") {
+          blogPosts.sort((a, b) =>
+            (`${a.user.firstName} ${a.user.lastName}`).localeCompare(
+              `${b.user.firstName} ${b.user.lastName}`,
+            ),
+          );
+        }
+        if (sortOrder === "author_desc") {
+          blogPosts.sort((a, b) =>
+            (`${b.user.firstName} ${b.user.lastName}`).localeCompare(
+              `${a.user.firstName} ${a.user.lastName}`,
+            ),
+          );
+        }
+        if (sortOrder === "date_asc") {
+          blogPosts.sort((a, b) =>
+            new Date(a.blogPost.dateCreated) -
+            new Date(b.blogPost.dateCreated),
+          );
+        }
+        if (sortOrder === "date_desc") {
+          blogPosts.sort((a, b) =>
+            new Date(b.blogPost.dateCreated) -
+            new Date(a.blogPost.dateCreated),
+          );
+        }
         //search the list of all blog posts
         const selectedBlogPost =
-          blogPosts.find((blogPost) => blogPost.id == selectedBlogPostId,) ??
-          //undefined if we cannot find a post with the id
-          //in the url params (it could be that the id in the
-          //url params is not present)
+          blogPosts.find(
+            (blogPost) => blogPost.blogPost.id == selectedBlogPostId,
+          ) ??
           new BlogPostModel(
             null,
             "",
@@ -234,6 +309,11 @@ export class BlogPostController {
         res.render("management_blog_posts.ejs", {
           blogPosts,
           selectedBlogPost,
+          authorFilters,
+          selectedAuthorFilter,
+          dateFrom,
+          dateTo,
+          sortOrder,
           authenticatedUser: req.authenticatedUser,
         });
       })

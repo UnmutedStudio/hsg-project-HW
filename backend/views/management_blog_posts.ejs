@@ -21,31 +21,73 @@
       <section class="management-filters">
         <form
           action="/blog-posts/admin"
-          method="get"  
+          method="get"
           class="management-filter-form"
         >
-        <label for="search-term" class="sr-only">Search blog posts:</label>
-          <input
-            type="search"
-            name="search_term"
-            id="search-term"
-            placeholder="Search blog posts..."
-          />
-          <button type="submit" class="primary-button filter-button">Search</button>
-          <a href="/blog-posts/admin" class="secondary-button filter-button">Clear</a>
-          <details class="sort-menu" aria-label="Sort blog posts">
-            <summary class="management-sort">
-              Sort by title
-            </summary>
-          <div class="sort-menu-links">
-            <a href="/blog-posts/admin?sort=default">
-              Default</a>
-            <a href="/blog-posts/admin?sort=asc">
-              A-Z</a>
-            <a href="/blog-posts/admin?sort=desc">
-              Z-A</a>
+          <label for="search-term" class="sr-only">
+            Search blog posts:
+          </label>
+          <div class="crud-search-group">
+            <input
+              type="search"
+              name="search_term"
+              id="search-term"
+              placeholder="Search blog posts..."
+            />
+            <button
+              type="submit"
+              class="primary-button filter-button"
+            >
+              Search
+            </button>
+            <a
+              href="/blog-posts/admin"
+              class="secondary-button filter-button"
+            >
+              Clear
+            </a>
+            <select
+              name="author_filter"
+              class="management-filter-select"
+            >
+              <option value="">All Authors</option>
+              <% for (const authorName of authorFilters) { %>
+                <option
+                  value="<%= authorName %>"
+                  <%= selectedAuthorFilter === authorName ? 'selected' : '' %>
+                >
+                  <%= authorName %>
+                </option>
+              <% } %>
+            </select>
+            <label for="blog-date-from" class="sr-only">
+              Start date
+            </label>
+            <input
+              type="date"
+              name="date_from"
+              id="blog-date-from"
+              value="<%= dateFrom %>"
+              aria-label="Start date"
+            />
+
+            <label for="blog-date-to" class="sr-only">
+              End date
+            </label>
+            <input
+              type="date"
+              name="date_to"
+              id="blog-date-to"
+              value="<%= dateTo %>"
+              aria-label="End date"
+            />
+            <button
+              type="submit"
+              class="primary-button filter-button"
+            >
+              Filter
+            </button>
           </div>
-        </details>
         </form>
       </section>
       <section class="new-location management-form-section" id="blog-form">
@@ -88,25 +130,52 @@
         </form>
       </section>
       <section class="location-table columns-5 management-table">
-        <span class="data-list-heading">Post Title</span>
-        <span class="data-list-heading">Author</span>
-        <span class="data-list-heading">Date Created</span>
+        <span class="data-list-heading">
+          <a href="/blog-posts/admin?sort=<%= sortOrder === 'title_asc' ? 'title_desc' : 'title_asc' %>">
+            Post Title <%= sortOrder === 'title_desc' ? '▼' : '▲' %>
+          </a>
+        </span>
+                <span class="data-list-heading">
+          <a href="/blog-posts/admin?sort=<%= sortOrder === 'author_asc' ? 'author_desc' : 'author_asc' %>">
+            Author <%= sortOrder === 'author_desc' ? '▼' : '▲' %>
+          </a>
+        </span>
+                <span class="data-list-heading">
+          <a href="/blog-posts/admin?sort=<%= sortOrder === 'date_asc' ? 'date_desc' : 'date_asc' %>">
+            Date Created <%= sortOrder === 'date_desc' ? '▼' : '▲' %>
+          </a>
+        </span>
         <span class="data-list-heading">Status</span>
         <span class="data-list-heading">Actions</span>
         <% if (blogPosts.length == 0) { %>
-          <p>No blog posts were found.</p>
+          <div class="table-no-results">
+            No blog posts were found.
+          </div>
         <% } %>
-        <% for(const blogPost of blogPosts ) { %>
+        <% for(const blogPostDetail of blogPosts ) { %>
           <div class="blog-table-rows">
             <span>
               <details> 
-                <summary><%= blogPost.title %></summary>
-                <p><%= blogPost.content %></p>
+                <summary><%= blogPostDetail.blogPost.title %></summary>
+                <p><%= blogPostDetail.blogPost.content %></p>
               </details>
             </span>
-            <span>Author details pending</span>
-            <span><%= blogPost.dateCreated.toLocaleDateString("en-AU") %></span> 
-            <span>Posted</span>
+            <span>
+              <%= blogPostDetail.user.firstName %>
+              <%= blogPostDetail.user.lastName %>
+            </span>
+            <span><%= blogPostDetail.blogPost.dateCreated.toLocaleDateString("en-AU") %></span> 
+              <span class="status-cell">
+                <% if (blogPostDetail.blogPost.deleted === 0) { %>
+                  <span class="status-pill status-active">
+                    Posted
+                  </span>
+                <% } else { %>
+                  <span class="status-pill status-inactive">
+                    Deleted
+                  </span>
+                <% } %>
+              </span>
             <span class="table-actions">
               <details class="delete-confirmation">
                 <summary class="table-delete-action">
@@ -115,7 +184,7 @@
                   <div class="delete-confirmation-box">
                     <p>Delete this blog post?</p>  
                     <form
-                      action="/blog-posts/admin/<%= blogPost.id %>"
+                      action="/blog-posts/admin/<%= blogPostDetail.blogPost.id %>"
                       method="post"
                     >
                     <button

@@ -8,18 +8,18 @@
     <main class="booking-review-page">
       <%- include("partials/header_authenticated.ejs", {
         authenticatedUser: authenticatedUser,
-        pageTitle: "Review booking"
+        pageTitle: ""
       }) %>
       <%- include("partials/nav.ejs", {
         authenticatedUser: authenticatedUser,
         role: authenticatedUser.role
       }) %>
-      <section>
-        <h2 class="text-2xl">Review your booking</h2>
+      <section class="booking-page-header">
+        <h2 class="text-2xl">Review and confirm your booking.</h2>
         <p> Please check the session details before confirming your booking.</p>
       </section>
-      <section class="booking-layout">
-        <article class="session-card">
+      <section>
+        <article class="session-card booking-review-card">
           <h3><%= sessionDetail.activity.activityName %></h3>
           <p> Trainer: <%= sessionDetail.trainer.firstName %> <%= sessionDetail.trainer.lastName %></p>
           <p> Location: <%= sessionDetail.location.locationName %> </p>
@@ -27,10 +27,13 @@
           <p>Time: <%= sessionDetail.session.timeSession %></p>
           <p>Duration: <%= sessionDetail.session.duration %> minutes</p>
           <p>Available places: <%= sessionDetail.session.availability %></p>
+          <span class="status-pill booking-pending-pill">
+            Pending confirmation
+          </span>
         <form
           action="/bookings/create"
           method="post"
-          class="session-card-footer" >
+          class="booking-review-actions" >
           <input type="hidden" name="sessionId" value="<%= sessionDetail.session.id %>" />
           <a href="/sessions" class="secondary-button">Cancel</a>
           <button type="submit" name="action" value="create" class="primary-button">Confirm booking</button>

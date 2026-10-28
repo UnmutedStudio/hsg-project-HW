@@ -36,18 +36,19 @@
         <% if (blogPosts.length == 0) { %>
           <p>No blog posts were found</p>
          <% } %>
-         <% for (let blogPost of blogPosts) { %>
+         <% for (const blogPostDetail of blogPosts) { %>
           <article class="blog-post-card">
-            <h3><%= blogPost.title %></h3>
+            <h3><%= blogPostDetail.blogPost.title %></h3>
             <span>
-              <%= new Date(blogPost.dateCreated).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" }) %>
+              <%= blogPostDetail.blogPost.dateCreated.toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" }) %>
             </span>
-            <p><%= blogPost.content %></p>
+            <span>By <%= blogPostDetail.user.firstName %> <%= blogPostDetail.user.lastName %></span>
+            <p><%= blogPostDetail.blogPost.content %></p>
         <!--conditional rendering against the authenticated user to delete own posts-->
-        <% if (authenticatedUser && blogPost.userId == authenticatedUser.id) { %>
-              <form action="/blog-posts/<%= blogPost.id%>/delete"
+          <% if (authenticatedUser && blogPostDetail.blogPost.userId == authenticatedUser.id) { %>
+            <form action="/blog-posts/<%= blogPostDetail.blogPost.id %>/delete"
               method="post"
-              >
+            >
             <button type="submit" value="Delete Post" class="delete-button blog-delete-button">Delete Post</button>
             </form>
             <% } %>
