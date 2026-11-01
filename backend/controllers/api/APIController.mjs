@@ -3,6 +3,7 @@ import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUI from "swagger-ui-express";
 import * as ApiValidator from "express-openapi-validator";
 import { APIAuthenticationController } from "./APIAuthenticationController.mjs";
+import { APISessionsController } from "./APISessionsController.mjs";
 
 const options = {
   failOnErrors: true,

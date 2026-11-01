@@ -165,10 +165,10 @@ export class UserModel extends DatabaseModel {
   static async create(user) {
     return this.query(
       `
-      INSERT INTO users (first_name, last_name, email, password_hash, role)
-      VALUES(?, ?, ?, ?, ?)
+      INSERT INTO users (first_name, last_name, email, password_hash, role, authentication_key)
+      VALUES(?, ?, ?, ?, ?, ?)
       `,
-      [user.firstName, user.lastName, user.email, user.passwordHash, user.role],
+      [user.firstName, user.lastName, user.email, user.passwordHash, user.role, user.authenticationKey],
     );
   }
 

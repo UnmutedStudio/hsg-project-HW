@@ -1,6 +1,7 @@
 import express from "express";
 import { UserModel } from "../../models/UserModel.mjs"
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 export class APIAuthenticationController {
   static middleware = express.Router();
@@ -82,7 +83,7 @@ export class APIAuthenticationController {
   static async handleAuthenticate(req, res) {
     if (req.method == "POST") {
       try {
-        const user = await UserModelModel.getByEmail(req.body.email);
+        const user = await UserModel.getByEmail(req.body.email);
 
         if (await bcrypt.compare(req.body.password, user.passwordHash)) {
           const authenticationKey = crypto.randomUUID();

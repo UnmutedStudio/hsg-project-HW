@@ -28,6 +28,7 @@ app.use(AuthenticationController.middleware);
 
 //Use routes (from controllers)
 app.use('/api', APIController.routes);
+console.log("API loaded");
 app.use('/activities', ActivityController.routes);
 app.use('/login', AuthenticationController.routes);
 app.use('/blog-posts', BlogPostController.routes);
