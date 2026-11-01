@@ -1,5 +1,5 @@
 {
-  "name": "minute-coffee-sem2-2026",
+  "name": "high-street-gym",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -16,5 +16,8 @@
     "@tailwindcss/cli": "^4.3.3",
     "daisyui": "^5.7.47",
     "tailwindcss": "^4.3.3"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.3"
   }
 }

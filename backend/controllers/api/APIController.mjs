@@ -65,6 +65,6 @@ export class APIController {
     //API Authentication middleware and routes
     this.routes.use(APIAuthenticationController.middleware);
     this.routes.use(APIAuthenticationController.routes);
-
+    this.routes.use("/sessions", APISessionsController.routes);
   }
 }
