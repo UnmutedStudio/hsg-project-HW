@@ -1,4 +1,4 @@
-import { DatabaseModel } from "./DatabaseModel.mjs";
+import { DatabaseModel } from './DatabaseModel.mjs';
 import mysql from 'mysql2/promise';
 /**
  * This User Model is for the High St Gym application.
@@ -8,17 +8,16 @@ import mysql from 'mysql2/promise';
 export class UserModel extends DatabaseModel {
   /**
    * This creates a UserModel object
-   * 
+   *
    * @param {number} id | is the unique identifer per user
    * @param {string} firstName | the users first name
    * @param {string} lastName | the users last name
-   * @param {string} email | user email address 
+   * @param {string} email | user email address
    * @param {string} passwordHash | the user's hashed password
    * @param {string} role | role of the user (member, trainer or admin)
    * @param {number} deleted | soft delete field where active = 0 and delted = 1
    */
-  constructor(id, firstName, lastName, email, passwordHash, role, deleted,) 
-  {
+  constructor(id, firstName, lastName, email, passwordHash, role, deleted) {
     super();
     this.id = id;
     this.firstName = firstName;
@@ -32,19 +31,19 @@ export class UserModel extends DatabaseModel {
   /**
    * This method is used to convert a table row into a UserModel object
    * it maps the database fields to the javascript model fields.
-   * 
-   * @param {Object} row | row from the users table in the database. 
+   *
+   * @param {Object} row | row from the users table in the database.
    * @returns {UserModel}
    */
   static tableToModel(row) {
     return new UserModel(
-      row["id"],
-      row["first_name"],
-      row["last_name"],
-      row["email"],
-      row["password_hash"],
-      row["role"],
-      row["deleted"],
+      row['id'],
+      row['first_name'],
+      row['last_name'],
+      row['email'],
+      row['password_hash'],
+      row['role'],
+      row['deleted'],
     );
   }
   /**
@@ -66,42 +65,38 @@ export class UserModel extends DatabaseModel {
           OR role LIKE ?
         )
       `,
-      [
-        `%${term}%`, `%${term}%`, `%${term}%`, `%${term}%`,
-      ],
-    ).then((result) =>
-      result.map((row) => this.tableToModel(row.users)),
-    );
+      [`%${term}%`, `%${term}%`, `%${term}%`, `%${term}%`],
+    ).then((result) => result.map((row) => this.tableToModel(row.users)));
   }
   /**
    * This returns all the users from the database that have not been deleted.
-   * 
+   *
    * @returns {Promise<Array<UserModel>>}
    */
   static async getAll() {
-    return this.query("SELECT * FROM users WHERE deleted = 0").then(
-      (results) => results.map((row) => this.tableToModel(row.users)),
+    return this.query('SELECT * FROM users WHERE deleted = 0').then((results) =>
+      results.map((row) => this.tableToModel(row.users)),
     );
   }
 
   /**
    * Returns a user by the id number
-   * 
+   *
    * @param {number} id  | this is the user identifier
    * @returns {Promise<UserModel>}
    */
   static async getById(id) {
-    return this.query("SELECT * FROM users WHERE id = ?", [id]).then(
+    return this.query('SELECT * FROM users WHERE id = ?', [id]).then(
       (result) => {
         if (result.length > 0) {
           return this.tableToModel(result[0].users);
         } else {
-          return Promise.reject("not found");
+          return Promise.reject('not found');
         }
       },
     );
   }
-  // this example is not in use 
+  // this example is not in use
   // .then(result =>
   //result.length > 0
   //? this.tableTomodel(result[0].users)
@@ -109,19 +104,18 @@ export class UserModel extends DatabaseModel {
 
   /**
    * Returns a User by the email address
-   * 
-   * @param {string} email 
+   *
+   * @param {string} email
    * @returns {Promise<UserModel>}
    */
   static async getByEmail(email) {
-    return this.query(
-      "SELECT * FROM users WHERE email = ? AND deleted = 0",
-      [email],
-    ).then((result) => {
+    return this.query('SELECT * FROM users WHERE email = ? AND deleted = 0', [
+      email,
+    ]).then((result) => {
       if (result.length > 0) {
         return this.tableToModel(result[0].users);
       } else {
-        return Promise.reject("not found");
+        return Promise.reject('not found');
       }
     });
   }
@@ -132,19 +126,18 @@ export class UserModel extends DatabaseModel {
    * @returns {Promise<UserModel>}
    */
   static getByAllEmail(email) {
-    return this.query(
-      "SELECT * FROM users WHERE email = ?",
-      [email],
-    ).then((result) => {
-      if (result.length > 0) {
-        return this.tableToModel(result[0].users);
-      }
-      return Promise.reject("not found");
-    });
+    return this.query('SELECT * FROM users WHERE email = ?', [email]).then(
+      (result) => {
+        if (result.length > 0) {
+          return this.tableToModel(result[0].users);
+        }
+        return Promise.reject('not found');
+      },
+    );
   }
   /**
    * CREATE - creates a new user in the databse
-   * 
+   *
    * @param {UserModel} user | this is the user object which contains the values to add in
    * @returns {Promise<mysql.OkPacket>}
    */
@@ -154,19 +147,13 @@ export class UserModel extends DatabaseModel {
       INSERT INTO users (first_name, last_name, email, password_hash, role)
       VALUES(?, ?, ?, ?, ?)
       `,
-      [
-        user.firstName,
-        user.lastName,
-        user.email,
-        user.passwordHash,
-        user.role,
-      ],
+      [user.firstName, user.lastName, user.email, user.passwordHash, user.role],
     );
   }
 
   /**
    * UPDATE - this updates a user record in the database
-   * 
+   *
    * @param {UserModel} user | the user object that contains the values that will be updated
    * @returns {Promise<mysql.OkPacket>}
    */
@@ -190,7 +177,7 @@ export class UserModel extends DatabaseModel {
 
   /**
    * DELETE - this soft deletes a user and changes the delete tag to = 1
-   * 
+   *
    * @param {number} id | the unique identifer for a user
    * @returns {Promise<mysql.OkPacket>}
    */
@@ -265,7 +252,6 @@ export class UserModel extends DatabaseModel {
 //   .catch((error) => {
 //     console.error(error);
 //   });
-
 
 // TODO: revisit the below when implementing authentication:
 

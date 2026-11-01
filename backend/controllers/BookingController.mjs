@@ -1,7 +1,7 @@
 import express from 'express';
 import { BookingModel } from '../models/BookingModel.mjs';
 import { BookingDetailsModel } from '../models/BookingDetailsModel.mjs';
-import { SessionDetailModel} from '../models/SessionDetailModel.mjs';
+import { SessionDetailModel } from '../models/SessionDetailModel.mjs';
 import { AuthenticationController } from './AuthenticationController.mjs';
 import { UserModel } from '../models/UserModel.mjs';
 /**
@@ -28,18 +28,18 @@ export class BookingController {
     );
     this.routes.post(
       '/create',
-      AuthenticationController.restrict(["member"]),
+      AuthenticationController.restrict(['member']),
       this.handleOwnBookings,
     );
     // Admin booking management
     this.routes.get(
       '/admin',
-      AuthenticationController.restrict(["admin"]),
+      AuthenticationController.restrict(['admin']),
       this.viewBookingManagement,
     );
     this.routes.get(
       '/admin/:id',
-      AuthenticationController.restrict(["admin"]),
+      AuthenticationController.restrict(['admin']),
       this.viewBookingManagement,
     );
     this.routes.post(
@@ -55,32 +55,29 @@ export class BookingController {
     // member booking confirmation and delete
     this.routes.get(
       '/:id',
-      AuthenticationController.restrict(["member"]),
+      AuthenticationController.restrict(['member']),
       this.viewConfirmedBooking,
     );
-      this.routes.post(
+    this.routes.post(
       '/:id/delete',
-      AuthenticationController.restrict(["member"]),
+      AuthenticationController.restrict(['member']),
       this.handleOwnBookings,
     );
   }
   /**
    * Render the booking table of own bookings for the authenticated member.
-   * 
+   *
    * @type {express.RequestHandler}
    */
   static viewMyBookings(req, res) {
     BookingDetailsModel.getByMemberId(req.authenticatedUser.id)
       .then((bookingDetails) => {
-      const selectedStatusFilter =
-        req.query.status_filter?.trim() ?? '';
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+        const selectedStatusFilter = req.query.status_filter?.trim() ?? '';
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
         if (selectedStatusFilter) {
           bookingDetails = bookingDetails.filter((bookingDetail) => {
-            const sessionDate = new Date(
-              bookingDetail.session.dateSession,
-            );
+            const sessionDate = new Date(bookingDetail.session.dateSession);
             sessionDate.setHours(0, 0, 0, 0);
             if (selectedStatusFilter === 'completed') {
               return sessionDate < today;
@@ -92,17 +89,13 @@ export class BookingController {
               );
             }
             if (selectedStatusFilter === 'cancelled') {
-              return (
-                bookingDetail.booking.bookingStatus === 'cancelled'
-              );
+              return bookingDetail.booking.bookingStatus === 'cancelled';
             }
             return true;
           });
         }
-      const dateFrom =
-        req.query.date_from?.trim() ?? '';
-      const dateTo =
-        req.query.date_to?.trim() ?? '';
+        const dateFrom = req.query.date_from?.trim() ?? '';
+        const dateTo = req.query.date_to?.trim() ?? '';
         if (dateFrom) {
           bookingDetails = bookingDetails.filter(
             (bookingDetail) =>
@@ -132,11 +125,11 @@ export class BookingController {
           message: 'Bookings could not be loaded.',
           authenticatedUser: req.authenticatedUser,
         });
-      }); 
+      });
   }
   /**
    * This renders the selected session details for the member to cross check before booking
-   * 
+   *
    * @type {express.RequestHandler}
    */
   static viewCreateBooking(req, res) {
@@ -154,22 +147,22 @@ export class BookingController {
           message: 'The session you selected could not be loaded.',
           authenticatedUser: req.authenticatedUser,
         });
-      }); 
+      });
   }
   /**
    * Render the confirmed booking made by the authenticated member user
-   * 
+   *
    * @type {express.RequestHandler}
    */
   static viewConfirmedBooking(req, res) {
     BookingModel.getById(req.params.id)
       .then((booking) => {
         if (booking.userId != req.authenticatedUser.id) {
-          res.status(403).render("status.ejs", {
-            status: "Access forbidden",
+          res.status(403).render('status.ejs', {
+            status: 'Access forbidden',
             message: "You cannot view another member's booking.",
             authenticatedUser: req.authenticatedUser,
-            });
+          });
           return;
         }
         SessionDetailModel.getById(booking.sessionId)
@@ -187,26 +180,26 @@ export class BookingController {
               message: 'Your booked session details could not be loaded.',
               authenticatedUser: req.authenticatedUser,
             });
-          }); 
+          });
       })
       .catch((error) => {
-            console.error(error);
-            res.status(404).render('status.ejs', {
-              status: 'Booking not found',
-              message: 'Your booking could not be loaded.',
-              authenticatedUser: req.authenticatedUser,
-            });
-      }); 
+        console.error(error);
+        res.status(404).render('status.ejs', {
+          status: 'Booking not found',
+          message: 'Your booking could not be loaded.',
+          authenticatedUser: req.authenticatedUser,
+        });
+      });
   }
   /**
    * This renders the admin mangement page for bookings and has readable session and booking details
    * it also has the form dropdown data available.
-   * 
+   *
    * @type {express.RequestHandler}
    */
   static viewBookingManagement(req, res) {
     const selectedBookingId = req.params.id;
-    const searchTerm = req.query.search_term?.trim() ?? "";
+    const searchTerm = req.query.search_term?.trim() ?? '';
     const bookingQuery = searchTerm
       ? BookingDetailsModel.getBySearch(searchTerm)
       : BookingDetailsModel.getAll();
@@ -214,14 +207,12 @@ export class BookingController {
       .then((bookingDetails) => {
         const memberFilters = [];
         for (const bookingDetail of bookingDetails) {
-          const memberName =
-            `${bookingDetail.member.firstName} ${bookingDetail.member.lastName}`;
+          const memberName = `${bookingDetail.member.firstName} ${bookingDetail.member.lastName}`;
           if (!memberFilters.includes(memberName)) {
             memberFilters.push(memberName);
           }
         }
-        const selectedMemberFilter =
-          req.query.member_filter?.trim() ?? '';
+        const selectedMemberFilter = req.query.member_filter?.trim() ?? '';
         if (selectedMemberFilter) {
           bookingDetails = bookingDetails.filter(
             (bookingDetail) =>
@@ -231,36 +222,26 @@ export class BookingController {
         }
         const activityFilters = [];
         for (const bookingDetail of bookingDetails) {
-          if (
-            !activityFilters.includes(
-              bookingDetail.activity.activityName,
-            )
-          ) {
-            activityFilters.push(
-              bookingDetail.activity.activityName,
-            );
+          if (!activityFilters.includes(bookingDetail.activity.activityName)) {
+            activityFilters.push(bookingDetail.activity.activityName);
           }
         }
-        const selectedActivityFilter =
-        req.query.activity_filter?.trim() ?? '';
+        const selectedActivityFilter = req.query.activity_filter?.trim() ?? '';
         if (selectedActivityFilter) {
           bookingDetails = bookingDetails.filter(
             (bookingDetail) =>
-              bookingDetail.activity.activityName ===
-              selectedActivityFilter,
+              bookingDetail.activity.activityName === selectedActivityFilter,
           );
         }
         const trainerFilters = [];
         for (const bookingDetail of bookingDetails) {
-          const trainerName =
-            `${bookingDetail.trainer.firstName} ${bookingDetail.trainer.lastName}`;
+          const trainerName = `${bookingDetail.trainer.firstName} ${bookingDetail.trainer.lastName}`;
 
           if (!trainerFilters.includes(trainerName)) {
             trainerFilters.push(trainerName);
           }
         }
-        const selectedTrainerFilter =
-        req.query.trainer_filter?.trim() ?? '';
+        const selectedTrainerFilter = req.query.trainer_filter?.trim() ?? '';
         if (selectedTrainerFilter) {
           bookingDetails = bookingDetails.filter(
             (bookingDetail) =>
@@ -270,233 +251,180 @@ export class BookingController {
         }
         const locationFilters = [];
         for (const bookingDetail of bookingDetails) {
-          if (
-            !locationFilters.includes(
-              bookingDetail.location.locationName,
-            )
-          ) {
-            locationFilters.push(
-              bookingDetail.location.locationName,
-            );
+          if (!locationFilters.includes(bookingDetail.location.locationName)) {
+            locationFilters.push(bookingDetail.location.locationName);
           }
         }
-        const selectedLocationFilter =
-          req.query.location_filter?.trim() ?? '';
+        const selectedLocationFilter = req.query.location_filter?.trim() ?? '';
         if (selectedLocationFilter) {
           bookingDetails = bookingDetails.filter(
             (bookingDetail) =>
-              bookingDetail.location.locationName ===
-              selectedLocationFilter,
+              bookingDetail.location.locationName === selectedLocationFilter,
           );
         }
         const statusFilters = [];
         for (const bookingDetail of bookingDetails) {
-          if (
-            !statusFilters.includes(
-              bookingDetail.booking.bookingStatus,
-            )
-          ) {
-            statusFilters.push(
-              bookingDetail.booking.bookingStatus,
-            );
+          if (!statusFilters.includes(bookingDetail.booking.bookingStatus)) {
+            statusFilters.push(bookingDetail.booking.bookingStatus);
           }
         }
-        const selectedStatusFilter =
-          req.query.status_filter?.trim() ?? '';
+        const selectedStatusFilter = req.query.status_filter?.trim() ?? '';
         if (selectedStatusFilter) {
           bookingDetails = bookingDetails.filter(
             (bookingDetail) =>
-              bookingDetail.booking.bookingStatus ===
-              selectedStatusFilter,
+              bookingDetail.booking.bookingStatus === selectedStatusFilter,
           );
         }
         const weekStart = new Date();
-          weekStart.setHours(0, 0, 0, 0);
+        weekStart.setHours(0, 0, 0, 0);
         const weekEnd = new Date(weekStart);
-          weekEnd.setDate(weekEnd.getDate() + 6);
+        weekEnd.setDate(weekEnd.getDate() + 6);
         const formatDateInput = (date) => {
           const year = date.getFullYear();
-          const month = String(
-            date.getMonth() + 1,
-          ).padStart(2, '0');
-          const day = String(
-            date.getDate(),
-          ).padStart(2, '0');
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
           return `${year}-${month}-${day}`;
         };
         const dateFrom =
-          req.query.date_from?.trim() ||
-          formatDateInput(weekStart);
-        const dateTo =
-          req.query.date_to?.trim() ||
-          formatDateInput(weekEnd);
-        bookingDetails = bookingDetails.filter(
-          (bookingDetail) => {
-            const sessionDate =
-              bookingDetail.session.dateSession;
-            return (
-              sessionDate >=
-                new Date(`${dateFrom}T00:00:00`) &&
-              sessionDate <=
-                new Date(`${dateTo}T23:59:59`)
-            );
-          },
-        );
-        const sortOrder = req.query.sort ?? "default";
-        if (sortOrder === "member_asc") {
+          req.query.date_from?.trim() || formatDateInput(weekStart);
+        const dateTo = req.query.date_to?.trim() || formatDateInput(weekEnd);
+        bookingDetails = bookingDetails.filter((bookingDetail) => {
+          const sessionDate = bookingDetail.session.dateSession;
+          return (
+            sessionDate >= new Date(`${dateFrom}T00:00:00`) &&
+            sessionDate <= new Date(`${dateTo}T23:59:59`)
+          );
+        });
+        const sortOrder = req.query.sort ?? 'default';
+        if (sortOrder === 'member_asc') {
           bookingDetails.sort((a, b) =>
             `${a.member.firstName} ${a.member.lastName}`.localeCompare(
               `${b.member.firstName} ${b.member.lastName}`,
             ),
           );
         }
-        if (sortOrder === "member_desc") {
+        if (sortOrder === 'member_desc') {
           bookingDetails.sort((a, b) =>
             `${b.member.firstName} ${b.member.lastName}`.localeCompare(
               `${a.member.firstName} ${a.member.lastName}`,
             ),
           );
         }
-        if (sortOrder === "activity_asc") {
+        if (sortOrder === 'activity_asc') {
           bookingDetails.sort((a, b) =>
-            a.activity.activityName.localeCompare(
-              b.activity.activityName,
-            ),
+            a.activity.activityName.localeCompare(b.activity.activityName),
           );
         }
-        if (sortOrder === "activity_desc") {
+        if (sortOrder === 'activity_desc') {
           bookingDetails.sort((a, b) =>
-            b.activity.activityName.localeCompare(
-              a.activity.activityName,
-            ),
+            b.activity.activityName.localeCompare(a.activity.activityName),
           );
         }
-        if (sortOrder === "trainer_asc") {
+        if (sortOrder === 'trainer_asc') {
           bookingDetails.sort((a, b) =>
             `${a.trainer.firstName} ${a.trainer.lastName}`.localeCompare(
               `${b.trainer.firstName} ${b.trainer.lastName}`,
             ),
           );
         }
-        if (sortOrder === "trainer_desc") {
+        if (sortOrder === 'trainer_desc') {
           bookingDetails.sort((a, b) =>
             `${b.trainer.firstName} ${b.trainer.lastName}`.localeCompare(
               `${a.trainer.firstName} ${a.trainer.lastName}`,
             ),
           );
         }
-        if (sortOrder === "location_asc") {
+        if (sortOrder === 'location_asc') {
           bookingDetails.sort((a, b) =>
-            a.location.locationName.localeCompare(
-              b.location.locationName,
-            ),
+            a.location.locationName.localeCompare(b.location.locationName),
           );
         }
-        if (sortOrder === "location_desc") {
+        if (sortOrder === 'location_desc') {
           bookingDetails.sort((a, b) =>
-            b.location.locationName.localeCompare(
-              a.location.locationName,
-            ),
+            b.location.locationName.localeCompare(a.location.locationName),
           );
         }
-        if (sortOrder === "date_asc") {
-          bookingDetails.sort((a, b) =>
-            a.session.dateSession - b.session.dateSession,
+        if (sortOrder === 'date_asc') {
+          bookingDetails.sort(
+            (a, b) => a.session.dateSession - b.session.dateSession,
           );
         }
-        if (sortOrder === "date_desc") {
-          bookingDetails.sort((a, b) =>
-            b.session.dateSession - a.session.dateSession,
+        if (sortOrder === 'date_desc') {
+          bookingDetails.sort(
+            (a, b) => b.session.dateSession - a.session.dateSession,
           );
         }
-        if (sortOrder === "time_asc") {
+        if (sortOrder === 'time_asc') {
           bookingDetails.sort((a, b) =>
-            a.session.timeSession.localeCompare(
-              b.session.timeSession,
-            ),
+            a.session.timeSession.localeCompare(b.session.timeSession),
           );
         }
-        if (sortOrder === "time_desc") {
+        if (sortOrder === 'time_desc') {
           bookingDetails.sort((a, b) =>
-            b.session.timeSession.localeCompare(
-              a.session.timeSession,
-            ),
+            b.session.timeSession.localeCompare(a.session.timeSession),
           );
         }
-        if (sortOrder === "status_asc") {
+        if (sortOrder === 'status_asc') {
           bookingDetails.sort((a, b) =>
-            a.booking.bookingStatus.localeCompare(
-              b.booking.bookingStatus,
-            ),
+            a.booking.bookingStatus.localeCompare(b.booking.bookingStatus),
           );
         }
-        if (sortOrder === "status_desc") {
+        if (sortOrder === 'status_desc') {
           bookingDetails.sort((a, b) =>
-            b.booking.bookingStatus.localeCompare(
-              a.booking.bookingStatus,
-            ),
+            b.booking.bookingStatus.localeCompare(a.booking.bookingStatus),
           );
         }
         //search the list of all bookings
         const selectedBookingDetail = bookingDetails.find(
-
           (bookingDetail) => bookingDetail.booking.id == selectedBookingId,
         );
         const selectedBooking =
           selectedBookingDetail?.booking ??
-          new BookingModel(
-            null,
-            "",
-            "",
-            "confirmed",
-            0,
-          );
-      SessionDetailModel.getAll()
-        .then((sessionDetails) => {
-          UserModel.getAll()
-            .then((users) => {
-              const members = users.filter(
-                (user) => user.role == "member",
-              );
-              res.render("management_bookings.ejs", {
-                bookingDetails,
-                selectedBooking,
-                members,
-                sessionDetails,
-                memberFilters,
-                selectedMemberFilter,
-                activityFilters,
-                selectedActivityFilter,
-                trainerFilters,
-                selectedTrainerFilter,
-                locationFilters,
-                selectedLocationFilter,
-                statusFilters,
-                selectedStatusFilter,
-                dateFrom,
-                dateTo,
-                authenticatedUser: req.authenticatedUser,
-                sortOrder,
+          new BookingModel(null, '', '', 'confirmed', 0);
+        SessionDetailModel.getAll()
+          .then((sessionDetails) => {
+            UserModel.getAll()
+              .then((users) => {
+                const members = users.filter((user) => user.role == 'member');
+                res.render('management_bookings.ejs', {
+                  bookingDetails,
+                  selectedBooking,
+                  members,
+                  sessionDetails,
+                  memberFilters,
+                  selectedMemberFilter,
+                  activityFilters,
+                  selectedActivityFilter,
+                  trainerFilters,
+                  selectedTrainerFilter,
+                  locationFilters,
+                  selectedLocationFilter,
+                  statusFilters,
+                  selectedStatusFilter,
+                  dateFrom,
+                  dateTo,
+                  authenticatedUser: req.authenticatedUser,
+                  sortOrder,
+                });
+              })
+              .catch((error) => {
+                console.error(error);
+                res.status(500).render('status.ejs', {
+                  status: 'Database error',
+                  message: 'The members could not be loaded.',
+                  authenticatedUser: req.authenticatedUser,
+                });
               });
-            })
-            .catch((error) => {
-              console.error(error);
-              res.status(500).render("status.ejs", {
-                status: "Database error",
-                message: "The members could not be loaded.",
-                authenticatedUser: req.authenticatedUser,
-              });
+          })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).render('status.ejs', {
+              status: 'Database error',
+              message: 'The session details could not be loaded.',
+              authenticatedUser: req.authenticatedUser,
             });
-        })
-        .catch((error) => {
-          console.error(error);
-          res.status(500).render("status.ejs", {
-            status: "Database error",
-            message: "The session details could not be loaded.",
-            authenticatedUser: req.authenticatedUser,
           });
-        });
-    })
+      })
       .catch((error) => {
         console.error(error);
         res.status(500).render('status.ejs', {
@@ -508,7 +436,7 @@ export class BookingController {
   }
   /**
    * This handles the management of the bookings in the admin page for CREATE, Update and DELETE actions
-   * 
+   *
    * @type {express.RequestHandler}
    */
   static handleBookingManagement(req, res) {
@@ -524,175 +452,177 @@ export class BookingController {
       formData.bookingStatus,
       0,
     );
-
-    if (action === "create") {
-    // this handles the validation of a booking and authenticated user and renders Booking through to the model
-    // regex to ensure server-side validation is in place to avoid manula updates in the browser
-     if (!/^[0-9]+$/.test(formData.userId)) { 
-      res.status(400).render("status.ejs", {
-        status: "Invalid input provided",
-        message: "Please select a valid member.",
-        authenticatedUser: req.authenticatedUser,
-      });
-      return;
-    }
-    if (!/^[0-9]+$/.test(formData.sessionId)) {
-      res.status(400).render("status.ejs", {
-        status: "Invalid input provided",
-        message: "Please select a valid session.",
-        authenticatedUser: req.authenticatedUser,
-      });
-      return;
-    }
-    if (!["confirmed", "cancelled"].includes(formData.bookingStatus)) {
-      res.status(400).render("status.ejs", {
-        status: "Invalid input provided",
-        message: "Please select a booking status.",
-        authenticatedUser: req.authenticatedUser,
-      });
-      return;
-    }
-    //this creates and returns the Booking on the admin Booking management page 
-    //only if the member hasn't already booked into a session.
-    BookingModel.getByMemberSession(
-      formData.userId,
-      formData.sessionId,
-    )
-      .then(() => {
-        res.status(400).render("status.ejs", {
-          status: "Booking already exists",
-          message: "This member is already booked into this session.",
+    if (action === 'create') {
+      // this handles the validation of a booking and authenticated user and renders Booking through to the model
+      // regex to ensure server-side validation is in place to avoid manula updates in the browser
+      if (!/^[0-9]+$/.test(formData.userId)) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided',
+          message: 'Please select a valid member.',
           authenticatedUser: req.authenticatedUser,
         });
-      })
-      .catch((error) => {
-        if (error !== "not found") {
-          console.error(error);
-          res.status(500).render("status.ejs", {
-            status: "Database error",
-            message: "There was an issue checking whether this member already has this booking.",
+        return;
+      }
+      if (!/^[0-9]+$/.test(formData.sessionId)) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided',
+          message: 'Please select a valid session.',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      if (!['confirmed', 'cancelled'].includes(formData.bookingStatus)) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided',
+          message: 'Please select a booking status.',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      //this creates and returns the Booking on the admin Booking management page
+      //only if the member hasn't already booked into a session.
+      BookingModel.getByMemberSession(formData.userId, formData.sessionId)
+        .then(() => {
+          res.status(400).render('status.ejs', {
+            status: 'Booking already exists',
+            message: 'This member is already booked into this session.',
             authenticatedUser: req.authenticatedUser,
           });
-          return;
-        }
-        BookingModel.create(booking)
-          .then(() => {
-            res.redirect("/bookings/admin");
-          })
-          .catch((createError) => {
-            console.error(createError);
-            res.status(500).render("status.ejs", {
-              status: "Database error",
-              message: "The booking could not be created.",
+        })
+        .catch((error) => {
+          if (error !== 'not found') {
+            console.error(error);
+            res.status(500).render('status.ejs', {
+              status: 'Database error',
+              message:
+                'There was an issue checking whether this member already has this booking.',
               authenticatedUser: req.authenticatedUser,
             });
-          });
-      });
-      } else if (action === "update") {
-        if (!selectedBookingId) { // checking the nooking id exists
-          res.status(400).render("status.ejs", {
-            status: "Invalid booking ID",
-            message: "Please select a valid booking to update.",
-            authenticatedUser: req.authenticatedUser,
-          });
-          return;
-        }
-        BookingModel.getByMemberSession( // searching the member booking already exists
-          formData.userId,
-          formData.sessionId,
-        )
-          .then((existingBooking) => { // rejects the duplicate
-            if (existingBooking.id != selectedBookingId) { // checks if it can proceed to update
-              res.status(400).render("status.ejs", {
-                status: "Booking already exists",
-                message: "This member is already booked into this session.",
+            return;
+          }
+          BookingModel.create(booking)
+            .then(() => {
+              res.redirect('/bookings/admin');
+            })
+            .catch((createError) => {
+              console.error(createError);
+              res.status(500).render('status.ejs', {
+                status: 'Database error',
+                message: 'The booking could not be created.',
                 authenticatedUser: req.authenticatedUser,
               });
-              return;
-            }
-            BookingModel.update(booking) // saves to the database
+            });
+        });
+    } else if (action === 'update') {
+      if (!selectedBookingId) {
+        // checking the nooking id exists
+        res.status(400).render('status.ejs', {
+          status: 'Invalid booking ID',
+          message: 'Please select a valid booking to update.',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      BookingModel.getByMemberSession(
+        // searching the member booking already exists
+        formData.userId,
+        formData.sessionId,
+      )
+        .then((existingBooking) => {
+          // rejects the duplicate
+          if (existingBooking.id != selectedBookingId) {
+            // checks if it can proceed to update
+            res.status(400).render('status.ejs', {
+              status: 'Booking already exists',
+              message: 'This member is already booked into this session.',
+              authenticatedUser: req.authenticatedUser,
+            });
+            return;
+          }
+          BookingModel.update(booking) // saves to the database
+            .then((result) => {
+              if (result.affectedRows > 0) {
+                //confirms update
+                res.redirect('/bookings/admin'); //redirects back to CRUD screen
+              } else {
+                res.status(404).render('status.ejs', {
+                  status: 'Booking update error',
+                  message: 'The booking could not be found.',
+                  authenticatedUser: req.authenticatedUser,
+                });
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+              res.status(500).render('status.ejs', {
+                status: 'Database error',
+                message: 'The booking could not be updated.',
+                authenticatedUser: req.authenticatedUser,
+              });
+            });
+        })
+        .catch((error) => {
+          if (error === 'not found') {
+            BookingModel.update(booking)
               .then((result) => {
-                if (result.affectedRows > 0) { //confirms update
-                  res.redirect("/bookings/admin"); //redirects back to CRUD screen
+                if (result.affectedRows > 0) {
+                  res.redirect('/bookings/admin');
                 } else {
-                  res.status(404).render("status.ejs", {
-                    status: "Booking update error",
-                    message: "The booking could not be found.",
+                  res.status(404).render('status.ejs', {
+                    status: 'Booking update error',
+                    message: 'The booking could not be found.',
                     authenticatedUser: req.authenticatedUser,
                   });
                 }
               })
-              .catch((error) => {
-                console.error(error);
-                res.status(500).render("status.ejs", {
-                  status: "Database error",
-                  message: "The booking could not be updated.",
+              .catch((updateError) => {
+                console.error(updateError);
+                res.status(500).render('status.ejs', {
+                  status: 'Database error',
+                  message: 'The booking could not be updated.',
                   authenticatedUser: req.authenticatedUser,
                 });
               });
-          })
-          .catch((error) => {
-            if (error === "not found") {
-              BookingModel.update(booking)
-                .then((result) => {
-                  if (result.affectedRows > 0) {
-                    res.redirect("/bookings/admin");
-                  } else {
-                    res.status(404).render("status.ejs", {
-                      status: "Booking update error",
-                      message: "The booking could not be found.",
-                      authenticatedUser: req.authenticatedUser,
-                    });
-                  }
-                })
-                .catch((updateError) => {
-                  console.error(updateError);
-                  res.status(500).render("status.ejs", {
-                    status: "Database error",
-                    message: "The booking could not be updated.",
-                    authenticatedUser: req.authenticatedUser,
-                  });
-                });
-            } else {
-              console.error(error); 
-              res.status(500).render("status.ejs", {
-                status: "Database error",
-                message: "The booking could not be checked for duplicates.",
-                authenticatedUser: req.authenticatedUser,
-              });
-            }
-          });
-      } else if (action === "delete") {
-        BookingModel.delete(selectedBookingId)
-          .then((result) => {
-            if (result.affectedRows > 0) {
-              res.redirect("/bookings/admin");
-            } else {
-              res.status(404).render("status.ejs", {
-                status: "booking was not found",
-                message: "The booking could not be found.",
-                authenticatedUser: req.authenticatedUser,
-              });
-            }
-          })
-            .catch((error) => {
-              console.error(error);
-              res.status(500).render("status.ejs", {
-                status: "Database error",
-                message: "The Booking could not be deleted.",
-                authenticatedUser: req.authenticatedUser,
-              });
+          } else {
+            console.error(error);
+            res.status(500).render('status.ejs', {
+              status: 'Database error',
+              message: 'The booking could not be checked for duplicates.',
+              authenticatedUser: req.authenticatedUser,
             });
+          }
+        });
+    } else if (action === 'delete') {
+      BookingModel.delete(selectedBookingId)
+        .then((result) => {
+          if (result.affectedRows > 0) {
+            res.redirect('/bookings/admin');
+          } else {
+            res.status(404).render('status.ejs', {
+              status: 'booking was not found',
+              message: 'The booking could not be found.',
+              authenticatedUser: req.authenticatedUser,
+            });
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).render('status.ejs', {
+            status: 'Database error',
+            message: 'The Booking could not be deleted.',
+            authenticatedUser: req.authenticatedUser,
+          });
+        });
     } else {
-      res.status(400).render("status.ejs", {
-        status: "The action is invalid",
-        message: "This action does not work on the form",
+      res.status(400).render('status.ejs', {
+        status: 'The action is invalid',
+        message: 'This action does not work on the form',
         authenticatedUser: req.authenticatedUser,
       });
     }
   }
   /**
-   * This handles the management of the Bookings from the authenicated member 
+   * This handles the management of the Bookings from the authenicated member
    * the page allows for CREATE and DELETE actions
    *
    * @type {express.RequestHandler}
@@ -706,77 +636,77 @@ export class BookingController {
       selectedBookingId,
       req.authenticatedUser.id, // this will force the member to attach to the booking
       formData.sessionId,
-      "confirmed",
+      'confirmed',
       0,
     );
-    if (action === "create") {
-    if (!/^[0-9]+$/.test(formData.sessionId)) {
-      res.status(400).render('status.ejs', {
-        status: 'Invalid input provided.',
-        message: 'Please select a valid session',
-        authenticatedUser: req.authenticatedUser,
-      });
-      return;
-    }
-    BookingModel.getByMemberSession(
-      req.authenticatedUser.id,
-      formData.sessionId,
-    )
-    .then(() => {
-      res.status(400).render('status.ejs', {
-        status: 'Booking already exists',
-        message: 'You have already booked this session.',
-        authenticatedUser: req.authenticatedUser,
-      });
-    })
-    .catch(() => {
-      BookingModel.create(booking)
-        .then((result) => {
-          if (result.affectedRows > 0) {
-            res.redirect("/bookings/" + result.insertId);
-        } else {
-          res.status(500).render("status.ejs", {
-            status: "Database error",
-            message: "Your Booking could not be created.",
-            authenticatedUser: req.authenticatedUser, 
-          });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).render("status.ejs", {
-          status: "Database error",
-          message: "Your Booking could not be created.",
+    if (action === 'create') {
+      if (!/^[0-9]+$/.test(formData.sessionId)) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message: 'Please select a valid session',
           authenticatedUser: req.authenticatedUser,
         });
-      })
-    });
-    return;
-    } else if (action === "delete") {
-      BookingModel.deleteByMember(selectedBookingId, req.authenticatedUser.id,)
+        return;
+      }
+      BookingModel.getByMemberSession(
+        req.authenticatedUser.id,
+        formData.sessionId,
+      )
+        .then(() => {
+          res.status(400).render('status.ejs', {
+            status: 'Booking already exists',
+            message: 'You have already booked this session.',
+            authenticatedUser: req.authenticatedUser,
+          });
+        })
+        .catch(() => {
+          BookingModel.create(booking)
+            .then((result) => {
+              if (result.affectedRows > 0) {
+                res.redirect('/bookings/' + result.insertId);
+              } else {
+                res.status(500).render('status.ejs', {
+                  status: 'Database error',
+                  message: 'Your Booking could not be created.',
+                  authenticatedUser: req.authenticatedUser,
+                });
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+              res.status(500).render('status.ejs', {
+                status: 'Database error',
+                message: 'Your Booking could not be created.',
+                authenticatedUser: req.authenticatedUser,
+              });
+            });
+        });
+      return;
+    } else if (action === 'delete') {
+      BookingModel.deleteByMember(selectedBookingId, req.authenticatedUser.id)
         .then((result) => {
           if (result.affectedRows > 0) {
-            res.redirect("/bookings");
+            res.redirect('/bookings');
           } else {
-            res.status(404).render("status.ejs", {
-              status: "Booking was not found",
-              message: "The Booking could not be found.",
+            res.status(404).render('status.ejs', {
+              status: 'Booking was not found',
+              message: 'The Booking could not be found.',
               authenticatedUser: req.authenticatedUser,
             });
           }
         })
         .catch((error) => {
           console.error(error);
-          res.status(500).render("status.ejs", {
-            status: "Database error",
-            message: "Your Booking could not be deleted.",
+          res.status(500).render('status.ejs', {
+            status: 'Database error',
+            message: 'Your Booking could not be deleted.',
             authenticatedUser: req.authenticatedUser,
           });
         });
     } else {
-      res.status(400).render("status.ejs", {
-        status: "The action is invalid",
-        message: "This action does not work on the form",
+      res.status(400).render('status.ejs', {
+        status: 'The action is invalid',
+        message: 'This action does not work on the form',
         authenticatedUser: req.authenticatedUser,
       });
     }

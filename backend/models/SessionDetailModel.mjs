@@ -1,8 +1,8 @@
-import { DatabaseModel } from "./DatabaseModel.mjs";
-import { SessionModel } from "./SessionModel.mjs";
-import { ActivityModel } from "./ActivityModel.mjs";
-import { LocationModel } from "./LocationModel.mjs";
-import { UserModel } from "./UserModel.mjs";
+import { DatabaseModel } from './DatabaseModel.mjs';
+import { SessionModel } from './SessionModel.mjs';
+import { ActivityModel } from './ActivityModel.mjs';
+import { LocationModel } from './LocationModel.mjs';
+import { UserModel } from './UserModel.mjs';
 
 /**
  * this combines the session, activity location and trainer details in order to display the details
@@ -10,7 +10,7 @@ import { UserModel } from "./UserModel.mjs";
 export class SessionDetailModel extends DatabaseModel {
   /**
    * Creating the SessionDetailModel object
-   * 
+   *
    * @param {SessionModel} session || The session details
    * @param {ActivityModel} activity || the actitivity details linked to the session
    * @param {LocationModel} location || the location details linked to the session
@@ -25,7 +25,7 @@ export class SessionDetailModel extends DatabaseModel {
   }
   /**
    * this converts the joined database rows into the SessionDetailModel object
-   * 
+   *
    * @param {Object} row | this is the joined row that contains the session, activity, location and trainer details.
    * @returns {SessionDetailModel} the converted SessionDetailModel Object
    */
@@ -39,7 +39,7 @@ export class SessionDetailModel extends DatabaseModel {
   }
   /**
    * This returns all the acitive sessions with related details (activity, location and trainer)
-   * 
+   *
    * @returns {Promise<Array<SessionDetailModel>>}
    */
   static getAll() {
@@ -58,11 +58,10 @@ export class SessionDetailModel extends DatabaseModel {
           AND users.deleted = 0
         ORDER BY sessions.date_session, sessions.time_session
         `,
-    ).then((result) => result.map((row) => this.tableToModel(row)),
-    );
+    ).then((result) => result.map((row) => this.tableToModel(row)));
   }
   /**
-   * 
+   *
    * @param {string} term | the serach term  used to find details in the session
    * @returns {Promise<Array<SessionDetailModel>>}
    */
@@ -89,10 +88,8 @@ export class SessionDetailModel extends DatabaseModel {
           )
         ORDER BY sessions.date_session, sessions.time_session
       `,
-      [`%${term}%`, `%${term}%`, `%${term}%`, `%${term}%`,],
-    ).then((result) =>
-      result.map((row) => this.tableToModel(row)),
-    );
+      [`%${term}%`, `%${term}%`, `%${term}%`, `%${term}%`],
+    ).then((result) => result.map((row) => this.tableToModel(row)));
   }
   /**
    * This reuturns one active session with the related details (activity, location and trainer)
@@ -113,14 +110,15 @@ export class SessionDetailModel extends DatabaseModel {
           AND sessions.deleted = 0
         `,
       [id],
-    ).then((result) => result.length > 0
+    ).then((result) =>
+      result.length > 0
         ? this.tableToModel(result[0])
-        : Promise.reject("not found"),
+        : Promise.reject('not found'),
     );
   }
   /**
    * This returns all the acitive sessions belonging to a selected trainer
-   * 
+   *
    * @param {number} trainerId | the trainers unique identifer
    * @returns {Promise<Array<SessionDetailModel>>} the trainers session details.
    */
@@ -143,7 +141,6 @@ export class SessionDetailModel extends DatabaseModel {
         ORDER BY sessions.date_session, sessions.time_session
       `,
       [trainerId],
-    ).then((result) => result.map((row) => this.tableToModel(row)),
-    );
+    ).then((result) => result.map((row) => this.tableToModel(row)));
   }
 }

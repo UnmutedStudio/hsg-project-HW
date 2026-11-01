@@ -48,19 +48,17 @@ export class ActivityController {
     activityQuery
       .then((activities) => {
         const activityFilters = [];
-          for (const activity of activities) {
-            if (!activityFilters.includes(activity.activityName)) {
-              activityFilters.push(activity.activityName);
-            }
+        for (const activity of activities) {
+          if (!activityFilters.includes(activity.activityName)) {
+            activityFilters.push(activity.activityName);
           }
-        const selectedActivityFilter =
-          req.query.activity_filter?.trim() ?? '';
+        }
+        const selectedActivityFilter = req.query.activity_filter?.trim() ?? '';
         if (selectedActivityFilter) {
           activities = activities.filter(
-            (activity) =>
-              activity.activityName === selectedActivityFilter,
+            (activity) => activity.activityName === selectedActivityFilter,
           );
-        }  
+        }
         const sortOrder = req.query.sort ?? 'default';
         if (sortOrder === 'activity_asc') {
           activities.sort((a, b) =>
@@ -124,7 +122,7 @@ export class ActivityController {
       return;
     }
     if (!/^[^<>{}]{2,200}$/.test(formData.activityDescription)) {
-        res.status(400).render('status.ejs', {
+      res.status(400).render('status.ejs', {
         status: 'Invalid input provided',
         message:
           'Please enter a valid activity description, between 2 and 200 characters without without using <, >, { or }.',

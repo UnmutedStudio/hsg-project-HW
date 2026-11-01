@@ -1,9 +1,9 @@
-import express from "express";
-import bcrypt from "bcryptjs";
-import { UserModel } from "../models/UserModel.mjs";
-import { AuthenticationController } from "./AuthenticationController.mjs";
+import express from 'express';
+import bcrypt from 'bcryptjs';
+import { UserModel } from '../models/UserModel.mjs';
+import { AuthenticationController } from './AuthenticationController.mjs';
 /**
- * This User controller manages the users that are in the High st Gym app. 
+ * This User controller manages the users that are in the High st Gym app.
  * It is for admin only CRUD operations for each user account.
  */
 export class UserController {
@@ -14,23 +14,23 @@ export class UserController {
   static {
     //
     this.routes.get(
-      "/",
-      AuthenticationController.restrict(["admin"]),
+      '/',
+      AuthenticationController.restrict(['admin']),
       this.viewUserManagement,
     );
     this.routes.get(
-      "/:id",
-      AuthenticationController.restrict(["admin"]),
+      '/:id',
+      AuthenticationController.restrict(['admin']),
       this.viewUserManagement,
     );
     this.routes.post(
-      "/",
-      AuthenticationController.restrict(["admin"]),
+      '/',
+      AuthenticationController.restrict(['admin']),
       this.handleUserManagement,
     );
     this.routes.post(
-      "/:id",
-      AuthenticationController.restrict(["admin"]),
+      '/:id',
+      AuthenticationController.restrict(['admin']),
       this.handleUserManagement,
     );
   }
@@ -41,110 +41,117 @@ export class UserController {
    * @type {express.RequestHandler}
    */
   static viewSignup(req, res) {
-    res.render("signup.ejs", {
+    res.render('signup.ejs', {
       authenticatedUser: req.authenticatedUser,
     });
   }
   /**
    * THis validates the sign up of a guest user and creates a new member account
-   * 
+   *
    * @type {express.RequestHandler}
    */
   static async handleSignup(req, res) {
     const formData = req.body;
     if (!/^[a-zA-Z\-'\ ]{2,50}$/.test(formData.firstName)) {
-      res.status(400).render("status.ejs", {
-        status: "Invalid input provided",
-        message: "Please enter a valid first name, containing only a-z,-,', with 2 to 50 characters.",
+      res.status(400).render('status.ejs', {
+        status: 'Invalid input provided',
+        message:
+          "Please enter a valid first name, containing only a-z,-,', with 2 to 50 characters.",
         authenticatedUser: req.authenticatedUser,
       });
       return;
     }
     if (!/^[a-zA-Z\-\'\ ]{2,50}$/.test(formData.lastName)) {
-      res.status(400).render("status.ejs", {
-        status: "Invalid input provided",
-        message: "Please enter a valid last name, containing only a-z, -, ', with 2 to 50 characters.",
+      res.status(400).render('status.ejs', {
+        status: 'Invalid input provided',
+        message:
+          "Please enter a valid last name, containing only a-z, -, ', with 2 to 50 characters.",
         authenticatedUser: req.authenticatedUser,
       });
       return;
     }
-    if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)
+    if (
+      !/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)
     ) {
-      res.status(400).render("status.ejs", {
-        status: "Invalid input provided.",
-        message: "Please enter a valid email address.",
+      res.status(400).render('status.ejs', {
+        status: 'Invalid input provided.',
+        message: 'Please enter a valid email address.',
         authenticatedUser: req.authenticatedUser,
       });
       return;
     }
-    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/.test(formData.password)) {
-      res.status(400).render("status.ejs", {
-        status: "Invalid input provided.",
-        message: "Password must contain at least 8 characters, one upper case letter, one lowercase letter and one number",
+    if (
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/.test(
+        formData.password,
+      )
+    ) {
+      res.status(400).render('status.ejs', {
+        status: 'Invalid input provided.',
+        message:
+          'Password must contain at least 8 characters, one upper case letter, one lowercase letter and one number',
         authenticatedUser: req.authenticatedUser,
       });
       return;
-    } 
+    }
     if (formData.password !== formData.confirmPassword) {
-      res.status(400).render("status.ejs", {
-        status: "Passwords do not match",
-        message: "Please enter the same password in both password fields.",
+      res.status(400).render('status.ejs', {
+        status: 'Passwords do not match',
+        message: 'Please enter the same password in both password fields.',
         authenticatedUser: req.authenticatedUser,
       });
       return;
     }
     try {
-    await UserModel.getByAllEmail(formData.email.trim());
-
-    res.status(400).render("status.ejs", {
-      status: "Account already exists",
-      message: "An account already exists for this email address.",
-      authenticatedUser: req.authenticatedUser,
-    });
-  } catch (error) {
-    if (error !== "not found") {
-      console.error(error);
-
-      res.status(500).render("status.ejs", {
-        status: "Database error",
-        message: "The account could not be created.",
+      await UserModel.getByAllEmail(formData.email.trim());
+      res.status(400).render('status.ejs', {
+        status: 'Account already exists',
+        message: 'An account already exists for this email address.',
         authenticatedUser: req.authenticatedUser,
       });
-      return;
-    }
-    const passwordHash = bcrypt.hashSync(formData.password);
-    const user = new UserModel(
-      null,
-      formData.firstName.trim(),
-      formData.lastName.trim(),
-      formData.email.trim(),
-      passwordHash,
-      "member",
-      0,
-    );
-    UserModel.create(user)
+    } catch (error) {
+      if (error !== 'not found') {
+        console.error(error);
+
+        res.status(500).render('status.ejs', {
+          status: 'Database error',
+          message: 'The account could not be created.',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      const passwordHash = bcrypt.hashSync(formData.password);
+      const user = new UserModel(
+        null,
+        formData.firstName.trim(),
+        formData.lastName.trim(),
+        formData.email.trim(),
+        passwordHash,
+        'member',
+        0,
+      );
+      UserModel.create(user)
       .then(() => {
-        res.redirect("/login");
+        res.redirect('/login');
       })
       .catch((createError) => {
         console.error(createError);
-        res.status(500).render("status.ejs", {
-          status: "Database error",
-          message: "The account could not be created.",
+        res.status(500).render('status.ejs', {
+          status: 'Database error',
+          message: 'The account could not be created.',
           authenticatedUser: req.authenticatedUser,
         });
       });
     }
   }
   /**
-   * This renders the User management CRUD page for the admin role and has the option to select a user by ID 
-   * 
+   * This renders the User management CRUD page for the admin role and has the option to select a user by ID
+   *
    * @type {express.RequestHandler}
    */
   static viewUserManagement(req, res) {
     const selectedUserId = req.params.id;
     // this searches a list of all the users for the Id of the one user that has been selected
-    const searchTerm = req.query.search_term?.trim() ?? "";
+    const searchTerm = req.query.search_term?.trim() ?? '';
     const userQuery = searchTerm
       ? UserModel.getBySearch(searchTerm)
       : UserModel.getAll();
@@ -156,68 +163,40 @@ export class UserController {
             userFilters.push(user.role);
           }
         }
-        const selectedUserFilter =
-          req.query.user_filter?.trim() ?? '';
+        const selectedUserFilter = req.query.user_filter?.trim() ?? '';
         if (selectedUserFilter) {
-          users = users.filter(
-            (user) =>
-              user.role === selectedUserFilter,
-          );
+          users = users.filter((user) => user.role === selectedUserFilter);
         }
-        const sortOrder = req.query.sort ?? "default";
-          if (sortOrder === "first_name_asc") {
-            users.sort((a, b) =>
-              a.firstName.localeCompare(b.firstName),
-            );
-          }
-          if (sortOrder === "first_name_desc") {
-            users.sort((a, b) =>
-              b.firstName.localeCompare(a.firstName),
-            );
-          }
-          if (sortOrder === "last_name_asc") {
-            users.sort((a, b) =>
-              a.lastName.localeCompare(b.lastName),
-            );
-          }
-          if (sortOrder === "last_name_desc") {
-            users.sort((a, b) =>
-              b.lastName.localeCompare(a.lastName),
-            );
-          }
-          if (sortOrder === "email_asc") {
-            users.sort((a, b) =>
-              a.email.localeCompare(b.email),
-            );
-          }
-          if (sortOrder === "email_desc") {
-            users.sort((a, b) =>
-              b.email.localeCompare(a.email),
-            );
-          }
-          if (sortOrder === "role_asc") {
-            users.sort((a, b) =>
-              a.role.localeCompare(b.role),
-            );
-          }
-          if (sortOrder === "role_desc") {
-            users.sort((a, b) =>
-              b.role.localeCompare(a.role),
-            );
-          }
+        const sortOrder = req.query.sort ?? 'default';
+        if (sortOrder === 'first_name_asc') {
+          users.sort((a, b) => a.firstName.localeCompare(b.firstName));
+        }
+        if (sortOrder === 'first_name_desc') {
+          users.sort((a, b) => b.firstName.localeCompare(a.firstName));
+        }
+        if (sortOrder === 'last_name_asc') {
+          users.sort((a, b) => a.lastName.localeCompare(b.lastName));
+        }
+        if (sortOrder === 'last_name_desc') {
+          users.sort((a, b) => b.lastName.localeCompare(a.lastName));
+        }
+        if (sortOrder === 'email_asc') {
+          users.sort((a, b) => a.email.localeCompare(b.email));
+        }
+        if (sortOrder === 'email_desc') {
+          users.sort((a, b) => b.email.localeCompare(a.email));
+        }
+        if (sortOrder === 'role_asc') {
+          users.sort((a, b) => a.role.localeCompare(b.role));
+        }
+        if (sortOrder === 'role_desc') {
+          users.sort((a, b) => b.role.localeCompare(a.role));
+        }
         const selectedUser =
           users.find((u) => u.id == selectedUserId) ??
           //uses an empty user object if no user is selected
-          new UserModel(
-            null,
-            "",
-            "",
-            "",
-            "",
-            "",
-            0,
-          );
-        res.render("management_users.ejs", {
+          new UserModel(null, '', '', '', '', '', 0);
+        res.render('management_users.ejs', {
           users,
           selectedUser,
           userFilters,
@@ -228,28 +207,27 @@ export class UserController {
       })
       .catch((error) => {
         console.error(error);
-        res.status(500).render("status.ejs", {
-            status: "Database error",
-            message: "The user could not be loaded.",
-            authenticatedUser: req.authenticatedUser,
-
-          });
+        res.status(500).render('status.ejs', {
+          status: 'Database error',
+          message: 'The user could not be loaded.',
+          authenticatedUser: req.authenticatedUser,
         });
+      });
   }
   /**
    * This handles CREATE, UPDATE and DELETE actions that are completed on the user management page
-   * 
+   *
    * @type {express.RequestHandler}
    */
   static handleUserManagement(req, res) {
     const selectedUserId = req.params.id;
     const formData = req.body;
     const action = formData.action;
-    if (action === "delete") {
+    if (action === 'delete') {
       if (!selectedUserId) {
-        res.status(400).render("status.ejs", {
-          status: "Invalid user ID",
-          message: "Please select a valid user to delete.",
+        res.status(400).render('status.ejs', {
+          status: 'Invalid user ID',
+          message: 'Please select a valid user to delete.',
           authenticatedUser: req.authenticatedUser,
         });
         return;
@@ -257,74 +235,77 @@ export class UserController {
       UserModel.delete(selectedUserId)
         .then((result) => {
           if (result.affectedRows > 0) {
-            res.redirect("/users");
+            res.redirect('/users');
           } else {
-            res.status(404).render("status.ejs", {
-              status: "User delete error",
-              message: "The user could not be found.",
+            res.status(404).render('status.ejs', {
+              status: 'User delete error',
+              message: 'The user could not be found.',
               authenticatedUser: req.authenticatedUser,
             });
           }
         })
         .catch((error) => {
           console.error(error);
-
-          res.status(500).render("status.ejs", {
-            status: "Database error",
-            message: "The user could not be deleted.",
+          res.status(500).render('status.ejs', {
+            status: 'Database error',
+            message: 'The user could not be deleted.',
             authenticatedUser: req.authenticatedUser,
           });
         });
-
       return;
     }
     const passwordWasEntered =
-      typeof formData.password === "string" &&
-      formData.password.length > 0;
+      typeof formData.password === 'string' && formData.password.length > 0;
     if (!/^[a-zA-Z\-'\ ]{2,50}$/.test(formData.firstName)) {
-      res.status(400).render("status.ejs", {
-        status: "Invalid input provided",
-        message: "Please enter a valid first name, containing only a-z,-,', with 2 to 50 characters.",
+      res.status(400).render('status.ejs', {
+        status: 'Invalid input provided',
+        message:
+          "Please enter a valid first name, containing only a-z,-,', with 2 to 50 characters.",
         authenticatedUser: req.authenticatedUser,
       });
       return;
     }
     if (!/^[a-zA-Z\-\'\ ]{2,50}$/.test(formData.lastName)) {
-      res.status(400).render("status.ejs", {
-        status: "Invalid input provided",
-        message: "Please enter a valid last name, containing only a-z, -, ', with 2 to 50 characters.",
+      res.status(400).render('status.ejs', {
+        status: 'Invalid input provided',
+        message:
+          "Please enter a valid last name, containing only a-z, -, ', with 2 to 50 characters.",
         authenticatedUser: req.authenticatedUser,
       });
       return;
     }
-    if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)
+    if (
+      !/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)
     ) {
-      res.status(400).render("status.ejs", {
-        status: "Invalid input provided.",
-        message: "Please enter a valid email address.",
+      res.status(400).render('status.ejs', {
+        status: 'Invalid input provided.',
+        message: 'Please enter a valid email address.',
         authenticatedUser: req.authenticatedUser,
       });
       return;
     }
-    if ( (action === "create" || passwordWasEntered) && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/.test(formData.password,)
+    if (
+      (action === 'create' || passwordWasEntered) &&
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/.test(
+        formData.password,
+      )
     ) {
-      res.status(400).render("status.ejs", {
-        status: "Invalid input provided.",
-        message: "Password must contain at least 8 characters, one upper case letter, one lowercase letter and one number",
+      res.status(400).render('status.ejs', {
+        status: 'Invalid input provided.',
+        message:
+          'Password must contain at least 8 characters, one upper case letter, one lowercase letter and one number',
         authenticatedUser: req.authenticatedUser,
       });
       return;
     }
-    if (!["member", "trainer", "admin"].includes(formData.role,)
-    ) {
-      res.status(400).render("status.ejs", {
-        status: "Invalid input provided.",
-        message: "Please enter a valid role",
+    if (!['member', 'trainer', 'admin'].includes(formData.role)) {
+      res.status(400).render('status.ejs', {
+        status: 'Invalid input provided.',
+        message: 'Please enter a valid role',
         authenticatedUser: req.authenticatedUser,
       });
       return;
     }
-
     const user = new UserModel(
       selectedUserId,
       formData.firstName,
@@ -335,26 +316,26 @@ export class UserController {
       0,
     );
     //We need to hash the password if it is not hashed
-    if (passwordWasEntered && !user.passwordHash.startsWith("$2b")) {
+    if (passwordWasEntered && !user.passwordHash.startsWith('$2b')) {
       user.passwordHash = bcrypt.hashSync(user.passwordHash);
     }
-    if (action === "create") {
+    if (action === 'create') {
       UserModel.create(user)
         .then((result) => {
-          res.redirect("/users");
+          res.redirect('/users');
         })
         .catch((error) => {
-          res.status(500).render("status.ejs", {
-            status: "Database error",
-            message: "The user could not be created.",
+          res.status(500).render('status.ejs', {
+            status: 'Database error',
+            message: 'The user could not be created.',
             authenticatedUser: req.authenticatedUser,
           });
         });
-    } else if (action === "update") {
+    } else if (action === 'update') {
       if (!selectedUserId) {
-        res.status(400).render("status.ejs", {
-          status: "Invalid user ID",
-          message: "Please select a valid user to update.",
+        res.status(400).render('status.ejs', {
+          status: 'Invalid user ID',
+          message: 'Please select a valid user to update.',
           authenticatedUser: req.authenticatedUser,
         });
         return;
@@ -364,29 +345,30 @@ export class UserController {
           if (!passwordWasEntered) {
             user.passwordHash = existingUser.passwordHash;
           }
-      return UserModel.update(user); })
+          return UserModel.update(user);
+        })
         .then((result) => {
           if (result.affectedRows > 0) {
-            res.redirect("/users");
+            res.redirect('/users');
           } else {
-            res.status(404).render("status.ejs", {
-              status: "User update error",
-              message: "The user could not be found.",
+            res.status(404).render('status.ejs', {
+              status: 'User update error',
+              message: 'The user could not be found.',
               authenticatedUser: req.authenticatedUser,
             });
           }
         })
         .catch((error) => {
           console.error(error);
-          res.status(500).render("status.ejs", {
-            status: "Database error",
-            message: "The user could not be updated",
+          res.status(500).render('status.ejs', {
+            status: 'Database error',
+            message: 'The user could not be updated',
             authenticatedUser: req.authenticatedUser,
           });
         });
     } else {
-      res.status(500).render("status.ejs", {
-        status: "Invalid action",
+      res.status(500).render('status.ejs', {
+        status: 'Invalid action',
         message: "The form doesn't support this action.",
         authenticatedUser: req.authenticatedUser,
       });

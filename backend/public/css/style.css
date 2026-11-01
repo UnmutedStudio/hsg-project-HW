@@ -163,7 +163,6 @@ main > section {
   font-weight: 700;
 }
 
-
 .brand-mark {
   display: inline-flex;
   align-items: center;
@@ -721,7 +720,6 @@ main > section {
   display: flex;
   justify-content: center;
 }
-
 
 .booking-confirmed-card {
   width: 20rem !important;
@@ -1413,8 +1411,6 @@ main > section {
   font-weight: 800;
 }
 
-
-
 .management-filter-select {
   flex: 1;
   min-width: 0;
@@ -1471,8 +1467,10 @@ main > section {
   background-color: var(--white);
 }
 
-.location-table-rows:nth-of-type(even) > span
-.user-table-rows:nth-of-type(even) > span {
+.location-table-rows:nth-of-type(even)
+  > span
+  .user-table-rows:nth-of-type(even)
+  > span {
   background-color: #f5f7fa;
 }
 
@@ -1735,7 +1733,7 @@ main > section {
 }
 
 .timetable-filter-bar .management-filter-select,
-.timetable-filter-bar input[type="date"] {
+.timetable-filter-bar input[type='date'] {
   min-width: 10rem;
   min-height: 2.6rem;
   padding: 0.65rem 0.75rem;
@@ -1955,7 +1953,7 @@ summary {
   font-size: 0.7rem;
 }
 
-/* tablet/ipad*/ 
+/* tablet/ipad*/
 @media screen and (min-width: 768px) {
   main > section {
     width: min(calc(100% - 3rem), 1200px);
@@ -2120,7 +2118,7 @@ summary {
     width: 100%;
   }
 
-  .crud-search-group input[type="search"] {
+  .crud-search-group input[type='search'] {
     flex: 1;
     min-width: 14rem;
   }
@@ -2130,7 +2128,7 @@ summary {
     flex: 0 0 auto;
   }
 
-  .management-filter-form > input[type="search"] {
+  .management-filter-form > input[type='search'] {
     width: 18rem;
     flex: 0 0 18rem;
   }
@@ -2336,7 +2334,7 @@ and keep the most common actions accessible.
   .columns-9 {
     grid-template-columns: 1fr;
   }
-  
+
   .manage-heading {
     padding: 1rem;
   }

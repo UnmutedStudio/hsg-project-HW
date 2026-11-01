@@ -1,25 +1,20 @@
-import { DatabaseModel } from "./DatabaseModel.mjs";
-import mysql from "mysql2/promise";
+import { DatabaseModel } from './DatabaseModel.mjs';
+import mysql from 'mysql2/promise';
 /**
  * The ActivityModel is uesd for the High ST gym app.
  * Records are stored in the database table for activities and has CRUD operations
  */
 export class ActivityModel extends DatabaseModel {
-/**
- * Creates the ActivityModel object
- * 
- * @param {number} id | the activity unique identifier
- * @param {string} activityName | the activity name
- * @param {string} activityDescription | the activity description
- * @param {number} deleted | shows deleted or not using a soft delete flag 0 = active or 1 = deleted 
- * 
- */
-  constructor(
-    id,
-    activityName,
-    activityDescription,
-    deleted,
-  ) {
+  /**
+   * Creates the ActivityModel object
+   *
+   * @param {number} id | the activity unique identifier
+   * @param {string} activityName | the activity name
+   * @param {string} activityDescription | the activity description
+   * @param {number} deleted | shows deleted or not using a soft delete flag 0 = active or 1 = deleted
+   *
+   */
+  constructor(id, activityName, activityDescription, deleted) {
     super();
     this.id = id;
     this.activityName = activityName;
@@ -28,16 +23,16 @@ export class ActivityModel extends DatabaseModel {
   }
   /**
    * Theis method converts a database row into an ActivityModel object
-   * 
+   *
    * @param {Object} row | this is the database row from the ativities table
    * @returns {ActivityModel}
    */
   static tableToModel(row) {
     return new ActivityModel(
-      Number(row["id"]),
-      row["activity_name"],
-      row["activity_description"],
-      row["deleted"],
+      Number(row['id']),
+      row['activity_name'],
+      row['activity_description'],
+      row['deleted'],
     );
   }
   /**
@@ -46,7 +41,7 @@ export class ActivityModel extends DatabaseModel {
    * @returns {Promise<Array<ActivityModel>>}
    */
   static getAll() {
-    return this.query("SELECT * FROM activities WHERE deleted = 0").then(
+    return this.query('SELECT * FROM activities WHERE deleted = 0').then(
       (result) => result.map((row) => this.tableToModel(row.activities)),
     );
   }
@@ -73,22 +68,22 @@ export class ActivityModel extends DatabaseModel {
 
   /**
    *Returns the activity by its unique identifer
-   * 
+   *
    * @param {number} id | the unique identifier for each activity
    * @returns {Promise<ActivityModel>}
    */
   static getById(id) {
-    return this.query("SELECT * FROM activities WHERE id = ?", [id]).then(
+    return this.query('SELECT * FROM activities WHERE id = ?', [id]).then(
       (result) =>
         result.length > 0
           ? this.tableToModel(result[0].activities)
-          : Promise.reject("not found"),
+          : Promise.reject('not found'),
     );
   }
 
   /**
    * CREATE - creates a new activity and places the record into the database
-   * 
+   *
    * @param {ActivityModel} activity | The activity object that will be inserted in the database
    * @returns {Promise<mysql.OkPacket>}
    */
@@ -99,16 +94,12 @@ export class ActivityModel extends DatabaseModel {
         (activity_name, activity_description, deleted)
         VALUES (?, ?, ?)
       `,
-      [
-        activity.activityName,
-        activity.activityDescription,
-        activity.deleted,
-      ],
+      [activity.activityName, activity.activityDescription, activity.deleted],
     );
   }
-   /**
+  /**
    * UPDATE - this updates an activity record in the database
-   * 
+   *
    * @param {ActivityModel} activity | The activity object that will be updated in the database
    * @returns {Promise<mysql.OkPacket>}
    */
@@ -130,7 +121,7 @@ export class ActivityModel extends DatabaseModel {
 
   /**
    * DELETE - this soft deletes a record by changing the delete flag to 1
-   * 
+   *
    * @param {number} id | Activity unique identifier
    * @returns {Promise<mysql.OkPacket>}
    */
@@ -138,7 +129,6 @@ export class ActivityModel extends DatabaseModel {
     return this.query(`UPDATE activities SET deleted = 1 WHERE id = ?`, [id]);
   }
 }
-
 
 // TESTING AREA 6 of 6 completed
 // 1. Test Get all works correctly: COMPLETED
@@ -166,7 +156,7 @@ export class ActivityModel extends DatabaseModel {
 //   });
 
 // 4. TESTED create new activity and insert into DB: COMPLETED
-// UPDATE: adding in the description from feedback of AT3 observation requirements. 
+// UPDATE: adding in the description from feedback of AT3 observation requirements.
 
 // const newActivity = new ActivityModel(
 //   null,
@@ -188,7 +178,7 @@ export class ActivityModel extends DatabaseModel {
 // ActivityModel.getById(11)
 //   .then((activity) => {
 //     activity.activityName = "Jedi Advanced Training";
-//     activity.activityDescription = 
+//     activity.activityDescription =
 //     "Advanced Jedi training focused on strength, balance and endurance."
 //     return ActivityModel.update(activity);
 //   })

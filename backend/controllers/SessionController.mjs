@@ -73,12 +73,12 @@ export class SessionController {
   static viewSessionTimetable(req, res) {
     if (
       req.authenticatedUser &&
-      ["admin", "trainer"].includes(req.authenticatedUser.role)
+      ['admin', 'trainer'].includes(req.authenticatedUser.role)
     ) {
-      res.status(403).render("status.ejs", {
-        status: "Access forbidden",
+      res.status(403).render('status.ejs', {
+        status: 'Access forbidden',
         message:
-          "Please use your session management page from your dashboard instead.",
+          'Please use your session management page from your dashboard instead.',
         authenticatedUser: req.authenticatedUser,
       });
       return;
@@ -88,8 +88,7 @@ export class SessionController {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         sessionDetails = sessionDetails.filter(
-          (sessionDetail) =>
-            sessionDetail.session.dateSession >= today,
+          (sessionDetail) => sessionDetail.session.dateSession >= today,
         );
         const activityFilters = [];
         for (const sessionDetail of sessionDetails) {
@@ -110,100 +109,91 @@ export class SessionController {
             locationFilters.push(sessionDetail.location.locationName);
           }
         }
-        const selectedActivityFilter =
-        req.query.activity_filter?.trim() ?? '';
+        const selectedActivityFilter = req.query.activity_filter?.trim() ?? '';
         if (selectedActivityFilter) {
           sessionDetails = sessionDetails.filter(
             (sessionDetail) =>
-              sessionDetail.activity.activityName ===
-              selectedActivityFilter,
+              sessionDetail.activity.activityName === selectedActivityFilter,
           );
         }
-      const selectedTrainerFilter =
-        req.query.trainer_filter?.trim() ?? '';
-      if (selectedTrainerFilter) {
-        sessionDetails = sessionDetails.filter(
-          (sessionDetail) =>
-            `${sessionDetail.trainer.firstName} ${sessionDetail.trainer.lastName}` ===
-            selectedTrainerFilter,
-        );
-      }
-      const selectedLocationFilter =
-        req.query.location_filter?.trim() ?? '';
-      if (selectedLocationFilter) {
-        sessionDetails = sessionDetails.filter(
-          (sessionDetail) =>
-            sessionDetail.location.locationName ===
-            selectedLocationFilter,
-        );
-      }
-      const dateFrom =
-        req.query.date_from?.trim() ?? '';
-      const dateTo =
-        req.query.date_to?.trim() ?? '';
-      if (dateFrom) {
-        sessionDetails = sessionDetails.filter(
-          (sessionDetail) =>
-            sessionDetail.session.dateSession >=
-            new Date(dateFrom),
-        );
-      }
-      if (dateTo) {
-        sessionDetails = sessionDetails.filter(
-          (sessionDetail) =>
-            sessionDetail.session.dateSession <=
-            new Date(dateTo),
-        );
-      }
-      if (req.authenticatedUser && req.authenticatedUser.role === 'member') {
-        BookingDetailsModel.getByMemberId(req.authenticatedUser.id)
-          .then((bookings) => {
-            res.render('session_timetable.ejs', {
-              sessionDetails,
-              bookings,
-              activityFilters,
-              trainerFilters,
-              locationFilters,
-              selectedActivityFilter,
+        const selectedTrainerFilter = req.query.trainer_filter?.trim() ?? '';
+        if (selectedTrainerFilter) {
+          sessionDetails = sessionDetails.filter(
+            (sessionDetail) =>
+              `${sessionDetail.trainer.firstName} ${sessionDetail.trainer.lastName}` ===
               selectedTrainerFilter,
-              selectedLocationFilter,
-              dateFrom,
-              dateTo,
-              authenticatedUser: req.authenticatedUser,
+          );
+        }
+        const selectedLocationFilter = req.query.location_filter?.trim() ?? '';
+        if (selectedLocationFilter) {
+          sessionDetails = sessionDetails.filter(
+            (sessionDetail) =>
+              sessionDetail.location.locationName === selectedLocationFilter,
+          );
+        }
+        const dateFrom = req.query.date_from?.trim() ?? '';
+        const dateTo = req.query.date_to?.trim() ?? '';
+        if (dateFrom) {
+          sessionDetails = sessionDetails.filter(
+            (sessionDetail) =>
+              sessionDetail.session.dateSession >= new Date(dateFrom),
+          );
+        }
+        if (dateTo) {
+          sessionDetails = sessionDetails.filter(
+            (sessionDetail) =>
+              sessionDetail.session.dateSession <= new Date(dateTo),
+          );
+        }
+        if (req.authenticatedUser && req.authenticatedUser.role === 'member') {
+          BookingDetailsModel.getByMemberId(req.authenticatedUser.id)
+            .then((bookings) => {
+              res.render('session_timetable.ejs', {
+                sessionDetails,
+                bookings,
+                activityFilters,
+                trainerFilters,
+                locationFilters,
+                selectedActivityFilter,
+                selectedTrainerFilter,
+                selectedLocationFilter,
+                dateFrom,
+                dateTo,
+                authenticatedUser: req.authenticatedUser,
+              });
+            })
+            .catch((error) => {
+              console.error(error);
+              res.status(500).render('status.ejs', {
+                status: 'Database error',
+                message: 'Bookings could not be loaded.',
+                authenticatedUser: req.authenticatedUser,
+              });
             });
-          })
-          .catch((error) => {
-            console.error(error);
-            res.status(500).render('status.ejs', {
-              status: 'Database error',
-              message: 'Bookings could not be loaded.',
-              authenticatedUser: req.authenticatedUser,
-            });
+        } else {
+          res.render('session_timetable.ejs', {
+            sessionDetails,
+            bookings: [],
+            activityFilters,
+            trainerFilters,
+            locationFilters,
+            selectedActivityFilter,
+            selectedTrainerFilter,
+            selectedLocationFilter,
+            dateFrom,
+            dateTo,
+            authenticatedUser: req.authenticatedUser,
           });
-      } else {
-        res.render('session_timetable.ejs', {
-          sessionDetails,
-          bookings: [],
-          activityFilters,
-          trainerFilters,
-          locationFilters,
-          selectedActivityFilter,
-          selectedTrainerFilter,
-          selectedLocationFilter,
-          dateFrom,
-          dateTo,
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).render('status.ejs', {
+          status: 'Database error',
+          message: 'Sessions could not be loaded.',
           authenticatedUser: req.authenticatedUser,
         });
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).render('status.ejs', {
-        status: 'Database error',
-        message: 'Sessions could not be loaded.',
-        authenticatedUser: req.authenticatedUser,
       });
-    });
   }
   /**
    * Render the trainer session time table for the authenticated user
@@ -217,8 +207,7 @@ export class SessionController {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         sessionDetails = sessionDetails.filter(
-          (sessionDetail) =>
-            sessionDetail.session.dateSession >= today,
+          (sessionDetail) => sessionDetail.session.dateSession >= today,
         );
         const searchTerm = req.query.search_term?.trim() ?? '';
         if (searchTerm) {
@@ -259,39 +248,30 @@ export class SessionController {
           );
         }
         const weekStart = new Date();
-          weekStart.setHours(0, 0, 0, 0);
+        weekStart.setHours(0, 0, 0, 0);
         const weekEnd = new Date(weekStart);
-          weekEnd.setDate(weekEnd.getDate() + 6);
+        weekEnd.setDate(weekEnd.getDate() + 6);
         const formatDateInput = (date) => {
           const year = date.getFullYear();
-          const month = String(
-            date.getMonth() + 1,
-          ).padStart(2, '0');
-          const day = String(
-            date.getDate(),
-          ).padStart(2, '0');
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
           return `${year}-${month}-${day}`;
         };
         const dateFrom =
-          req.query.date_from?.trim() ||
-          formatDateInput(weekStart);
-        const dateTo =
-          req.query.date_to?.trim() ||
-          formatDateInput(weekEnd);
+          req.query.date_from?.trim() || formatDateInput(weekStart);
+        const dateTo = req.query.date_to?.trim() || formatDateInput(weekEnd);
         if (dateFrom) {
           sessionDetails = sessionDetails.filter(
             (sessionDetail) =>
-              sessionDetail.session.dateSession >=
-              new Date(dateFrom),
+              sessionDetail.session.dateSession >= new Date(dateFrom),
           );
         }
         if (dateTo) {
           sessionDetails = sessionDetails.filter(
             (sessionDetail) =>
-              sessionDetail.session.dateSession <=
-              new Date(dateTo),
+              sessionDetail.session.dateSession <= new Date(dateTo),
           );
-        }   
+        }
         const sortOrder = req.query.sort ?? 'default';
         if (sortOrder === 'activity_asc') {
           sessionDetails.sort((a, b) =>
@@ -383,7 +363,7 @@ export class SessionController {
                   selectedActivityFilter,
                   selectedLocationFilter,
                   dateFrom,
-                  dateTo, 
+                  dateTo,
                   authenticatedUser: req.authenticatedUser,
                   sortOrder,
                 });
@@ -453,23 +433,18 @@ export class SessionController {
           }
         }
         const weekStart = new Date();
-          weekStart.setHours(0, 0, 0, 0);
-
+        weekStart.setHours(0, 0, 0, 0);
         const weekEnd = new Date(weekStart);
-          weekEnd.setDate(weekEnd.getDate() + 6);
-
+        weekEnd.setDate(weekEnd.getDate() + 6);
         const formatDateInput = (date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
           return `${year}-${month}-${day}`;
         };
         const dateFrom =
-          req.query.date_from?.trim() ||
-          formatDateInput(weekStart);
-        const dateTo =
-          req.query.date_to?.trim() ||
-          formatDateInput(weekEnd);  
+          req.query.date_from?.trim() || formatDateInput(weekStart);
+        const dateTo = req.query.date_to?.trim() || formatDateInput(weekEnd);
         if (dateFrom) {
           sessionDetails = sessionDetails.filter(
             (sessionDetail) =>
@@ -611,14 +586,13 @@ export class SessionController {
                       selectedTrainerFilter,
                       selectedLocationFilter,
                       dateFrom,
-                      dateTo, 
+                      dateTo,
                       authenticatedUser: req.authenticatedUser,
                       sortOrder,
                     });
                   })
                   .catch((error) => {
                     console.error(error);
-
                     res.status(500).render('status.ejs', {
                       status: 'Database error',
                       message: 'The trainers could not be loaded.',
@@ -628,7 +602,6 @@ export class SessionController {
               })
               .catch((error) => {
                 console.error(error);
-
                 res.status(500).render('status.ejs', {
                   status: 'Database error',
                   message: 'The locations could not be loaded.',
@@ -638,7 +611,6 @@ export class SessionController {
           })
           .catch((error) => {
             console.error(error);
-
             res.status(500).render('status.ejs', {
               status: 'Database error',
               message: 'The activities could not be loaded.',
@@ -934,7 +906,6 @@ export class SessionController {
         //     "Bookings cancelled:",
         //     bookingResult.affectedRows,
         //   );
-
         //   return SessionModel.delete(selectedSessionId);
         // })
         .then(() => {
@@ -953,7 +924,6 @@ export class SessionController {
         })
         .catch((error) => {
           console.error(error);
-
           res.status(500).render('status.ejs', {
             status: 'Database error',
             message: 'The session could not be deleted.',
@@ -990,7 +960,6 @@ export class SessionController {
       formData.availability,
       0,
     );
-
     // same validation as admin but redirect to trainer route
     if (action === 'create') {
       if (!formData.activityId) {

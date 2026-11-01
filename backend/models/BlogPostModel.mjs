@@ -1,5 +1,5 @@
-import { DatabaseModel } from "./DatabaseModel.mjs";
-import mysql from "mysql2/promise";
+import { DatabaseModel } from './DatabaseModel.mjs';
+import mysql from 'mysql2/promise';
 /**
  * The BlogPostModel is used for the High ST gym app.
  * Records are stored in the database table called blog_posts and it has CRUD operations
@@ -7,22 +7,15 @@ import mysql from "mysql2/promise";
 export class BlogPostModel extends DatabaseModel {
   /**
    * Creates the BlogPostModel object
-   * 
+   *
    * @param {number} id | unique identifier for the blog post
    * @param {string} title | The title of the blog post
    * @param {string} content | the content within the blog post
    * @param {number} userId | the linked identifier of ther user who created the post
    * @param {Date} dateCreated | the date the blog post was created
-   * @param {number} deleted | shows deleted or not using a soft delete flag 0 = active or 1 = deleted 
+   * @param {number} deleted | shows deleted or not using a soft delete flag 0 = active or 1 = deleted
    */
-  constructor(
-    id,
-    title,
-    content,
-    userId,
-    dateCreated,
-    deleted,
-  ) {
+  constructor(id, title, content, userId, dateCreated, deleted) {
     super();
     this.id = id;
     this.title = title;
@@ -33,18 +26,18 @@ export class BlogPostModel extends DatabaseModel {
   }
   /**
    * This method converts a database row into an BlogPostModel object
-   * 
+   *
    * @param {Object} row | this is the database row from the blog_posts table
    * @returns {BlogPostModel}
    */
   static tableToModel(row) {
     return new BlogPostModel(
-      Number(row["id"]),
-      row["title"],
-      row["content"],
-      Number(row["user_id"]),
-      row["date_created"],
-      row["deleted"],
+      Number(row['id']),
+      row['title'],
+      row['content'],
+      Number(row['user_id']),
+      row['date_created'],
+      row['deleted'],
     );
   }
   /**
@@ -53,7 +46,7 @@ export class BlogPostModel extends DatabaseModel {
    * @returns {Promise<Array<BlogPostModel>>}
    */
   static getAll() {
-    return this.query("SELECT * FROM blog_posts WHERE deleted = 0").then(
+    return this.query('SELECT * FROM blog_posts WHERE deleted = 0').then(
       (result) => result.map((row) => this.tableToModel(row.blog_posts)),
     );
   }
@@ -73,27 +66,27 @@ export class BlogPostModel extends DatabaseModel {
           OR content LIKE ?
         )
       `,
-      [`%${term}%`,`%${term}%`,],
+      [`%${term}%`, `%${term}%`],
     ).then((result) => result.map((row) => this.tableToModel(row.blog_posts)));
   }
   /**
    *Returns a blog post by its unique identifer
-   * 
+   *
    * @param {number} id | the unique identifier for each blog post
    * @returns {Promise<BlogPostModel>}
    */
   static getById(id) {
-    return this.query("SELECT * FROM blog_posts WHERE id = ?", [id]).then(
+    return this.query('SELECT * FROM blog_posts WHERE id = ?', [id]).then(
       (result) =>
         result.length > 0
           ? this.tableToModel(result[0].blog_posts)
-          : Promise.reject("not found"),
+          : Promise.reject('not found'),
     );
   }
 
   /**
    * CREATE - creates a new blogPost and places the record into the database
-   * 
+   *
    * @param {BlogPostModel} blogPost | The blogPost object that will be inserted in the database
    * @returns {Promise<mysql.OkPacket>}
    */
@@ -119,9 +112,9 @@ export class BlogPostModel extends DatabaseModel {
       ],
     );
   }
-   /**
+  /**
    * UPDATE - this updates a blog post record in the database
-   * 
+   *
    * @param {BlogPostModel} blogPost | The blogPost object that will be updated in the database
    * @returns {Promise<mysql.OkPacket>}
    */
@@ -148,7 +141,7 @@ export class BlogPostModel extends DatabaseModel {
   }
   /**
    * DELETE - this soft deletes a record by changing the delete flag to 1
-   * 
+   *
    * @param {number} id | the blog post unique identifier
    * @returns {Promise<mysql.OkPacket>}
    */

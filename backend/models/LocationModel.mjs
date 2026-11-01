@@ -1,25 +1,20 @@
-import { DatabaseModel } from "./DatabaseModel.mjs";
-import mysql from "mysql2/promise";
+import { DatabaseModel } from './DatabaseModel.mjs';
+import mysql from 'mysql2/promise';
 /**
  * The LocationModel is uesd for the High ST gym app.
  * Records are stored in the database table for locations and has CRUD operations
  */
 export class LocationModel extends DatabaseModel {
-/**
- * Creates the LocationModel object
- * 
- * @param {number} id | the location unique identifier
- * @param {string} locationName | the location name
- * @param {string} locationAddress | the location address
- * @param {number} deleted | shows deleted or not using a soft delete flag 0 = active or 1 = deleted 
- * 
- */
-  constructor(
-    id,
-    locationName,
-    locationAddress,
-    deleted,
-  ) {
+  /**
+   * Creates the LocationModel object
+   *
+   * @param {number} id | the location unique identifier
+   * @param {string} locationName | the location name
+   * @param {string} locationAddress | the location address
+   * @param {number} deleted | shows deleted or not using a soft delete flag 0 = active or 1 = deleted
+   *
+   */
+  constructor(id, locationName, locationAddress, deleted) {
     super();
     this.id = id;
     this.locationName = locationName;
@@ -33,10 +28,10 @@ export class LocationModel extends DatabaseModel {
    */
   static tableToModel(row) {
     return new LocationModel(
-      Number(row["id"]),
-      row["location_name"],
-      row["address"],
-      row["deleted"],
+      Number(row['id']),
+      row['location_name'],
+      row['address'],
+      row['deleted'],
     );
   }
   /**
@@ -45,7 +40,7 @@ export class LocationModel extends DatabaseModel {
    * @returns {Promise<Array<LocationModel>>}
    */
   static getAll() {
-    return this.query("SELECT * FROM locations WHERE deleted = 0").then(
+    return this.query('SELECT * FROM locations WHERE deleted = 0').then(
       (result) => result.map((row) => this.tableToModel(row.locations)),
     );
   }
@@ -71,22 +66,22 @@ export class LocationModel extends DatabaseModel {
   }
   /**
    *Returns the location by its unique identifer
-   * 
+   *
    * @param {number} id | the unique identifier for each location
    * @returns {Promise<LocationModel>}
    */
   static getById(id) {
-    return this.query("SELECT * FROM locations WHERE id = ?", [id]).then(
+    return this.query('SELECT * FROM locations WHERE id = ?', [id]).then(
       (result) =>
         result.length > 0
           ? this.tableToModel(result[0].locations)
-          : Promise.reject("not found"),
+          : Promise.reject('not found'),
     );
   }
 
   /**
    * CREATE - creates a new location and places the record into the database
-   * 
+   *
    * @param {LocationModel} location | The location object that will be inserted in the database
    * @returns {Promise<mysql.OkPacket>}
    */
@@ -97,16 +92,12 @@ export class LocationModel extends DatabaseModel {
         (location_name, address, deleted)
         VALUES (?, ?, ?)
       `,
-      [
-        location.locationName,
-        location.locationAddress,
-        location.deleted,
-      ],
+      [location.locationName, location.locationAddress, location.deleted],
     );
   }
-   /**
+  /**
    * UPDATE - this updates an location record in the database
-   * 
+   *
    * @param {LocationModel} location | The location object that will be updated in the database
    * @returns {Promise<mysql.OkPacket>}
    */

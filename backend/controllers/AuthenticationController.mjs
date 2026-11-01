@@ -1,10 +1,10 @@
-import express from "express";
-import session from "express-session";
-import bcrypt from "bcryptjs";
-import { UserModel } from "../models/UserModel.mjs";
+import express from 'express';
+import session from 'express-session';
+import bcrypt from 'bcryptjs';
+import { UserModel } from '../models/UserModel.mjs';
 /**
  * THis controller authenticates users who are accessing the high street gym applicaton
- * 
+ *
  */
 export class AuthenticationController {
   /**
@@ -18,22 +18,22 @@ export class AuthenticationController {
   static {
     this.middleware.use(
       session({
-        secret: "5af36f38-7dfb-43b3-aefe-b9c7fd4562c3",
+        secret: '5af36f38-7dfb-43b3-aefe-b9c7fd4562c3',
         resave: false,
         saveUninitialized: false,
-        cookie: { secure: "auto" },
+        cookie: { secure: 'auto' },
       }),
     );
     this.middleware.use(this.#session_authentication);
 
-    this.routes.get("/", this.viewAuthenticate);
-    this.routes.post("/", this.handleAuthenticate);
+    this.routes.get('/', this.viewAuthenticate);
+    this.routes.post('/', this.handleAuthenticate);
 
-    this.routes.delete("/", this.handleDeauthenticate);
-    this.routes.get("/logout", this.handleDeauthenticate);
+    this.routes.delete('/', this.handleDeauthenticate);
+    this.routes.get('/logout', this.handleDeauthenticate);
   }
   /**
-   * This is a middleware function it loads the authenticated user from the database 
+   * This is a middleware function it loads the authenticated user from the database
    * from an existing user id that is active in the current session
    *
    * @type {express.RequestHandler}
@@ -56,7 +56,7 @@ export class AuthenticationController {
    * @type {express.RequestHandler}
    */
   static viewAuthenticate(req, res) {
-    res.render("login.ejs", {
+    res.render('login.ejs', {
       authenticatedUser: req.authenticatedUser,
     });
   }
@@ -70,38 +70,38 @@ export class AuthenticationController {
   static async handleAuthenticate(req, res) {
     const email = req.body.email;
     const password = req.body.password;
-      try {
-        const user = await UserModel.getByEmail(email);
-        const isCorrectPassword = await bcrypt.compare(
-          password,
-          user.passwordHash,
-        );
-      if (isCorrectPassword) {  
+    try {
+      const user = await UserModel.getByEmail(email);
+      const isCorrectPassword = await bcrypt.compare(
+        password,
+        user.passwordHash,
+      );
+      if (isCorrectPassword) {
         req.session.userId = user.id;
-        if (user.role === "admin") {
-          res.redirect("/admin");
-          } else if (user.role === "trainer") {
-          res.redirect("/trainer");
-          } else {
-          res.redirect("/dashboard");
-          }
+        if (user.role === 'admin') {
+          res.redirect('/admin');
+        } else if (user.role === 'trainer') {
+          res.redirect('/trainer');
+        } else {
+          res.redirect('/dashboard');
+        }
       } else {
-        res.status(401).render("status.ejs", {
-          status: "Authenticate failed",
-          message: "Invalid credentials",
+        res.status(401).render('status.ejs', {
+          status: 'Authenticate failed',
+          message: 'Invalid credentials',
         });
       }
     } catch (error) {
-      if (error == "not found") {
-        res.status(401).render("status.ejs", {
-          status: "Authenticate failed",
-          message: "Invalid credentials",
+      if (error == 'not found') {
+        res.status(401).render('status.ejs', {
+          status: 'Authenticate failed',
+          message: 'Invalid credentials',
         });
       } else {
         console.log(error);
-        res.status(500).render("status.ejs", {
-          status: "Database error",
-          message: "Authentication failed",
+        res.status(500).render('status.ejs', {
+          status: 'Database error',
+          message: 'Authentication failed',
         });
       }
     }
@@ -115,15 +115,15 @@ export class AuthenticationController {
     if (req.authenticatedUser) {
       if (req.session.userId) {
         req.session.destroy();
-        res.status(200).render("status.ejs", {
-          status: "Logged out",
-          message: "You have been logged out",
+        res.status(200).render('status.ejs', {
+          status: 'Logged out',
+          message: 'You have been logged out',
         });
       }
     } else {
-      res.status(401).render("status.ejs", {
-        status: "Unautheticated",
-        message: "Please login to access the requested page.",
+      res.status(401).render('status.ejs', {
+        status: 'Unautheticated',
+        message: 'Please login to access the requested page.',
       });
     }
   }
@@ -141,15 +141,15 @@ export class AuthenticationController {
         if (allowedRoles.includes(req.authenticatedUser.role)) {
           next();
         } else {
-          res.status(403).render("status.ejs", {
-            status: "Access forbidden",
-            message: "Role does not have access to the requested resource.",
+          res.status(403).render('status.ejs', {
+            status: 'Access forbidden',
+            message: 'Role does not have access to the requested resource.',
           });
         }
       } else {
-        res.status(401).render("status.ejs", {
-          status: "Unauthenticated",
-          message: "Please login to access the requested page",
+        res.status(401).render('status.ejs', {
+          status: 'Unauthenticated',
+          message: 'Please login to access the requested page',
         });
       }
     };

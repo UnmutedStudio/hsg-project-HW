@@ -84,17 +84,13 @@ export class SessionModel extends DatabaseModel {
   }
   /**
    * This returns sessions with location, date and time
-   * 
+   *
    * @param {number} locationId | location unique identifier
    * @param {string} dateSession | date of the session
-   * @param {string} timeSession | time of the session 
+   * @param {string} timeSession | time of the session
    * @returns {Promise<SessionModel>}
    */
-  static getByLocationDateTime(
-    locationId,
-    dateSession,
-    timeSession,
-  ){
+  static getByLocationDateTime(locationId, dateSession, timeSession) {
     return this.query(
       `
       SELECT *
@@ -104,22 +100,22 @@ export class SessionModel extends DatabaseModel {
         AND time_session = ?
         AND deleted = 0
       `,
-    [locationId, dateSession, timeSession],
+      [locationId, dateSession, timeSession],
     ).then((result) =>
-    result.length > 0
-      ? this.tableToModel(result[0].sessions)
-      : Promise.reject("not found"),
+      result.length > 0
+        ? this.tableToModel(result[0].sessions)
+        : Promise.reject('not found'),
     );
   }
   /**
    * This checks for duplicate sessions while excluding the session that is being updated
-   * 
+   *
    * @param {number} locationId | location unique identifier
    * @param {string} dateSession | date of the session
    * @param {string} timeSession | time of the session
-   * @param {number} sessionId | the session unique identifer 
+   * @param {number} sessionId | the session unique identifer
    * @returns {Promise<SessionModel>}
-   * 
+   *
    */
   static getDuplicateForUpdate(
     locationId,
@@ -137,16 +133,11 @@ export class SessionModel extends DatabaseModel {
           AND id != ?
           AND deleted = 0
       `,
-      [
-        locationId,
-        dateSession,
-        timeSession,
-        sessionId,
-      ],
+      [locationId, dateSession, timeSession, sessionId],
     ).then((result) =>
       result.length > 0
         ? this.tableToModel(result[0].sessions)
-        : Promise.reject("not found"),
+        : Promise.reject('not found'),
     );
   }
   /**
@@ -222,7 +213,7 @@ export class SessionModel extends DatabaseModel {
   }
   /**
    * This updates the session that belongs to the aunthenticated trainer.
-   * 
+   *
    * @param {SessionModel} session | The session object to be updated
    * @returns {Promise<mysql.OkPacket>}
    */
@@ -251,13 +242,13 @@ export class SessionModel extends DatabaseModel {
         session.availability,
         session.deleted,
         session.id,
-        session.trainerId
+        session.trainerId,
       ],
     );
   }
   /**
    * This allows a soft delete from the session that belongs to the authenticated trainer
-   * 
+   *
    * @param {number} sessionId | the session unique identifier
    * @param {number} trainerId | the teainer unique identifer
    * @returns {Promise<mysql.OkPacket>}

@@ -7,7 +7,7 @@ import { AuthenticationController } from './AuthenticationController.mjs';
  */
 export class BlogPostController {
   /**
-   * 
+   *
    * This express router contains all BlogPostController routes
    */
   static routes = express.Router();
@@ -47,11 +47,11 @@ export class BlogPostController {
       '/admin/:id',
       AuthenticationController.restrict(['admin']),
       this.handleBlogPostManagement,
-    );  
+    );
   }
   /**
    * Render the blog posts page, optionally filtered by a search term.
-   * 
+   *
    * @type {express.RequestHandler}
    */
   static viewBlogPostList(req, res) {
@@ -70,7 +70,7 @@ export class BlogPostController {
             message: 'Blog posts could not be loaded.',
             authenticatedUser: req.authenticatedUser,
           });
-        });  
+        });
     } else {
       BlogPostDetailModel.getAll()
         .then((blogPosts) => {
@@ -86,7 +86,7 @@ export class BlogPostController {
             message: 'Blog posts could not be loaded.',
             authenticatedUser: req.authenticatedUser,
           });
-        }); 
+        });
     }
   }
   /**
@@ -114,7 +114,8 @@ export class BlogPostController {
     ) {
       res.status(400).render('status.ejs', {
         status: 'Invalid input provided.',
-        message: 'Please enter a title between 1 and 100 characters. Do not use these characters: " * : < > ? / \ | { }.',
+        message:
+          'Please enter a title between 1 and 100 characters. Do not use these characters: " * : < > ? / \ | { }.',
         authenticatedUser: req.authenticatedUser,
       });
       return;
@@ -127,7 +128,8 @@ export class BlogPostController {
     ) {
       res.status(400).render('status.ejs', {
         status: 'Invalid input provided.',
-        message: 'Please ensure the content is between 1 and 1000 characters. " * : < > ? / \ | { }',
+        message:
+          'Please ensure the content is between 1 and 1000 characters. " * : < > ? / \ | { }',
         authenticatedUser: req.authenticatedUser,
       });
       return;
@@ -207,14 +209,14 @@ export class BlogPostController {
       });
   }
   /**
-   * This renders the admin mangement page for Blog posts and has the option 
+   * This renders the admin mangement page for Blog posts and has the option
    * to select a post by using the Id in the URL
-   * 
+   *
    * @type {express.RequestHandler}
    */
   static viewBlogPostManagement(req, res) {
     const selectedBlogPostId = req.params.id;
-    const searchTerm = req.query.search_term?.trim() ?? "";
+    const searchTerm = req.query.search_term?.trim() ?? '';
     const blogQuery = searchTerm
       ? BlogPostDetailModel.getBySearch(searchTerm)
       : BlogPostDetailModel.getAll();
@@ -222,15 +224,13 @@ export class BlogPostController {
       .then((blogPosts) => {
         const authorFilters = [];
         for (const blogPostDetail of blogPosts) {
-          const authorName =
-            `${blogPostDetail.user.firstName} ${blogPostDetail.user.lastName}`;
+          const authorName = `${blogPostDetail.user.firstName} ${blogPostDetail.user.lastName}`;
 
           if (!authorFilters.includes(authorName)) {
             authorFilters.push(authorName);
           }
         }
-        const selectedAuthorFilter =
-          req.query.author_filter?.trim() ?? '';
+        const selectedAuthorFilter = req.query.author_filter?.trim() ?? '';
         if (selectedAuthorFilter) {
           blogPosts = blogPosts.filter(
             (blogPostDetail) =>
@@ -238,10 +238,8 @@ export class BlogPostController {
               selectedAuthorFilter,
           );
         }
-        const dateFrom =
-          req.query.date_from?.trim() ?? '';
-        const dateTo =
-          req.query.date_to?.trim() ?? '';
+        const dateFrom = req.query.date_from?.trim() ?? '';
+        const dateTo = req.query.date_to?.trim() ?? '';
         if (dateFrom) {
           blogPosts = blogPosts.filter(
             (blogPostDetail) =>
@@ -256,41 +254,43 @@ export class BlogPostController {
               new Date(`${dateTo}T23:59:59`),
           );
         }
-        const sortOrder = req.query.sort ?? "default";
-        if (sortOrder === "title_asc") {
+        const sortOrder = req.query.sort ?? 'default';
+        if (sortOrder === 'title_asc') {
           blogPosts.sort((a, b) =>
             a.blogPost.title.localeCompare(b.blogPost.title),
           );
         }
-        if (sortOrder === "title_desc") {
+        if (sortOrder === 'title_desc') {
           blogPosts.sort((a, b) =>
             b.blogPost.title.localeCompare(a.blogPost.title),
           );
         }
-        if (sortOrder === "author_asc") {
+        if (sortOrder === 'author_asc') {
           blogPosts.sort((a, b) =>
-            (`${a.user.firstName} ${a.user.lastName}`).localeCompare(
+            `${a.user.firstName} ${a.user.lastName}`.localeCompare(
               `${b.user.firstName} ${b.user.lastName}`,
             ),
           );
         }
-        if (sortOrder === "author_desc") {
+        if (sortOrder === 'author_desc') {
           blogPosts.sort((a, b) =>
-            (`${b.user.firstName} ${b.user.lastName}`).localeCompare(
+            `${b.user.firstName} ${b.user.lastName}`.localeCompare(
               `${a.user.firstName} ${a.user.lastName}`,
             ),
           );
         }
-        if (sortOrder === "date_asc") {
-          blogPosts.sort((a, b) =>
-            new Date(a.blogPost.dateCreated) -
-            new Date(b.blogPost.dateCreated),
+        if (sortOrder === 'date_asc') {
+          blogPosts.sort(
+            (a, b) =>
+              new Date(a.blogPost.dateCreated) -
+              new Date(b.blogPost.dateCreated),
           );
         }
-        if (sortOrder === "date_desc") {
-          blogPosts.sort((a, b) =>
-            new Date(b.blogPost.dateCreated) -
-            new Date(a.blogPost.dateCreated),
+        if (sortOrder === 'date_desc') {
+          blogPosts.sort(
+            (a, b) =>
+              new Date(b.blogPost.dateCreated) -
+              new Date(a.blogPost.dateCreated),
           );
         }
         //search the list of all blog posts
@@ -300,13 +300,13 @@ export class BlogPostController {
           ) ??
           new BlogPostModel(
             null,
-            "",
-            "",
+            '',
+            '',
             req.authenticatedUser.id,
             new Date(),
             0,
           );
-        res.render("management_blog_posts.ejs", {
+        res.render('management_blog_posts.ejs', {
           blogPosts,
           selectedBlogPost,
           authorFilters,
@@ -335,44 +335,46 @@ export class BlogPostController {
     const formData = req.body;
     const action = formData.action;
 
-    if (action === "create") {
-    if (
-      typeof formData.title !== 'string' ||
-      formData.title.trim().length === 0 ||
-      formData.title.trim().length > 100 ||
-      /["*:<>?\/\\|{}]/.test(formData.title)
-    ) {
-      res.status(400).render('status.ejs', {
-        status: 'Invalid input provided.',
-        message: 'Please enter a title between 1 and 100 characters. Do not use these characters: " * : < > ? / \ | { }.',
-        authenticatedUser: req.authenticatedUser,
-      });
-      return;
-    }
-    if (
-      typeof formData.content !== 'string' ||
-      formData.content.trim().length === 0 ||
-      formData.content.trim().length > 1000 ||
-      /["*:<>?\/\\|{}]/.test(formData.content)
-    ) {
-      res.status(400).render('status.ejs', {
-        status: 'Invalid input provided.',
-        message: 'Please ensure the content is between 1 and 1000 characters. Do not use these characters: " * : < > ? / \ | { }.',
-        authenticatedUser: req.authenticatedUser,
-      });
-      return;
-    }
-    // this is the the new blog post structure
-    const blogPost = new BlogPostModel(
-      null,
-      formData.title.trim(),
-      formData.content.trim(),
-      req.authenticatedUser.id,
-      new Date(),
-      0,
-    );
-    // this handles the validated post and authenticated user and renders post through to the model
-    // and returns the new post on the admin blog post dashboard
+    if (action === 'create') {
+      if (
+        typeof formData.title !== 'string' ||
+        formData.title.trim().length === 0 ||
+        formData.title.trim().length > 100 ||
+        /["*:<>?\/\\|{}]/.test(formData.title)
+      ) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message:
+            'Please enter a title between 1 and 100 characters. Do not use these characters: " * : < > ? / \ | { }.',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      if (
+        typeof formData.content !== 'string' ||
+        formData.content.trim().length === 0 ||
+        formData.content.trim().length > 1000 ||
+        /["*:<>?\/\\|{}]/.test(formData.content)
+      ) {
+        res.status(400).render('status.ejs', {
+          status: 'Invalid input provided.',
+          message:
+            'Please ensure the content is between 1 and 1000 characters. Do not use these characters: " * : < > ? / \ | { }.',
+          authenticatedUser: req.authenticatedUser,
+        });
+        return;
+      }
+      // this is the the new blog post structure
+      const blogPost = new BlogPostModel(
+        null,
+        formData.title.trim(),
+        formData.content.trim(),
+        req.authenticatedUser.id,
+        new Date(),
+        0,
+      );
+      // this handles the validated post and authenticated user and renders post through to the model
+      // and returns the new post on the admin blog post dashboard
       BlogPostModel.create(blogPost)
         .then(() => {
           res.redirect('/blog-posts/admin');
@@ -385,11 +387,11 @@ export class BlogPostController {
             authenticatedUser: req.authenticatedUser,
           });
         });
-    } else if (action === "delete") {
+    } else if (action === 'delete') {
       if (!selectedBlogPostId) {
-        res.status(400).render("status.ejs", {
-          status: "Blog post was ID was not valid",
-          message: "A valid blog post must be selected to delete",
+        res.status(400).render('status.ejs', {
+          status: 'Blog post was ID was not valid',
+          message: 'A valid blog post must be selected to delete',
           authenticatedUser: req.authenticatedUser,
         });
         return;
@@ -397,27 +399,27 @@ export class BlogPostController {
       BlogPostModel.delete(selectedBlogPostId)
         .then((result) => {
           if (result.affectedRows > 0) {
-            res.redirect("/blog-posts/admin");
+            res.redirect('/blog-posts/admin');
           } else {
-            res.status(404).render("status.ejs", {
-              status: "Blog post was not found",
-              message: "The Blog post could not be found.",
+            res.status(404).render('status.ejs', {
+              status: 'Blog post was not found',
+              message: 'The Blog post could not be found.',
               authenticatedUser: req.authenticatedUser,
             });
           }
         })
         .catch((error) => {
           console.error(error);
-          res.status(500).render("status.ejs", {
-            status: "Database error",
-            message: "The Blog post could not be deleted.",
+          res.status(500).render('status.ejs', {
+            status: 'Database error',
+            message: 'The Blog post could not be deleted.',
             authenticatedUser: req.authenticatedUser,
           });
         });
     } else {
-      res.status(400).render("status.ejs", {
-        status: "The action is invalid",
-        message: "This action does not work on the form",
+      res.status(400).render('status.ejs', {
+        status: 'The action is invalid',
+        message: 'This action does not work on the form',
         authenticatedUser: req.authenticatedUser,
       });
     }
