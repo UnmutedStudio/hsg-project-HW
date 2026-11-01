@@ -16,8 +16,9 @@ export class UserModel extends DatabaseModel {
    * @param {string} passwordHash | the user's hashed password
    * @param {string} role | role of the user (member, trainer or admin)
    * @param {number} deleted | soft delete field where active = 0 and delted = 1
+   * @param {string|null} authenticationKey | API authentication key 
    */
-  constructor(id, firstName, lastName, email, passwordHash, role, deleted) {
+  constructor(id, firstName, lastName, email, passwordHash, role, deleted, authenticationKey) {
     super();
     this.id = id;
     this.firstName = firstName;
@@ -26,6 +27,7 @@ export class UserModel extends DatabaseModel {
     this.passwordHash = passwordHash;
     this.role = role;
     this.deleted = deleted;
+    this.authenticationKey = authenticationKey;
   }
 
   /**
@@ -44,6 +46,7 @@ export class UserModel extends DatabaseModel {
       row['password_hash'],
       row['role'],
       row['deleted'],
+      row['authentication_key'],
     );
   }
   /**
@@ -136,6 +139,24 @@ export class UserModel extends DatabaseModel {
     );
   }
   /**
+   *
+   * @param {string} authenticationKey
+   * @returns {Promise<UserModel>}
+   */
+  static async getByAuthenticationKey(authenticationKey) {
+    return this.query(
+      "SELECT * FROM users WHERE authentication_key = ? AND deleted = 0",
+      [authenticationKey],
+    ).then((result) => {
+      if (result.length > 0) {
+        return this.tableToModel(result[0].users);
+      } else {
+        return Promise.reject("not found");
+      }
+    });
+  }
+
+  /**
    * CREATE - creates a new user in the databse
    *
    * @param {UserModel} user | this is the user object which contains the values to add in
@@ -161,7 +182,7 @@ export class UserModel extends DatabaseModel {
     return this.query(
       `
       UPDATE users
-      SET first_name = ?, last_name = ?, email = ?, password_hash = ?, role = ?
+      SET first_name = ?, last_name = ?, email = ?, password_hash = ?, role = ?, authentication_key = ?
       WHERE id = ?
       `,
       [
@@ -170,6 +191,7 @@ export class UserModel extends DatabaseModel {
         user.email,
         user.passwordHash,
         user.role,
+        user.authenticationKey,
         user.id,
       ],
     );

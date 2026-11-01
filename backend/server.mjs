@@ -7,6 +7,7 @@ import { BookingController } from './controllers/BookingController.mjs';
 import { LocationController } from './controllers/LocationController.mjs';
 import { SessionController } from './controllers/SessionController.mjs';
 import { UserController } from './controllers/UserController.mjs';
+import { APIController } from './controllers/api/APIController.mjs';
 
 const app = express();
 const port = 8080;
@@ -26,6 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(AuthenticationController.middleware);
 
 //Use routes (from controllers)
+app.use('/api', APIController.routes);
 app.use('/activities', ActivityController.routes);
 app.use('/login', AuthenticationController.routes);
 app.use('/blog-posts', BlogPostController.routes);
