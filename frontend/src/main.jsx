@@ -4,17 +4,9 @@ import './index.css'
 import { createBrowserRouter, RouterProvider } from "react-router";
 import Layout from "./common/Layout";
 import SessionListView from "./sessions/SessionListView";
+import BookingsListView from "./bookings/BookingsListView";
 import BookingCreateView from "./bookings/BookingCreateView";
 import LoginView from "./authentication/LoginView";
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
-
-
-
 
 const router = createBrowserRouter([
   {
@@ -22,19 +14,19 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        Component: ProductListView,
+        Component: SessionListView,
       },
 
       {
-        path: "/sales",
-        Component: ProductSalesView,
+        path: "/bookings",
+        Component: BookingsListView,
       },
       {
-        path: "/checkout/:productId",
-        Component: ProductCheckoutView,
+        path: "/bookings/create/:sessionId",
+        Component: BookingCreateView,
       },
       {
-        path: "/staff/login",
+        path: "/login",
         Component: LoginView,
       },
     ],
