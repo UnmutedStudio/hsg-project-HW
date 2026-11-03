@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE students [
+    <!ELEMENT students (student*)>
+    <!ELEMENT student (name, course)>
+    <!ELEMENT name (#PCDATA)>
+    <!ATTLIST name preferred-name CDATA "">
+    <!ELEMENT course (#PCDATA)>
+] >
+<students>
+    <student>
+        <name preferred-name="Jan">Janet</name>
+        <course>Web Design</course>
+    </student>
+    <student>
+        <name preferred-name="Jonny">John</name>
+        <course>Web Development</course>
+    </student>
+</students>

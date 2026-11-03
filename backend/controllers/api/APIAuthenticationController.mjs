@@ -1,5 +1,5 @@
 import express from "express";
-import { UserModel } from "../../models/UserModel.mjs"
+import { UserModel } from "../../models/UserModel.mjs";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 
@@ -30,9 +30,9 @@ export class APIAuthenticationController {
         req.authenticatedUser =
           await UserModel.getByAuthenticationKey(authenticationKey);
       } catch (error) {
-        if (error == "not found") {
-          res.status(404).json({
-            message: "Failed to authenticate - key not found",
+        if (error === "not found") {
+          res.status(401).json({
+            message: "Failed to authenticate - invalid authentication key",
           });
         } else {
           console.error(error);
@@ -47,41 +47,44 @@ export class APIAuthenticationController {
   }
 
   /**
+   * Authentication and deauthentication of an API user.
+   * 
    * @type {express.RequestHandler}
-   * @param {*} req
-   * @param {*} res
-//    * openapi @ 
-//    * /api/authenticate:
-//    *    post:
-//    *        summary: "Authenticate with username and password"
-//    *        tags: [Authentication]
-//    *        requestBody:
-//    *            required: true
-//    *            content:
-//    *                application/json:
-//    *                    schema:
-//    *                        $ref: "#/components/schemas/UserCredentials"
-//    *        responses:
-//    *            '200':
-//    *                $ref: "#/components/responses/LoginSuccessful"
-//    *            '400':
-//    *                $ref: "#/components/responses/Error"
-//    *            '500':
-//    *                $ref: "#/components/responses/Error"
-//    *    delete:
-//    *        summary: "Deauthenticate with API Key header"
-//    *        tags: [Authentication]
-//    *        security:
-//    *            - ApiKey: []
-//    *
-//    *        responses:
-//    *            '200':
-//    *                 $ref: "#/components/responses/Updated"
-//    *            'default':
-//    *                $ref: "#/components/responses/Error"
-//    */
+   * @param {express.Request} req | the express request that has the API key or credentials
+   * @param {express.Response} res | the express JSON response
+   * @openapi 
+   * /api/authenticate:
+   *    post:
+   *        summary: "Authenticate with email and password"
+   *        tags: [Authentication]
+   *        requestBody:
+   *            required: true
+   *            content:
+   *                application/json:
+   *                    schema:
+   *                        $ref: "#/components/schemas/UserCredentials"
+   *        responses:
+   *            '200':
+   *                $ref: "#/components/responses/LoginSuccessful"
+   *            '400':
+   *                $ref: "#/components/responses/Error"
+   *            '500':
+   *                $ref: "#/components/responses/Error"
+   *    delete:
+   *        summary: "Deauthenticate with API Key header"
+   *        tags: [Authentication]
+   *        security:
+   *            - ApiKey: []
+   *        responses:
+   *            '200':
+   *                 $ref: "#/components/responses/Updated"
+   *            '401':
+   *                $ref: "#/components/responses/Error"
+   *            '500':
+   *                $ref: "#/components/responses/Error"  
+   */
   static async handleAuthenticate(req, res) {
-    if (req.method == "POST") {
+    if (req.method === "POST") {
       try {
         const user = await UserModel.getByEmail(req.body.email);
 
@@ -114,42 +117,49 @@ export class APIAuthenticationController {
             break;
         }
       }
-    } else if (req.method == "DELETE") {
-      if (req.authenticatedUser) {
+    } else if (req.method === "DELETE") {
+      if (!req.authenticatedUser) {
+        res.status(401).json({
+          message: "Please login to access the requested resource", 
+        });
+        return;
+      }
+      try {
         const user = await UserModel.getByAuthenticationKey(
           req.authenticatedUser.authenticationKey,
         );
         user.authenticationKey = null;
         await UserModel.update(user);
-
         res.status(200).json({
           message: "Deauthentication successful",
         });
-      } else {
-        res.status(401).json({
-          message: "Please login to access the requested resource",
-        });
-      }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({
+          message: "Failed to deauthenticate user", 
+      });
     }
   }
+}
 
   /**
-   * Allows us to define restricted routes
+   * Restricts an API route to authenticated user roles within the gym app.
    *
-   * @param{Array<"admin" | "stock" | "sales"> | "any"} allowedRoles
-   * @returns {express.RequestHandler}
+   * Roles permitted to access the route, or "any" for any authenticated user.
+   * @param {Array<"admin" | "trainer" | "member"> | "any"} allowedRoles
+   * @returns {express.RequestHandler} Express authorisation middleware
    */
   static restrict(allowedRoles) {
     return function (req, res, next) {
       if (req.authenticatedUser) {
         if (
-          allowedRoles == "any" ||
+          allowedRoles === "any" ||
           allowedRoles.includes(req.authenticatedUser.role)
         ) {
           next();
         } else {
           res.status(403).json({
-            message: "access forbidden",
+            message: "Access forbidden",
             errors: ["Role does not have access to the requested resource"],
           });
         }

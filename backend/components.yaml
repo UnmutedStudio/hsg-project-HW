@@ -1,0 +1,205 @@
+components:
+  schemas:
+    Session:
+      type: object
+      required:
+        - activityId
+        - locationId
+        - trainerId
+        - datSession
+        - timeSession
+        - duration
+        - availability
+      properties:
+        id:
+          type: number
+          example: 1
+        activityId:
+          type: number
+          example: 1
+        locationId:
+          type: number
+          example: 1
+        trainerId:
+          type: number
+          example: 10.00
+        datSession:
+          type: string
+          example: "2026-11-04"
+        timeSession:
+          type: string
+          example: "09:00:00"
+        duration:
+          type: number
+          example: 60
+        availability:
+          type: number
+          example: 10
+
+    UserCredentials:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: "bokatan@member.com"
+        password:
+          type: string
+          example: "Password1"
+    AuthenticationKey:
+      type: object
+      required:
+        - key
+      properties:
+        key:
+          type: string
+          format: uuid
+    User:
+      type: object
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+        - role
+      properties:
+        id:
+          type: number
+          example: 1
+        firstName:
+          type: string
+          example: "Hans"
+        lastName:
+          type: string
+          example: "Solo"
+        email:
+          type: string
+          example: "hsolo@example.com"
+        role:
+          type: string
+          example: "member"
+          enum: [admin, trainer, member]
+        password:
+          type: string
+          example: "******"
+        authenticationKey:
+          type: string
+          format: uuid
+    Booking:
+      type: object
+      required:
+        - sessionId
+      properties:
+        id:
+          type: number
+          example: 1
+        userId:
+          type: number
+          example: 1
+        sessionId:
+          type: number
+          example: 1
+        bookingStatus:
+          type: string
+          format: "confirmed"
+        deleted:
+          type: number
+          example: 0
+        endTime:
+    BookingDetails:
+      type: object
+      required:
+        - booking
+        - session
+        - activity
+        - location
+        - trainer
+        - member
+      properties:
+        booking:
+          $ref: "#/components/schemas/Booking"
+        session:
+          $ref: "#/components/schemas/Session"
+        activity:
+          type: object
+          properties:
+            id:
+              type: number
+              example: 1
+            activityName:
+              type: string
+              example: "Yoga"
+        location:
+          type: object
+          properties:
+            id:
+              type: number
+              example: 1
+            locationName:
+              type: string
+              example: "Ashgrove"
+        trainer:
+          $ref: "#/components/schemas/User"
+        member:
+          $ref: "#/components/schemas/User"
+  responses:
+    LoginSuccessful:
+      description: "Login successful"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AuthenticationKey"
+    Updated:
+      description: "A record was updated"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Record updated"
+    Created:
+      description: "A new record was created"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - id
+              - message
+            properties:
+              id:
+                type: number
+                example: 1
+              message:
+                type: string
+                example: "Record created"
+    NotFound:
+      description: "Record not found"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Record not found"
+    Error:
+      description: "An error has occurred"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Something went wrong"
+              errors:
+                type: array

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE bookings [ <!ELEMENT bookings (booking*)>
+<!ATTLIST bookings export-date CDATA "0000-00-00" #REQUIRED>
+<!ELEMENT booking (id, status, session, member)>
+<!ELEMENT id (#PCDATA)>
+<!ELEMENT status (#PCDATA)>
+<!ELEMENT session (date, time, duration, activity, location, trainer)>
+<!ELEMENT date (#PCDATA)>
+<!ELEMENT time (#PCDATA)>
+<!ELEMENT duration (#PCDATA)>
+<!ELEMENT activity (#PCDATA)>
+<!ELEMENT location (#PCDATA)>
+<!ELEMENT trainer (#PCDATA)>
+
+<!ELEMENT trainer (first-name, last-name)>
+<!ELEMENT member (first-name, last-name, email)>
+<!ELEMENT first-name (#PCDATA)>
+<!ELEMENT last-name (#PCDATA)>
+<!ELEMENT email (#PCDATA)>
+
+]>
+<bookings export-date="<%= date%>">
+  <% for( const bookingDetail of bookingDetails ) { %>
+    <booking>
+      <id><%= bookingDetail.booking.id %></id>
+      <status><%= bookingDetail.booking.bookingStatus %></status>
+    <session>
+      <date><%= new Date(bookingDetail.session.dateSession).toISOString().split("T")[0] %></date>
+      <time><%= bookingDetail.session.timeSession %></time>
+      <duration><%= bookingDetail.session.duration %></duration>
+      <activity><%= bookingDetail.activity.activityName %></activity>
+      <location><%= bookingDetail.location.locationName %></location>
+      <trainer>
+        <first-name><%= bookingDetail.trainer.firstName %></first-name>
+        <last-name><%= bookingDetail.trainer.lastName %></last-name>
+      </trainer>
+      <member>
+        <first-name><%= bookingDetail.member.firstName %></first-name>
+        <last-name><%= bookingDetail.member.lastName %></last-name>
+        <email><%= bookingDetail.member.email %></email>
+      </member>
+    </session>
+    </booking>
+  <% } %>
+</bookings>

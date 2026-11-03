@@ -25,7 +25,6 @@ export class APISessionsController {
       this.deleteSession,
     );
   }
-
   /**
    * @type {express.RequestHandler}
    * @openapi

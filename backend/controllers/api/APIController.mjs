@@ -4,6 +4,8 @@ import swaggerUI from "swagger-ui-express";
 import * as ApiValidator from "express-openapi-validator";
 import { APIAuthenticationController } from "./APIAuthenticationController.mjs";
 import { APISessionsController } from "./APISessionsController.mjs";
+import { APIBookingsController } from "./APIBookingsController.mjs";
+import { APIUserController } from "./APIUserController.mjs";
 
 const options = {
   failOnErrors: true,
@@ -11,9 +13,9 @@ const options = {
     openapi: "3.0.0",
     info: {
       version: "1.0.0",
-      title: "Minute Coffee API",
+      title: "High Street Gym API",
       description:
-        "JSON REST API for interacting with the minute coffee backend",
+        "JSON REST API for interacting with the High Street Gym backend",
     },
     components: {
       securitySchemes: {
@@ -33,7 +35,7 @@ export class APIController {
   static routes = express.Router();
 
   static {
-    //TODO: set up docs pages
+    //Swagger API documentation
     /**
      * @openapi
      * /api/docs:
@@ -45,7 +47,7 @@ export class APIController {
      *        description: "The documentation page"
      */
     this.routes.use("/docs", swaggerUI.serve, swaggerUI.setup(specification));
-    //TODO: set up validator
+    //Validate API requests and responses against the OpenAPI
     this.routes.use(
       ApiValidator.middleware({
         apiSpec: specification,
@@ -54,17 +56,19 @@ export class APIController {
       }),
     );
 
-    //TODO: set up error response handling (in JSON format)
+    //API Authentication middleware and routes
+    this.routes.use(APIAuthenticationController.middleware);
+    this.routes.use(APIAuthenticationController.routes);
+    this.routes.use("/sessions", APISessionsController.routes);
+    this.routes.use("/bookings", APIBookingsController.routes);
+    this.routes.use("/users", APIUserController.routes);
+
+    //API error response handling
     this.routes.use((err, req, res, next) => {
       res.status(err.status || 500).json({
         message: err.message,
         errors: err.errors,
       });
     });
-
-    //API Authentication middleware and routes
-    this.routes.use(APIAuthenticationController.middleware);
-    this.routes.use(APIAuthenticationController.routes);
-    this.routes.use("/sessions", APISessionsController.routes);
   }
 }

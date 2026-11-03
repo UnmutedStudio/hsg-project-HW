@@ -1,19 +1,29 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useAuthenticate } from "./useAuthenticate";
 import { useNavigate } from "react-router";
-import { fetchAPI } from "../api.mjs";
 
 function LoginView() {
   const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [status, setStatus] = useState(null);
+  const { login, status, user } = useAuthenticate();
 
   console.log("Render!");
 
   const onLoginClick = useCallback(() => {
-    console.log(email);
-    console.log(password);
-  }, [email, password]);
+    login(email, password);
+  }, [email, password, login]);
+
+  useEffect(() => {
+    if (user?.role === "member") {
+      navigate("/bookings");
+    } else if (user?.role === "trainer") {
+      navigate("/trainer/sessions");
+    } else if (user?.role === "admin") {
+      navigate("/admin");
+    }
+  }, [user, navigate]);
 
   return (
     <section className="flex flex-col gap-4 p-4 items-center">
@@ -21,7 +31,7 @@ function LoginView() {
       <label className="input w-full">
         <span className="label">Email</span>
         <input
-          value={email}
+          value={username}
           onChange={(e) => setEmail(e.target.value)}
           className="grow"
           type="email"
@@ -42,7 +52,8 @@ function LoginView() {
       >
         Login
       </button>
-      {status && <span className="text-error">{status}</span>}
+      <span>{status}</span>
+      {JSON.stringify(user)}
     </section>
   );
 }
