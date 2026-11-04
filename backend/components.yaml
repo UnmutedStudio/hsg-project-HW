@@ -6,7 +6,7 @@ components:
         - activityId
         - locationId
         - trainerId
-        - datSession
+        - dateSession
         - timeSession
         - duration
         - availability
@@ -23,8 +23,9 @@ components:
         trainerId:
           type: number
           example: 10.00
-        datSession:
+        dateSession:
           type: string
+          format: date
           example: "2026-11-04"
         timeSession:
           type: string
@@ -35,7 +36,36 @@ components:
         availability:
           type: number
           example: 10
-
+    SessionDetails:
+      type: object
+      required:
+        - session
+        - activity
+        - location
+        - trainer
+      properties:
+        session:
+          $ref: "#/components/schemas/Session"
+        activity:
+          type: object
+          properties:
+            id:
+              type: number
+              example: 1
+            activityName:
+              type: string
+              example: "Pilates"
+        location:
+          type: object
+          properties:
+            id:
+              type: number
+              example: 1
+            locationName:
+              type: string
+              example: "Ashgrove"
+        trainer:
+          $ref: "#/components/schemas/User"
     UserCredentials:
       type: object
       required:
@@ -81,12 +111,6 @@ components:
           type: string
           example: "member"
           enum: [admin, trainer, member]
-        password:
-          type: string
-          example: "******"
-        authenticationKey:
-          type: string
-          format: uuid
     Booking:
       type: object
       required:
@@ -103,11 +127,13 @@ components:
           example: 1
         bookingStatus:
           type: string
-          format: "confirmed"
+          example: "confirmed"
+          enum:
+            - confirmed
+            - cancelled
         deleted:
           type: number
           example: 0
-        endTime:
     BookingDetails:
       type: object
       required:
@@ -143,6 +169,40 @@ components:
         trainer:
           $ref: "#/components/schemas/User"
         member:
+          $ref: "#/components/schemas/User"
+    BlogPost:
+      type: object
+      required:
+        - title
+        - content
+      properties:
+        id:
+          type: number
+          example: 1
+        title:
+          type: string
+          example: "Five tips for Beskar conditioning"
+        content:
+          type: string
+          example: "Build Mandalorian level endurance with controlled strength training, proper hydration and enough recovery between missions."
+        userId:
+          type: number
+          example: 1
+        dateCreated:
+          type: string
+          format: date-time
+        deleted:
+          type: number
+          example: 0
+    BlogPostDetails:
+      type: object
+      required:
+        - blogPost
+        - user
+      properties:
+        blogPost:
+          $ref: "#/components/schemas/BlogPost"
+        user:
           $ref: "#/components/schemas/User"
   responses:
     LoginSuccessful:
@@ -203,3 +263,7 @@ components:
                 example: "Something went wrong"
               errors:
                 type: array
+                items:
+                  type: string
+                  example: "Validation failed"
+

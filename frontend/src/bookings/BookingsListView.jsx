@@ -1,10 +1,13 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { FaCalendarCheck } from "react-icons/fa";
 import { fetchAPI } from "../api.mjs";
+import { useAuthenticate } from "../authentication/useAuthenticate";
+import XMLDownloadButton from "../common/XMLDownloadButton";
 
-function BookingListView() {
+function BookingsListView() {
   const [bookingsByDay, setBookingsByDay] = useState({});
   const [error, setError] = useState(null);
+  const { user } = useAuthenticate(["member"]);
 
   //Define how to get bookings from the API
   const getBookings = useCallback(() => {
@@ -25,7 +28,7 @@ function BookingListView() {
       "GET",
       `/bookings?start_date=${startDate}&end_date=${endDate}`,
       null,
-      localStorage.getItem("authenticationKey"),
+      user && user.authenticationKey,
     ).then((response) => {
       if (response.status === 200) {
         if (response.body.length > 0) {
@@ -38,20 +41,52 @@ function BookingListView() {
       } else {
         setError(response.body.message);
       }
+    })
+    .catch((error) => {
+      setError(error);
     });
-  }, []);
-  //Fetch bookings on first render
+  }, [user]);
+  //Fetch bookings once the member who is authenticated has loaded
   useEffect(() => {
+   if (user) {
     getBookings();
-  }, [getBookings]);
-
+   }
+  }, [user, getBookings]);
+  const deleteBooking = useCallback(
+    (bookingId) => {
+      fetchAPI(
+        "DELETE",
+        "/bookings/" + bookingId,
+        null,
+        user && user.authenticationKey,
+      )
+        .then((response) => {
+          if (response.status == 200) {
+            getBookings();
+          } else {
+            setError(response.body.message);
+          }
+        })
+        .catch((error) => {
+          setError(error);
+        });
+    },
+      [user, getBookings],
+  );
   return (
     <section className="flex flex-col items-center">
-        <button
-            type="button"
-            className="btn btn-outline m-4 self-stretch"
-            >Export Bookings
-        </button>
+      {user ? (
+        <XMLDownloadButton
+          route="/bookings/xml"
+          filename="member-bookings.xml"
+          authenticationKey={user && user.authenticationKey}
+          className="btn btn-outline m-4 self-stretch"
+        >
+          Export Bookings
+        </XMLDownloadButton>
+      ) : (
+        <span className="loading loading-spinner loading-xl"></span>
+      )}
       {error && <span className="p-4 self-center">{error}</span>}
       {!error && Object.entries(bookingsByDay).length === 0 ? (
         <span className="loading loading-spinner loading-xl block m-4"></span>
@@ -82,6 +117,13 @@ function BookingListView() {
                             Status: {booking.booking.bookingStatus}
                         </div>
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => deleteBooking(booking.booking.id)}
+                      className="btn btn-error btn-sm"
+                    >
+                    Cancel my booking
+                  </button>
                 </li>
               ))}
             </Fragment>
@@ -129,4 +171,4 @@ function partitionByDay(bookings) {
   return dayPartitions;
 }
 
-export default BookingListView;
+export default BookingsListView;

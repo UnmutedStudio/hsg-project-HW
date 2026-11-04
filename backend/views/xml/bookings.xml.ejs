@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE bookings [ <!ELEMENT bookings (booking*)>
-<!ATTLIST bookings export-date CDATA "0000-00-00" #REQUIRED>
+<!ATTLIST bookings export-date CDATA "0000-00-00">
 <!ELEMENT booking (id, status, session, member)>
 <!ELEMENT id (#PCDATA)>
 <!ELEMENT status (#PCDATA)>
@@ -10,14 +10,11 @@
 <!ELEMENT duration (#PCDATA)>
 <!ELEMENT activity (#PCDATA)>
 <!ELEMENT location (#PCDATA)>
-<!ELEMENT trainer (#PCDATA)>
-
 <!ELEMENT trainer (first-name, last-name)>
 <!ELEMENT member (first-name, last-name, email)>
 <!ELEMENT first-name (#PCDATA)>
 <!ELEMENT last-name (#PCDATA)>
 <!ELEMENT email (#PCDATA)>
-
 ]>
 <bookings export-date="<%= date%>">
   <% for( const bookingDetail of bookingDetails ) { %>
@@ -34,12 +31,12 @@
         <first-name><%= bookingDetail.trainer.firstName %></first-name>
         <last-name><%= bookingDetail.trainer.lastName %></last-name>
       </trainer>
+    </session>  
       <member>
         <first-name><%= bookingDetail.member.firstName %></first-name>
         <last-name><%= bookingDetail.member.lastName %></last-name>
         <email><%= bookingDetail.member.email %></email>
       </member>
-    </session>
     </booking>
   <% } %>
 </bookings>

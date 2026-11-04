@@ -6,6 +6,7 @@ import { APIAuthenticationController } from "./APIAuthenticationController.mjs";
 import { APISessionsController } from "./APISessionsController.mjs";
 import { APIBookingsController } from "./APIBookingsController.mjs";
 import { APIUserController } from "./APIUserController.mjs";
+import { APIBlogPostsController } from "./APIBlogPostsController.mjs";
 
 const options = {
   failOnErrors: true,
@@ -62,6 +63,7 @@ export class APIController {
     this.routes.use("/sessions", APISessionsController.routes);
     this.routes.use("/bookings", APIBookingsController.routes);
     this.routes.use("/users", APIUserController.routes);
+    this.routes.use("/blog-posts", APIBlogPostsController.routes);
 
     //API error response handling
     this.routes.use((err, req, res, next) => {

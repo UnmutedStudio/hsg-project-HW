@@ -23,6 +23,11 @@ export class APIBookingsController {
       APIAuthenticationController.restrict(['member']),
       this.createBooking,
     );
+    this.routes.delete(
+      "/:id",
+      APIAuthenticationController.restrict(["member"]),
+      this.deleteBooking,
+    );
   }
 
   /**
@@ -186,6 +191,58 @@ export class APIBookingsController {
       res.status(500).json({
         message: 'Failed to create booking.',
         errors: [error],
+      });
+    }
+  }
+  /**
+   * Soft delete a booking belonging to the authenticated member.
+   *
+   * @type {express.RequestHandler}
+   * @openapi
+   * /api/bookings/{id}:
+   *   delete:
+   *     summary: "Delete a booking belonging to the authenticated member"
+   *     tags: [Bookings]
+   *     security:
+   *       - ApiKey: []
+   *     parameters:
+   *       - name: id
+   *         in: path
+   *         required: true
+   *         schema:
+   *           type: number
+   *           example: 1
+   *     responses:
+   *       '200':
+   *         description: "Booking deleted"
+   *       '401':
+   *         $ref: "#/components/responses/Error"
+   *       '403':
+   *         $ref: "#/components/responses/Error"
+   *       '404':
+   *         $ref: "#/components/responses/NotFound"
+   *       '500':
+   *         $ref: "#/components/responses/Error"
+   */
+  static async deleteBooking(req, res) {
+    try {
+      const result = await BookingModel.deleteByMember(
+        req.params.id,
+        req.authenticatedUser.id,
+      );
+      if (result.affectedRows == 1) {
+        res.status(200).json({
+          message: "Booking deleted",
+        });
+      } else {
+        res.status(404).json({
+          message: "Booking not found or does not belong to this member",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        message: "Failed to delete booking",
       });
     }
   }

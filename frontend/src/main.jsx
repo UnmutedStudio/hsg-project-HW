@@ -7,6 +7,9 @@ import SessionListView from "./sessions/SessionListView";
 import BookingsListView from "./bookings/BookingsListView";
 import BookingCreateView from "./bookings/BookingCreateView";
 import LoginView from "./authentication/LoginView";
+import { AuthenticationProvider } from "./authentication/useAuthenticate";
+import TrainerSessionListView from "./sessions/TrainerSessionListView";
+
 
 const router = createBrowserRouter([
   {
@@ -29,12 +32,18 @@ const router = createBrowserRouter([
         path: "/login",
         Component: LoginView,
       },
+      {
+        path: "/trainer/sessions",
+        Component: TrainerSessionListView,
+      },
     ],
   },
 ]);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthenticationProvider>
+      <RouterProvider router={router} />
+    </AuthenticationProvider>
   </StrictMode>,
 );

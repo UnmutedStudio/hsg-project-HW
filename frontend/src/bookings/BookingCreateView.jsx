@@ -1,9 +1,11 @@
 import { useEffect, useCallback, useState } from "react";
 import { useParams } from "react-router";
 import { fetchAPI } from "../api.mjs";
+import { useAuthenticate } from "../authentication/useAuthenticate";
 
 function BookingCreateView() {
   const { sessionId } = useParams();
+  const { user } = useAuthenticate(["member"]);
 
   const [sessionDetail, setSessionDetail] = useState(null);
   const [status, setStatus] = useState(null);
@@ -30,23 +32,36 @@ function BookingCreateView() {
     }
   }, [sessionId, setSessionDetail, setStatus]);
 
-//   // Order details state
-//   const [firstName, setFirstName] = useState("");
-//   const [lastName, setLastName] = useState("");
-//   const [phone, setPhone] = useState("");
-//   const [email, setEmail] = useState("");
-
-  //Form validation and submission state
-//   const [validationErrors, setValidationErrors] = useState({});
   const [loading, setLoading] = useState(false);
-
   const submitBooking = useCallback(() => {
     setLoading(true);
-  }, [setLoading]);
+    setStatus(null);
+
+    fetchAPI(
+      "POST",
+      "/bookings",
+      {
+        sessionId,
+      },
+      user && user.authenticationKey,
+    )
+      .then((response) => {
+        if (response.status == 200) {
+          setStatus("Booking created successfully");
+        } else {
+          setStatus(response.body.message);
+        }
+
+        setLoading(false);
+      })
+      .catch((error) => {
+        setStatus(error);
+        setLoading(false);
+      });
+  }, [sessionId, user]);
 
   return (
     <section className="flex flex-col items-center gap-4 p-4">
-      {/* <span className="loading loading-spinner loading-xl"></span> */}
       {status && <span className="p-4">{status}</span>}
 
       <h1 className="text-3xl">{sessionDetail?.activity.activityName}</h1>

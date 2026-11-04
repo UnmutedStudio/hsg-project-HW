@@ -8,9 +8,17 @@ import { LocationController } from './controllers/LocationController.mjs';
 import { SessionController } from './controllers/SessionController.mjs';
 import { UserController } from './controllers/UserController.mjs';
 import { APIController } from './controllers/api/APIController.mjs';
+import cors from "cors";
 
 const app = express();
 const port = 8080;
+
+// Enable cross-origin resource sharing (CORS) and preflight OPTIONS requests
+app.use(
+  cors({
+    origin: true,
+  }),
+);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(import.meta.dirname, 'views'));

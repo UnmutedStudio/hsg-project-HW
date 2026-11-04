@@ -1,18 +1,32 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE students [
-    <!ELEMENT students (student*)>
-    <!ELEMENT student (name, course)>
-    <!ELEMENT name (#PCDATA)>
-    <!ATTLIST name preferred-name CDATA "">
-    <!ELEMENT course (#PCDATA)>
-] >
-<students>
-    <student>
-        <name preferred-name="Jan">Janet</name>
-        <course>Web Design</course>
-    </student>
-    <student>
-        <name preferred-name="Jonny">John</name>
-        <course>Web Development</course>
-    </student>
-</students>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sessions [ <!ELEMENT sessions (session*)>
+<!ATTLIST sessions export-date CDATA "0000-00-00">
+<!ELEMENT session (id, date, time, duration, availability, activity, location, trainer)>
+<!ELEMENT id (#PCDATA)>
+<!ELEMENT date (#PCDATA)>
+<!ELEMENT time (#PCDATA)>
+<!ELEMENT duration (#PCDATA)>
+<!ELEMENT availability (#PCDATA)>
+<!ELEMENT activity (#PCDATA)>
+<!ELEMENT location (#PCDATA)>
+<!ELEMENT trainer (first-name, last-name)>
+<!ELEMENT first-name (#PCDATA)>
+<!ELEMENT last-name (#PCDATA)>
+]>
+<sessions export-date="<%= date%>">
+  <% for( const sessionDetail of sessionDetails ) { %>
+    <session>
+      <id><%= sessionDetail.session.id %></id>
+      <date><%= new Date(sessionDetail.session.dateSession).toISOString().split("T")[0] %></date>
+      <time><%= sessionDetail.session.timeSession %></time>
+      <duration><%= sessionDetail.session.duration %></duration>
+      <availability><%= sessionDetail.session.availability %></availability>
+      <activity><%= sessionDetail.activity.activityName %></activity>
+      <location><%= sessionDetail.location.locationName %></location>
+      <trainer>
+        <first-name><%= sessionDetail.trainer.firstName %></first-name>
+        <last-name><%= sessionDetail.trainer.lastName %></last-name>
+      </trainer>
+    </session>
+  <% } %>
+</sessions>

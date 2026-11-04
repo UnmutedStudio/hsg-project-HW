@@ -1,13 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
-import { FaSearch, FaDumbell } from "react-icons/fa";
+import { FaSearch, FaDumbbell } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { fetchAPI } from "../api.mjs";
+import { useAuthenticate } from "../authentication/useAuthenticate";
 
 function SessionListView() {
   const navigate = useNavigate();
   const [sessions, setSessions] = useState([]);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("");
+  const { user } = useAuthenticate();
 
   const getSessions = useCallback(
     (filter = "") => {
@@ -68,10 +70,10 @@ function SessionListView() {
           {sessions.map((sessionDetail) => (
             <li key={sessionDetail.session.id} className="list-row">
               <div>
-                <FaDumbell className="size-10" />
+                <FaDumbbell className="size-10" />
               </div>
               <div className="font-semibold">
-                <div>{sessionDetail.activity.name}</div>
+                <div>{sessionDetail.activity.activityName}</div>
                 <div className="text-xs uppercase opacity-60 font-semibold">
                   {sessionDetail.session.dateSession} at{" "}
                   {sessionDetail.session.timeSession}
@@ -88,7 +90,10 @@ function SessionListView() {
                 </div>
               </div>
               <button
-                onClick={() => navigate("/bookings/create" + sessionDetail.session.id)}
+                disabled={!(user && user.role == "member")}
+                onClick={() =>
+                  navigate("/bookings/create/" + sessionDetail.session.id)
+                }
                 className="btn btn-primary"
               >
                 Book now

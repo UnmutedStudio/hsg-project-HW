@@ -9,7 +9,7 @@ function LoginView() {
   const [password, setPassword] = useState("");
   const { login, status, user } = useAuthenticate();
 
-  console.log("Render!");
+  // console.log("Render!");
 
   const onLoginClick = useCallback(() => {
     login(email, password);
@@ -31,7 +31,7 @@ function LoginView() {
       <label className="input w-full">
         <span className="label">Email</span>
         <input
-          value={username}
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="grow"
           type="email"
@@ -53,7 +53,7 @@ function LoginView() {
         Login
       </button>
       <span>{status}</span>
-      {JSON.stringify(user)}
+      {/* {JSON.stringify(user)} */}
     </section>
   );
 }

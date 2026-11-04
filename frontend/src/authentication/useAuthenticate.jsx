@@ -14,14 +14,14 @@ export function AuthenticationProvider({ children }) {
   const [user, setUser] = useState(null);
   const [status, setStatus] = useState("resuming");
 
-  //TODO: Reload user state from auth key in local storage on page reload
+  //Reload user state from auth key in local storage on page reload
   useEffect(() => {
     const authenticationKey = localStorage.getItem("auth-key");
 
     if (authenticationKey) {
       fetchAPI("GET", "/users/self", null, authenticationKey)
         .then((response) => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             setUser(response.body);
             setStatus("loaded");
           } else {
@@ -53,7 +53,7 @@ export function useAuthenticate(restrictToRoles = null) {
         setStatus("loading");
         fetchAPI("GET", "/users/self", null, authenticationKey)
           .then((response) => {
-            if (response.status == 200) {
+            if (response.status === 200) {
               setUser(response.body);
               setStatus("loaded");
             } else {
@@ -68,7 +68,7 @@ export function useAuthenticate(restrictToRoles = null) {
     [setUser, setStatus],
   );
 
-  //TODO: Make a function that takes a email and password
+  //Authenticate with email and password
   //and fetches (POST) /api/authenticate and then stores the key and
   //loads the user
   const login = useCallback(
@@ -84,7 +84,7 @@ export function useAuthenticate(restrictToRoles = null) {
           if (response.status === 200) {
             localStorage.setItem("auth-key", response.body.key);
             console.log(response.body.message);
-            //TODO: Load the user by their key
+            //Load the authenticated user by their key
             getUser(response.body.key);
             setStatus("loaded");
           } else {
