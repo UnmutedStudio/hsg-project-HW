@@ -41,7 +41,10 @@ function TrainerSessionListView() {
   }, [user, getTrainerSessions]);
 
   return (
-    <section className="flex flex-col items-center">
+    <section className="w-full max-w-md mx-auto bg-base-100 rounded-box shadow-md p-4 sm:p-6">
+      <h1 className="text-2xl font-bold text-primary text-center mb-4">
+        My Gym Sessions
+      </h1>
       {error && <span className="p-4">{error}</span>}
       {!error && sessions.length == 0 ? (
         <span className="loading loading-spinner loading-xl"></span>

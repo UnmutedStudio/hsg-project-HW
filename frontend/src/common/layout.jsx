@@ -17,13 +17,13 @@ function Layout() {
   const { user, logout } = useAuthenticate();
 
   return (
-    <main className="min-h-screen bg-base-200">
+    <main className="w-full sm:max-w-[640px] lg:max-w-[768px] min-h-screen mx-auto bg-base-200 shadow-xl">
       <header className="navbar bg-primary text-primary-content shadow-md">
         <div className="w-full flex justify-center">
           <button
             type="button"
             onClick={() => navigate("/")}
-            className="btn btn-ghost text-lg font-bold"
+            className="btn btn-ghost text-3xl font-bold text-white"
           >
             High Street Gym
           </button>
@@ -33,7 +33,7 @@ function Layout() {
         <Outlet />
         <div className="h-28" aria-hidden="true"></div>
       </div>
-      <nav className="dock w-full bg-secondary text-secondary-content">
+      <nav className="dock w-full sm:max-w-[640px] lg:max-w-[768px] left-1/2 -translate-x-1/2 bg-secondary text-secondary-content">
         {(!user ||
           (user.role != "trainer" && user.role != "admin")) && (
           <button

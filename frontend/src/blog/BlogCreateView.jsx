@@ -39,7 +39,7 @@ function BlogCreateView() {
   }, [title, content, user, navigate]);
     return (
     <section className="flex flex-col gap-4 p-4 pb-20">
-      <h1 className="text-2xl font-bold">Create blog post</h1>
+      <h1 className="text-2xl font-bold text-primary mb-4">Create blog post</h1>
       <label className="fieldset">
         <span className="label">Title</span>
         <input

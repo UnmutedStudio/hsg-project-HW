@@ -66,8 +66,8 @@ function UserDetailsView() {
   }
   return (
     <section className="w-full max-w-md mx-auto bg-base-100 rounded-box shadow-md p-4 sm:p-6">
-      <h1 className="text-2xl font-bold text-primary mb-4">
-        Profile
+      <h1 className="text-2xl font-bold text-primary text-center mb-4 capitalize">
+        {user.role} Profile
       </h1>
       <label className="fieldset mb-3">
         <span className="label">First name</span>
@@ -118,9 +118,6 @@ function UserDetailsView() {
             placeholder="Repeat your new password"
         />
         </label>
-      <p className="mb-4">
-        <span className="font-semibold">Role:</span> {user.role}
-      </p>
       {status && (
         <p className="mb-4 text-sm">
           {status}

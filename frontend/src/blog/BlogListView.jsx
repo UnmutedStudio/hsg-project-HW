@@ -57,15 +57,17 @@ function BlogListView() {
   );
   return (
     <section className="w-full max-w-md mx-auto bg-base-100 rounded-box shadow-md p-4 sm:p-6">
-      <h1 className="text-2xl font-bold p-4">Community Gym Blog</h1>
+      <h1 className="text-2xl font-bold text-primary text-center mb-4">Community Gym Blog</h1>
         {user && (
+        <div className="flex justify-center mb-4">
           <button
             type="button"
             onClick={() => navigate("/blog/create")}
-            className="btn btn-primary mx-4 mb-4 self-stretch"
+            className="btn btn-primary w-48"
           >
-        Create blog post
-        </button>
+            Create blog post
+          </button>
+        </div>  
         )}
       {error && <span className="p-4">{error}</span>}
       {!error && blogPosts.length == 0 ? (
@@ -85,8 +87,14 @@ function BlogListView() {
                   {blogPostDetail.blogPost.content}
                 </div>
                 <div className="text-xs opacity-60 mt-2">
-                  By {blogPostDetail.user.firstName}{" "}
+                 Posted By {blogPostDetail.user.firstName}{" "}
                   {blogPostDetail.user.lastName}
+                </div>
+                <div className="text-xs opacity-60">
+                  On {" "}
+                  {new Date(
+                    blogPostDetail.blogPost.dateCreated,
+                  ).toLocaleDateString("en-AU")}
                 </div>
               </div>
               {user &&

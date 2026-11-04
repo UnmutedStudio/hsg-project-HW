@@ -26,9 +26,9 @@ function LoginView() {
   }, [user, navigate]);
 
   return (
-    <section className="flex flex-col gap-4 p-4 items-center">
-      <h1 className="text-3xl">Login</h1>
-      <label className="input w-full">
+    <section className="w-full max-w-md mx-auto bg-base-100 rounded-box shadow-md p-4 sm:p-6">
+      <h1 className="text-2xl font-bold text-primary text-center mb-4">Login</h1>
+      <label className="input w-full mb-3">
         <span className="label">Email</span>
         <input
           value={email}
@@ -42,17 +42,23 @@ function LoginView() {
         <input
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="grow"
+          className="input w-full"
           type="password"
         />
       </label>
       <button
         onClick={() => onLoginClick()}
-        className="btn btn-primary btn-lg self-stretch"
+        className="btn btn-primary w-full mt-2"
       >
         Login
       </button>
-      <span>{status}</span>
+      {status &&
+        status !== "logged out" &&
+        status !== "loaded" && (
+          <p className="text-sm text-error mt-3">
+            {status}
+          </p>
+        )}
       {/* {JSON.stringify(user)} */}
     </section>
   );

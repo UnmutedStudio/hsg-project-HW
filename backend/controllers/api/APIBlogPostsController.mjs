@@ -130,6 +130,12 @@ export class APIBlogPostsController {
       const blogPosts = req.query.filter
         ? await BlogPostDetailModel.getBySearch(req.query.filter)
         : await BlogPostDetailModel.getAll();
+      blogPosts.sort(
+        (a, b) =>
+          new Date(b.blogPost.dateCreated) -
+          new Date(a.blogPost.dateCreated),
+      );        
+      
       res.status(200).json(blogPosts);
     } catch (error) {
       console.error(error);

@@ -74,8 +74,8 @@ function BookingsListView() {
       [user, getBookings],
   );
   return (
-    <section className="flex flex-col items-center pb-32">
-      <h1 className="text-2xl font-bold text-primary p-4">
+    <section className="w-full max-w-md mx-auto bg-base-100 rounded-box shadow-md p-4 sm:p-6">
+      <h1 className="text-2xl font-bold text-primary text-center mb-4">
         My Gym Bookings
       </h1>
       {error && <span className="p-4 self-center">{error}</span>}
@@ -83,10 +83,20 @@ function BookingsListView() {
         <span className="loading loading-spinner loading-xl block m-4"></span>
       ) : (
         <ul className="list bg-base-100 self-stretch">
-          {Object.entries(bookingsByDay).map(([day, bookings]) => (
+          {Object.entries(bookingsByDay)
+            .filter(([, bookings]) => bookings.length > 0)
+            .map(([day, bookings]) => (
             <Fragment key={day}>
               <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
-                {day}
+                {day}, {" "}
+                {new Date(bookings[0].session.dateSession).toLocaleDateString(
+                  "en-AU",
+                  {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  },
+                )}
               </li>
               {bookings.map((booking) => (
                 <li key={booking.booking.id} className="list-row bg-base-100 mx-4 mb-3 rounded-box shadow-sm border border-base-300">
@@ -94,26 +104,28 @@ function BookingsListView() {
                         <FaCalendarCheck className="size-10" />
                     </div>
                     <div>
-                        <div>{booking.activity.activityName}</div>
-                        <div className="text-xs uppercase font-semibold opacity-60">
-                            {booking.session.timeSession}
+                      <div className="text-sm font-semibold">
+                        {booking.activity.activityName}
                         </div>
-                        <div className="text-sm">
-                            {booking.location.locationName}
-                        </div>
-                        <div className="text-sm">
-                            Trainer: {booking.trainer.firstName} {booking.trainer.lastName}
-                        </div>
-                        <div className="text-sm">
-                            Status: {booking.booking.bookingStatus}
-                        </div>
+                      <div className="text-xs font-semibold opacity-60">
+                        Time: {booking.session.timeSession}
+                      </div>
+                      <div className="text-xs font-semibold opacity-60">
+                        Duration: {booking.session.duration} minutes
+                      </div>
+                      <div className="text-sm font-semibold">
+                          {booking.location.locationName}
+                      </div>
+                      <div className="text-sm">
+                        Trainer: {booking.trainer.firstName} {booking.trainer.lastName}
+                      </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => deleteBooking(booking.booking.id)}
                       className="btn btn-secondary btn-sm"
                     >
-                    Cancel my booking
+                    Cancel booking
                   </button>
                 </li>
               ))}
