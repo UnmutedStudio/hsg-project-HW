@@ -74,19 +74,10 @@ function BookingsListView() {
       [user, getBookings],
   );
   return (
-    <section className="flex flex-col items-center">
-      {user ? (
-        <XMLDownloadButton
-          route="/bookings/xml"
-          filename="member-bookings.xml"
-          authenticationKey={user && user.authenticationKey}
-          className="btn btn-outline m-4 self-stretch"
-        >
-          Export Bookings
-        </XMLDownloadButton>
-      ) : (
-        <span className="loading loading-spinner loading-xl"></span>
-      )}
+    <section className="flex flex-col items-center pb-32">
+      <h1 className="text-2xl font-bold text-primary p-4">
+        My Gym Bookings
+      </h1>
       {error && <span className="p-4 self-center">{error}</span>}
       {!error && Object.entries(bookingsByDay).length === 0 ? (
         <span className="loading loading-spinner loading-xl block m-4"></span>
@@ -98,7 +89,7 @@ function BookingsListView() {
                 {day}
               </li>
               {bookings.map((booking) => (
-                <li key={booking.booking.id} className="list-row">
+                <li key={booking.booking.id} className="list-row bg-base-100 mx-4 mb-3 rounded-box shadow-sm border border-base-300">
                     <div>
                         <FaCalendarCheck className="size-10" />
                     </div>
@@ -120,7 +111,7 @@ function BookingsListView() {
                     <button
                       type="button"
                       onClick={() => deleteBooking(booking.booking.id)}
-                      className="btn btn-error btn-sm"
+                      className="btn btn-secondary btn-sm"
                     >
                     Cancel my booking
                   </button>

@@ -1,2 +1,50 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+@plugin "daisyui/theme" {
+  name: "highstreetgym";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+
+  --color-base-100: #ffffff;
+  --color-base-200: #d9e1ea;
+  --color-base-300: #c5cfda;
+  --color-base-content: #121212;
+
+  --color-primary: #274c77;
+  --color-primary-content: #ffffff;
+
+  --color-secondary: #ff8f29;
+  --color-secondary-content: #121212;
+
+  --color-accent: #ff8f29;
+  --color-accent-content: #121212;
+
+  --color-neutral: #121212;
+  --color-neutral-content: #ffffff;
+
+  --color-info: #274c77;
+  --color-info-content: #ffffff;
+
+  --color-success: #2e7d32;
+  --color-success-content: #ffffff;
+
+  --color-warning: #ff8f29;
+  --color-warning-content: #121212;
+
+  --color-error: #c62828;
+  --color-error-content: #ffffff;
+
+  --radius-selector: 0.375rem;
+  --radius-field: 0.375rem;
+  --radius-box: 0.625rem;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #d9e1ea;
+  color: #121212;
+}

@@ -9,6 +9,9 @@ import BookingCreateView from "./bookings/BookingCreateView";
 import LoginView from "./authentication/LoginView";
 import { AuthenticationProvider } from "./authentication/useAuthenticate";
 import TrainerSessionListView from "./sessions/TrainerSessionListView";
+import BlogListView from "./blog/BlogListView";
+import BlogCreateView from "./blog/BlogCreateView";
+import UserDetailsView from "./users/UserDetailsView";
 
 
 const router = createBrowserRouter([
@@ -35,6 +38,18 @@ const router = createBrowserRouter([
       {
         path: "/trainer/sessions",
         Component: TrainerSessionListView,
+      },
+      {
+        path: "/blog",
+        Component: BlogListView,
+      },
+      {
+        path: "/blog/create",
+        Component: BlogCreateView,
+      },
+      {
+        path: "/profile",
+        Component: UserDetailsView,
       },
     ],
   },

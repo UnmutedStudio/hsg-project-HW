@@ -68,7 +68,7 @@ function SessionListView() {
       ) : (
         <ul className="list self-stretch">
           {sessions.map((sessionDetail) => (
-            <li key={sessionDetail.session.id} className="list-row">
+            <li key={sessionDetail.session.id} className="list-row bg-base-100 mx-4 mb-3 rounded-box shadow-sm border border-base-300">
               <div>
                 <FaDumbbell className="size-10" />
               </div>

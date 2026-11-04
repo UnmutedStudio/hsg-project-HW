@@ -20,7 +20,7 @@ export class APISessionsController {
     this.routes.get("/:id", this.getSessionById);
     this.routes.post(
       "/",
-      APIAuthenticationController.restrict(["admin"]),
+      APIAuthenticationController.restrict(["admin", "trainer"]),
       this.createSession,
     );
     this.routes.patch(

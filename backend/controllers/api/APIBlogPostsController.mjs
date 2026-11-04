@@ -50,6 +50,31 @@ export class APIBlogPostsController {
    */
   static async createBlogPost(req, res) {
     try {
+      const formData = req.body;
+        if (
+          typeof formData.title !== "string" ||
+          formData.title.trim().length === 0 ||
+          formData.title.trim().length > 100 ||
+          /["*:<>?\/\\|{}]/.test(formData.title)
+        ) {
+          res.status(400).json({
+            message:
+              'Please enter a title between 1 and 100 characters. Do not use these characters: " * : < > ? / \\ | { }.',
+          });
+          return;
+        }
+        if (
+          typeof formData.content !== "string" ||
+          formData.content.trim().length === 0 ||
+          formData.content.trim().length > 1000 ||
+          /["*:<>?\/\\|{}]/.test(formData.content)
+        ) {
+          res.status(400).json({
+            message:
+              'Please ensure the content is between 1 and 1000 characters. Do not use these characters: " * : < > ? / \\ | { }.',
+          });
+          return;
+        }
       const blogPost = new BlogPostModel(
         null,
         req.body.title.trim(),
@@ -58,7 +83,6 @@ export class APIBlogPostsController {
         new Date(),
         0,
       );
-
       const result = await BlogPostModel.create(blogPost);
       res.status(200).json({
         id: result.insertId,

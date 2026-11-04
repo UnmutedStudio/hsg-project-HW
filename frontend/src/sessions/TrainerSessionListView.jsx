@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { FaDumbbell } from 'react-icons/fa';
 import { fetchAPI } from '../api.mjs';
 import { useAuthenticate } from '../authentication/useAuthenticate';
-import XMLDownloadButton from '../common/XMLDownloadButton';
 
 function TrainerSessionListView() {
   const [sessions, setSessions] = useState([]);
@@ -43,25 +42,13 @@ function TrainerSessionListView() {
 
   return (
     <section className="flex flex-col items-center">
-      {user ? (
-        <XMLDownloadButton
-          route="/sessions/xml"
-          filename="trainer-sessions.xml"
-          authenticationKey={user && user.authenticationKey}
-          className="btn btn-warning"
-        >
-          Export Sessions
-        </XMLDownloadButton>
-      ) : (
-        <span className="loading loading-spinner loading-xl"></span>
-      )}
       {error && <span className="p-4">{error}</span>}
       {!error && sessions.length == 0 ? (
         <span className="loading loading-spinner loading-xl"></span>
       ) : (
         <ul className="list self-stretch">
           {sessions.map((sessionDetail) => (
-            <li key={sessionDetail.session.id} className="list-row">
+            <li key={sessionDetail.session.id} className="list-row bg-base-100 mx-4 mb-3 rounded-box shadow-sm border border-base-300">
               <div>
                 <FaDumbbell className="size-10" />
               </div>
