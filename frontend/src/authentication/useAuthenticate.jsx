@@ -4,26 +4,26 @@ import {
   useContext,
   useEffect,
   useState,
-} from "react";
-import { fetchAPI } from "../api.mjs";
-import { useNavigate } from "react-router";
+} from 'react';
+import { fetchAPI } from '../api.mjs';
+import { useNavigate } from 'react-router';
 
 export const AuthenticationContext = createContext(null);
 
 export function AuthenticationProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [status, setStatus] = useState("resuming");
+  const [status, setStatus] = useState('resuming');
 
   //Reload user state from auth key in local storage on page reload
   useEffect(() => {
-    const authenticationKey = localStorage.getItem("auth-key");
+    const authenticationKey = localStorage.getItem('auth-key');
 
     if (authenticationKey) {
-      fetchAPI("GET", "/users/self", null, authenticationKey)
+      fetchAPI('GET', '/users/self', null, authenticationKey)
         .then((response) => {
           if (response.status === 200) {
             setUser(response.body);
-            setStatus("loaded");
+            setStatus('loaded');
           } else {
             setStatus(response.body.message);
           }
@@ -32,7 +32,7 @@ export function AuthenticationProvider({ children }) {
           setStatus(error);
         });
     } else {
-      setStatus("logged out");
+      setStatus('logged out');
     }
   }, [setUser, setStatus]);
 
@@ -50,12 +50,12 @@ export function useAuthenticate(restrictToRoles = null) {
   const getUser = useCallback(
     (authenticationKey) => {
       if (authenticationKey) {
-        setStatus("loading");
-        fetchAPI("GET", "/users/self", null, authenticationKey)
+        setStatus('loading');
+        fetchAPI('GET', '/users/self', null, authenticationKey)
           .then((response) => {
             if (response.status === 200) {
               setUser(response.body);
-              setStatus("loaded");
+              setStatus('loaded');
             } else {
               setStatus(response.body.message);
             }
@@ -78,15 +78,15 @@ export function useAuthenticate(restrictToRoles = null) {
         password, //password: password
       };
 
-      setStatus("authenticating");
-      fetchAPI("POST", "/authenticate", body)
+      setStatus('authenticating');
+      fetchAPI('POST', '/authenticate', body)
         .then((response) => {
           if (response.status === 200) {
-            localStorage.setItem("auth-key", response.body.key);
+            localStorage.setItem('auth-key', response.body.key);
             console.log(response.body.message);
             //Load the authenticated user by their key
             getUser(response.body.key);
-            setStatus("loaded");
+            setStatus('loaded');
           } else {
             setStatus(response.body.message);
           }
@@ -102,11 +102,11 @@ export function useAuthenticate(restrictToRoles = null) {
   //Logout the user by telling the server to clear our key
   //clearing the user state, and removing the key from localstorage
   const logout = useCallback(() => {
-    fetchAPI("DELETE", "/authenticate", null, user.authenticationKey).then(
+    fetchAPI('DELETE', '/authenticate', null, user.authenticationKey).then(
       (response) => {
         setUser(null);
-        localStorage.removeItem("auth-key");
-        setStatus("logged out");
+        localStorage.removeItem('auth-key');
+        setStatus('logged out');
       },
     );
   }, [user, setUser, setStatus]);
@@ -122,10 +122,10 @@ export function useAuthenticate(restrictToRoles = null) {
   useEffect(() => {
     if (
       restrictToRoles &&
-      status !== "resuming" &&
+      status !== 'resuming' &&
       (!user || !restrictToRoles.includes(user.role))
     ) {
-      navigate("/");
+      navigate('/');
     }
   }, [user, status, restrictToRoles, navigate]);
 

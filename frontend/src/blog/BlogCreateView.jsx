@@ -5,7 +5,7 @@ import { useAuthenticate } from "../authentication/useAuthenticate";
 
 function BlogCreateView() {
   const navigate = useNavigate();
-  const { user } = useAuthenticate(["member", "trainer", "admin"]);
+  const { user } = useAuthenticate(["member", "trainer"]);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [status, setStatus] = useState(null);

@@ -13,13 +13,13 @@ export class APIBlogPostsController {
 
     this.routes.post(
         "/",
-        APIAuthenticationController.restrict(["member", "trainer", "admin"]),
+        APIAuthenticationController.restrict(["member", "trainer"]),
         this.createBlogPost,
     );
 
     this.routes.delete(
         "/:id",
-        APIAuthenticationController.restrict(["member", "trainer", "admin"]),
+        APIAuthenticationController.restrict(["member", "trainer"]),
         this.deleteBlogPost,
     );
   }
@@ -179,10 +179,7 @@ export class APIBlogPostsController {
   static async deleteBlogPost(req, res) {
     try {
       const blogPost = await BlogPostModel.getById(req.params.id);
-      if (
-        req.authenticatedUser.role !== "admin" &&
-        blogPost.userId !== req.authenticatedUser.id
-      ) {
+      if (blogPost.userId !== req.authenticatedUser.id) {
         res.status(403).json({
           message: "You can only delete your own blog posts",
         });

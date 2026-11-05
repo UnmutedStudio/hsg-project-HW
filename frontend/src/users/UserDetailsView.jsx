@@ -6,7 +6,6 @@ function UserDetailsView() {
     const { user, refresh } = useAuthenticate([
         "member",
         "trainer",
-        "admin",
     ]);
 
     const [firstName, setFirstName] = useState("");

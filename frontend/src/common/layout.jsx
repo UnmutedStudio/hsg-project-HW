@@ -6,7 +6,7 @@ import {
   FaClipboardList,
   FaUser,
 } from 'react-icons/fa';
-import { TbFileExport, TbLogout } from 'react-icons/tb';
+import { TbFileDownload, TbLogout } from 'react-icons/tb';
 import { Outlet, useNavigate, useLocation } from 'react-router';
 import { useAuthenticate } from '../authentication/useAuthenticate';
 import XMLDownloadButton from "./XMLDownloadButton";
@@ -34,8 +34,6 @@ function Layout() {
         <div className="h-28" aria-hidden="true"></div>
       </div>
       <nav className="dock w-full sm:max-w-[640px] lg:max-w-[768px] left-1/2 -translate-x-1/2 bg-secondary text-secondary-content">
-        {(!user ||
-          (user.role != "trainer" && user.role != "admin")) && (
           <button
             type="button"
             onClick={() => navigate("/")}
@@ -44,7 +42,6 @@ function Layout() {
             <FaDumbbell className="text-2xl" />
             <span className="dock-label">Timetable</span>
           </button>
-        )}
         {user && user.role == "trainer" && (
           <button
             onClick={() => navigate("/trainer/sessions")}
@@ -102,7 +99,7 @@ function Layout() {
                   : "dock-item opacity-40 pointer-events-none"
               }
             >
-              <TbFileExport className="text-2xl" />
+              <TbFileDownload className="text-2xl" />
               <span className="dock-label">Export</span>
             </XMLDownloadButton>
           )}
@@ -118,7 +115,7 @@ function Layout() {
                   : "dock-item opacity-40 pointer-events-none"
               }
             >
-              <TbFileExport className="text-2xl" />
+              <TbFileDownload className="text-2xl" />
               <span className="dock-label">Export</span>
             </XMLDownloadButton>
           )}
