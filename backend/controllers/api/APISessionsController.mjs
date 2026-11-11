@@ -8,7 +8,10 @@ export class APISessionsController {
   static routes = express.Router();
 
   static {
-    this.routes.get("/", this.getSessions);
+    this.routes.get("/",
+       APIAuthenticationController.restrict(["member", "trainer"]),
+    this.getSessions
+    );
     this.routes.get("/xml",
       APIAuthenticationController.restrict(["trainer"]),
       this.getSessionsXML,

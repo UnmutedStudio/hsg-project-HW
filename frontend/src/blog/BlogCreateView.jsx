@@ -65,7 +65,7 @@ function BlogCreateView() {
       <button
         type="button"
         onClick={() => navigate("/blog")}
-        className="btn btn-outline btn-sm"
+        className="btn btn-outline flex-1"
       >
         Cancel
       </button>

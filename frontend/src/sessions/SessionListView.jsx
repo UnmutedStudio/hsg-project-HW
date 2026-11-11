@@ -10,7 +10,7 @@ function SessionListView() {
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("");
   const [weekOffset, setWeekOffset] = useState(0);
-  const { user } = useAuthenticate();
+  const { user } = useAuthenticate(["member", "trainer"]);
 
   const getSessions = useCallback(
     (filter = "") => {
@@ -19,10 +19,24 @@ function SessionListView() {
 
       const request =
         filter.length > 0
-          ? fetchAPI("GET", "/sessions?filter=" + filter)
-          : fetchAPI("GET", "/sessions");
+          ? fetchAPI(
+            "GET",
+            "/sessions?filter=" + filter,
+            null,
+            user && user.authenticationKey,
+          )
+          : fetchAPI(
+            "GET",
+            "/sessions",
+            null,
+            user && user.authenticationKey,
+          );
       request
         .then((response) => {
+          if (response.status !== 200) {
+            setError(response.body.message);
+            return;
+          }
           const today = new Date();
           const mondayOfSelectedWeek = new Date();
           mondayOfSelectedWeek.setDate(
@@ -35,11 +49,16 @@ function SessionListView() {
           );
           const endDate = toLocaleDateString(sundayOfSelectedWeek);
           const weeklySessions = response.body
-            .filter(
-              (sessionDetail) =>
+            .filter((sessionDetail) => {
+              const sessionDateTime = new Date(
+                `${sessionDetail.session.dateSession}T${sessionDetail.session.timeSession}`,
+              );
+              return (
                 sessionDetail.session.dateSession >= startDate &&
-                sessionDetail.session.dateSession <= endDate,
-            )
+                sessionDetail.session.dateSession <= endDate &&
+                sessionDateTime >= new Date()
+              );
+            })
             .sort(
               (a, b) =>
                 new Date(
@@ -58,14 +77,16 @@ function SessionListView() {
           }
         })
           .catch((error) => {
-            setError(error);
+            setError(error.message);
           });
         },
-        [weekOffset],
+        [weekOffset, user],
       );
       useEffect(() => {
-        getSessions();
-      }, [getSessions]);
+        if (user) {
+          getSessions();
+        }
+      }, [user, getSessions]);
     return (
     <section className="w-full max-w-md mx-auto bg-base-100 rounded-box shadow-md p-4 sm:p-6">
       <h1 className="text-2xl font-bold text-primary text-center mb-4">
@@ -112,7 +133,6 @@ function SessionListView() {
           <FaSearch />
         </button>
       </div>
-
       {error && <span className="p-4">{error}</span>}
       {!error && sessions.length == 0 ? (
         <span className="loading loading-spinner loading-xl"></span>

@@ -12,6 +12,7 @@ import TrainerSessionListView from "./sessions/TrainerSessionListView";
 import BlogListView from "./blog/BlogListView";
 import BlogCreateView from "./blog/BlogCreateView";
 import UserDetailsView from "./users/UserDetailsView";
+import RegisterView from "./authentication/RegisterView";
 
 
 const router = createBrowserRouter([
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: "/login",
         Component: LoginView,
+      },
+      {
+        path: "/sign-up",
+        Component: RegisterView,
       },
       {
         path: "/trainer/sessions",

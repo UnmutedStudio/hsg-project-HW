@@ -56,7 +56,7 @@ function LoginView() {
       <p className="text-center italic text-sm mt-4 mb-2">Not a member?</p>
       <button
         type="button"
-        onClick={() => navigate("/register")}
+        onClick={() => navigate("/sign-up")}
         className="btn btn-outline w-full mt-3"
       >
         Sign up

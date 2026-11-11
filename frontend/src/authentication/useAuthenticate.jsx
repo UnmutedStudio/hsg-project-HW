@@ -29,7 +29,7 @@ export function AuthenticationProvider({ children }) {
           }
         })
         .catch((error) => {
-          setStatus(error);
+          setStatus(error.message);
         });
     } else {
       setStatus('logged out');
@@ -61,7 +61,7 @@ export function useAuthenticate(restrictToRoles = null) {
             }
           })
           .catch((error) => {
-            setStatus(error);
+            setStatus(error.message);
           });
       }
     },
@@ -93,7 +93,7 @@ export function useAuthenticate(restrictToRoles = null) {
           console.log(response.body.key);
         })
         .catch((error) => {
-          setStatus(error);
+          setStatus(error.message);
         });
     },
     [setStatus, getUser],
@@ -125,7 +125,7 @@ export function useAuthenticate(restrictToRoles = null) {
       status !== 'resuming' &&
       (!user || !restrictToRoles.includes(user.role))
     ) {
-      navigate('/');
+      navigate("/login");
     }
   }, [user, status, restrictToRoles, navigate]);
 

@@ -33,7 +33,8 @@ function Layout() {
         <Outlet />
         <div className="h-28" aria-hidden="true"></div>
       </div>
-      <nav className="dock w-full sm:max-w-[640px] lg:max-w-[768px] left-1/2 -translate-x-1/2 bg-secondary text-secondary-content">
+      <nav className="dock fixed bottom-0 left-1/2 -translate-x-1/2 z-50 w-full sm:max-w-[640px] lg:max-w-[768px] bg-secondary text-secondary-content">
+        {user && (
           <button
             type="button"
             onClick={() => navigate("/")}
@@ -42,6 +43,7 @@ function Layout() {
             <FaDumbbell className="text-2xl" />
             <span className="dock-label">Timetable</span>
           </button>
+        )}
         {user && user.role == "trainer" && (
           <button
             onClick={() => navigate("/trainer/sessions")}
