@@ -155,14 +155,14 @@ export class APIUserController {
   static async getAuthenticatedUser(req, res) {
     res.status(200).json(req.authenticatedUser);
   }
-    /**
-   * Update one or more personal details for the authenticated user.
+  /**
+   * Replace all personal details for the authenticated user.
    *
    * @type {express.RequestHandler}
    * @openapi
    * /api/users/self:
    *   put:
-   *     summary: "Update personal details for the authenticated user"
+   *     summary: "Replace the personal record of an authenticated user"
    *     tags: [Users]
    *     security:
    *       - ApiKey: []
@@ -194,6 +194,8 @@ export class APIUserController {
    *         $ref: "#/components/responses/Error"
    *       '401':
    *         $ref: "#/components/responses/Error"
+   *       '404':
+   *         $ref: "#/components/responses/NotFound"
    *       '500':
    *         $ref: "#/components/responses/Error"
    */
@@ -293,10 +295,6 @@ export class APIUserController {
    *         application/json:
    *           schema:
    *             type: object
-   *             required:
-   *               - firstName
-   *               - lastName
-   *               - email
    *             properties:
    *               firstName:
    *                 type: string
@@ -308,6 +306,14 @@ export class APIUserController {
    *                 type: string
    *                 format: email
    *                 example: "han.solo@member.com"
+   *               password:
+   *                 type: string
+   *                 format: password
+   *                 description: "Optional new password"
+   *               confirmPassword:
+   *                 type: string
+   *                 format: password
+   *                 description: "Must match the new password"
    *     responses:
    *       '200':
    *         $ref: "#/components/responses/Updated"
@@ -315,35 +321,47 @@ export class APIUserController {
    *         $ref: "#/components/responses/Error"
    *       '401':
    *         $ref: "#/components/responses/Error"
+   *       '404':
+   *         $ref: "#/components/responses/NotFound"
    *       '500':
    *         $ref: "#/components/responses/Error"
    */
   static async updateAuthenticatedUser(req, res) {
     try {
       const formData = req.body;
-      if (!/^[a-zA-Z\-'\ ]{2,50}$/.test(formData.firstName)) {
-        res.status(400).json({
-          message:
-            "Please enter a valid first name containing 2 to 50 letters, spaces, hyphens or apostrophes.",
-        });
-        return;
+      const user = await UserModel.getById(req.authenticatedUser.id);
+      if (formData.firstName !== undefined) {
+        if (!/^[a-zA-Z\-'\ ]{2,50}$/.test(formData.firstName)) {
+          res.status(400).json({
+            message:
+              "Please enter a valid first name containing 2 to 50 letters, spaces, hyphens or apostrophes.",
+          });
+          return;
+        }
+        user.firstName = formData.firstName.trim();
       }
-      if (!/^[a-zA-Z\-'\ ]{2,50}$/.test(formData.lastName)) {
-        res.status(400).json({
-          message:
-            "Please enter a valid last name containing 2 to 50 letters, spaces, hyphens or apostrophes.",
-        });
-        return;
+      if (formData.lastName !== undefined) {
+        if (!/^[a-zA-Z\-'\ ]{2,50}$/.test(formData.lastName)) {
+          res.status(400).json({
+            message:
+              "Please enter a valid last name containing 2 to 50 letters, spaces, hyphens or apostrophes.",
+          });
+          return;
+        }
+        user.lastName = formData.lastName.trim();
       }
-      if (
-        !/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-          formData.email,
-        )
-      ) {
-        res.status(400).json({
-          message: "Please enter a valid email address.",
-        });
-        return;
+      if (formData.email !== undefined) {
+        if (
+          !/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+            formData.email,
+          )
+        ) {
+          res.status(400).json({
+            message: "Please enter a valid email address.",
+          });
+          return;
+        }
+        user.email = formData.email.trim();
       }
       const passwordWasEntered =
         typeof formData.password === "string" &&
@@ -372,14 +390,9 @@ export class APIUserController {
         });
         return;
       }
-      const user = await UserModel.getById(req.authenticatedUser.id);
-      user.firstName = formData.firstName.trim();
-      user.lastName = formData.lastName.trim();
-      user.email = formData.email.trim();
       if (passwordWasEntered) {
         user.passwordHash = bcrypt.hashSync(formData.password);
       }
-
       const result = await UserModel.update(user);
       if (result.affectedRows > 0) {
         res.status(200).json({

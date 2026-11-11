@@ -43,9 +43,13 @@ export class APIBlogPostsController {
    *      responses:
    *        '200':
    *          $ref: "#/components/responses/Created"
-   *        '500':
+   *        '400':
    *          $ref: "#/components/responses/Error"
-   *        default:
+   *        '401':
+   *          $ref: "#/components/responses/Error"
+   *        '403':
+   *          $ref: "#/components/responses/Error"
+   *        '500':
    *          $ref: "#/components/responses/Error"
    */
   static async createBlogPost(req, res) {
@@ -146,8 +150,7 @@ export class APIBlogPostsController {
   }
 
   /**
-   * Delete blog post when the authenticated user owns the post,
-   * or by admin user
+   * Delete blog post when the authenticated user owns the post.
    *
    * @type {express.RequestHandler}
    * @openapi
@@ -166,7 +169,9 @@ export class APIBlogPostsController {
    *           example: 1
    *     responses:
    *       '200':
-   *         description: "Blog post deleted"
+   *         $ref: "#/components/responses/Updated"
+   *       '400':
+   *         $ref: "#/components/responses/Error"
    *       '401':
    *         $ref: "#/components/responses/Error"
    *       '403':

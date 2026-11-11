@@ -202,6 +202,8 @@ export class APISessionsController {
    *                        $ref: "#/components/schemas/SessionDetails"
    *            '401':
    *              $ref: "#/components/responses/Error"
+   *            '403':
+   *              $ref: "#/components/responses/Error"
    *            '500':
    *              $ref: "#/components/responses/Error"
    */
@@ -255,6 +257,8 @@ export class APISessionsController {
    *              schema:
    *                $ref: "#/components/schemas/SessionDetails"
    *        '401':
+   *          $ref: "#/components/responses/Error"
+   *        '400':
    *          $ref: "#/components/responses/Error"
    *        '403':
    *          $ref: "#/components/responses/Error"
@@ -364,6 +368,12 @@ export class APISessionsController {
    *     responses:
    *       '200':
    *         $ref: "#/components/responses/Updated"
+   *       '400':
+   *         $ref: "#/components/responses/Error"
+   *       '401':
+   *         $ref: "#/components/responses/Error"
+   *       '403':
+   *         $ref: "#/components/responses/Error"
    *       '404':
    *         $ref: "#/components/responses/NotFound"
    *       '500':

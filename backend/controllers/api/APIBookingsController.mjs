@@ -63,7 +63,11 @@ export class APIBookingsController {
    *              type: array
    *              items:
    *                $ref: "#/components/schemas/BookingDetails"
+   *      '400':
+   *        $ref: "#/components/responses/Error"
    *      '401':
+   *        $ref: "#/components/responses/Error"
+   *      '403':
    *        $ref: "#/components/responses/Error"
    *      '500':
    *        $ref: "#/components/responses/Error"
@@ -122,6 +126,8 @@ export class APIBookingsController {
    *                        $ref: "#/components/schemas/BookingDetails"
    *            '401':
    *              $ref: "#/components/responses/Error"
+   *            '403':
+   *              $ref: "#/components/responses/Error" 
    *            '500':
    *              $ref: "#/components/responses/Error"
    */
@@ -169,6 +175,8 @@ export class APIBookingsController {
    *        $ref: "#/components/responses/Error"
    *      '401':
    *        $ref: "#/components/responses/Error"
+   *      '403':
+   *        $ref: "#/components/responses/Error"
    *      '500':
    *        $ref: "#/components/responses/Error"
    */
@@ -215,6 +223,8 @@ export class APIBookingsController {
    *     responses:
    *       '200':
    *         $ref: "#/components/responses/Updated"
+   *       '400':
+   *         $ref: "#/components/responses/Error"
    *       '401':
    *         $ref: "#/components/responses/Error"
    *       '403':
