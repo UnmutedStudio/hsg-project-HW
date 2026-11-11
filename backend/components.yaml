@@ -111,6 +111,33 @@ components:
           type: string
           example: "member"
           enum: [admin, trainer, member]
+    UserRegistration:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+        - password
+        - confirmPassword
+      properties:
+        firstName:
+          type: string
+          example: "Bo"
+        lastName:
+          type: string
+          example: "Katan"
+        email:
+          type: string
+          format: email
+          example: "bo.katan@member.com"
+        password:
+          type: string
+          format: password
+          example: "Password1"
+        confirmPassword:
+          type: string
+          format: password
+          example: "Password1"
     Booking:
       type: object
       required:

@@ -94,7 +94,7 @@ export class APIUserController {
       if (error !== "not found") {
         console.error(error);
         res.status(500).json({
-          message: "The account could not be created.",
+          message: "The member account could not be created.",
         });
         return;
       }
@@ -119,7 +119,7 @@ export class APIUserController {
       } catch (createError) {
         console.error(createError);
         res.status(500).json({
-          message: "The account could not be created.",
+          message: "The member account could not be created.",
         });
       }
     }

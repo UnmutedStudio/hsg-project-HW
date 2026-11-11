@@ -25,9 +25,39 @@ function UserDetailsView() {
     }, [user]);
 
     const updateProfile = useCallback(() => {
-    setLoading(true);
     setStatus(null);
 
+    if (!/^[a-zA-Z\-'\ ]{2,50}$/.test(firstName)) {
+      setStatus("Please enter a valid first name.");
+      return;
+    }
+    if (!/^[a-zA-Z\-'\ ]{2,50}$/.test(lastName)) {
+      setStatus("Please enter a valid last name.");
+      return;
+    }
+    if (
+      !/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
+    ) {
+      setStatus("Please enter a valid email address.");
+      return;
+    }
+    const passwordWasEntered = password.length > 0;
+    if (
+      passwordWasEntered &&
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/.test(
+        password,
+      )
+    ) {
+      setStatus(
+        "Password must contain at least 8 characters, one uppercase letter, one lowercase letter and one number.",
+      );
+      return;
+    }
+    if (passwordWasEntered && password !== confirmPassword) {
+      setStatus("Passwords do not match.");
+      return;
+    }
+    setLoading(true);
     fetchAPI(
       "PATCH",
       "/users/self",
@@ -43,7 +73,7 @@ function UserDetailsView() {
       .then((response) => {
         if (response.status == 200) {
           setStatus("Profile updated successfully");
-          setPassword("");;
+          setPassword("");
           setConfirmPassword("");
           refresh();
         } else {

@@ -1,11 +1,11 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
-import { FaCalendarCheck } from "react-icons/fa";
+import { FaCalendarCheck, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { fetchAPI } from "../api.mjs";
 import { useAuthenticate } from "../authentication/useAuthenticate";
-import XMLDownloadButton from "../common/XMLDownloadButton";
 
 function BookingsListView() {
   const [bookingsByDay, setBookingsByDay] = useState({});
+  const [weekOffset, setWeekOffset] = useState(0);
   const [error, setError] = useState(null);
   const { user } = useAuthenticate(["member"]);
 
@@ -15,14 +15,16 @@ function BookingsListView() {
     const today = new Date();
 
     //Calculate the date of the Monday of the current week
-    const mondayOfThisWeek = new Date();
-    mondayOfThisWeek.setDate(today.getDate() - (today.getDay() - 1));
-    const startDate = toLocaleDateString(mondayOfThisWeek);
+    const mondayOfSelectedWeek = new Date();
+    mondayOfSelectedWeek.setDate(
+      today.getDate() - (today.getDay() - 1) + weekOffset * 7,
+    );
+    const startDate = toLocaleDateString(mondayOfSelectedWeek);
 
     //Calculate the date of the Sunday of the current week
-    const sundayOfThisWeek = new Date(mondayOfThisWeek);
-    sundayOfThisWeek.setDate(sundayOfThisWeek.getDate() + 6);
-    const endDate = toLocaleDateString(sundayOfThisWeek);
+    const sundayOfSelectedWeek = new Date(mondayOfSelectedWeek);
+    sundayOfSelectedWeek.setDate(sundayOfSelectedWeek.getDate() + 6);
+    const endDate = toLocaleDateString(sundayOfSelectedWeek);
 
     fetchAPI(
       "GET",
@@ -45,7 +47,7 @@ function BookingsListView() {
     .catch((error) => {
       setError(error);
     });
-  }, [user]);
+  }, [user, weekOffset]);
   //Fetch bookings once the member who is authenticated has loaded
   useEffect(() => {
    if (user) {
@@ -78,6 +80,33 @@ function BookingsListView() {
       <h1 className="text-2xl font-bold text-primary text-center mb-4">
         My Gym Bookings
       </h1>
+      <div className="flex items-center justify-between gap-3 mb-4">
+        <button
+          type="button"
+          onClick={() => setWeekOffset(weekOffset - 1)}
+          className="btn btn-outline btn-sm w-24"
+        >
+          <FaChevronLeft />Previous
+        </button>
+        <span className="text-sm font-semibold text-center">
+          {weekOffset === 0
+            ? "This week"
+            : weekOffset === 1
+              ? "Next week"
+              : weekOffset === -1
+                ? "Last week"
+                : weekOffset > 1
+                  ? `${weekOffset} weeks ahead`
+                  : `${Math.abs(weekOffset)} weeks ago`}
+        </span>
+        <button
+          type="button"
+          onClick={() => setWeekOffset(weekOffset + 1)}
+          className="btn btn-outline btn-sm w-24"
+        >
+          Next <FaChevronRight />
+        </button>
+      </div>
       {error && <span className="p-4 self-center">{error}</span>}
       {!error && Object.entries(bookingsByDay).length === 0 ? (
         <span className="loading loading-spinner loading-xl block m-4"></span>
@@ -108,7 +137,7 @@ function BookingsListView() {
                         {booking.activity.activityName}
                         </div>
                       <div className="text-xs font-semibold opacity-60">
-                        Time: {booking.session.timeSession}
+                        Time: {booking.session.timeSession.slice(0, 5)}
                       </div>
                       <div className="text-xs font-semibold opacity-60">
                         Duration: {booking.session.duration} minutes

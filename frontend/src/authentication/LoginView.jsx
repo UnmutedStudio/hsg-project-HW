@@ -17,7 +17,7 @@ function LoginView() {
 
   useEffect(() => {
     if (user?.role === "member") {
-      navigate("/bookings");
+      navigate("/");
     } else if (user?.role === "trainer") {
       navigate("/trainer/sessions");
     } else if (user?.role === "admin") {
@@ -27,7 +27,7 @@ function LoginView() {
 
   return (
     <section className="w-full max-w-md mx-auto bg-base-100 rounded-box shadow-md p-4 sm:p-6">
-      <h1 className="text-2xl font-bold text-primary text-center mb-4">Login</h1>
+      <h1 className="text-2xl font-bold text-primary text-center mb-4">Welcome back!</h1>
       <label className="input w-full mb-3">
         <span className="label">Email</span>
         <input
@@ -47,11 +47,35 @@ function LoginView() {
         />
       </label>
       <button
+        type="button"
         onClick={() => onLoginClick()}
         className="btn btn-primary w-full mt-2"
       >
         Login
       </button>
+      <p className="text-center italic text-sm mt-4 mb-2">Not a member?</p>
+      <button
+        type="button"
+        onClick={() => navigate("/register")}
+        className="btn btn-outline w-full mt-3"
+      >
+        Sign up
+      </button>
+      <div className="flex justify-center items-center gap-2 mt-4 text-sm">
+        <a
+          href="http://localhost:8080/privacy"
+          className="link link-hover text-primary"
+        >
+          Privacy Policy
+        </a>
+        <span aria-hidden="true">|</span>
+        <a
+          href="http://localhost:8080/contact"
+          className="link link-hover text-primary"
+        >
+          Contact Us
+        </a>
+      </div>
       {status &&
         status !== "logged out" &&
         status !== "loaded" && (

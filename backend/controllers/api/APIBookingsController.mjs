@@ -214,7 +214,7 @@ export class APIBookingsController {
    *           example: 1
    *     responses:
    *       '200':
-   *         description: "Booking deleted"
+   *         $ref: "#/components/responses/Updated"
    *       '401':
    *         $ref: "#/components/responses/Error"
    *       '403':

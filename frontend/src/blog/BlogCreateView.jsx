@@ -38,8 +38,8 @@ function BlogCreateView() {
     });
   }, [title, content, user, navigate]);
     return (
-    <section className="flex flex-col gap-4 p-4 pb-20">
-      <h1 className="text-2xl font-bold text-primary mb-4">Create blog post</h1>
+    <section className="w-full max-w-md mx-auto bg-base-100 rounded-box shadow-md p-4 sm:p-6">
+      <h1 className="text-2xl font-bold text-primary text-center mb-4">Create blog post</h1>
       <label className="fieldset">
         <span className="label">Title</span>
         <input
@@ -65,7 +65,7 @@ function BlogCreateView() {
       <button
         type="button"
         onClick={() => navigate("/blog")}
-        className="btn btn-secondary btn-sm"
+        className="btn btn-outline btn-sm"
       >
         Cancel
       </button>

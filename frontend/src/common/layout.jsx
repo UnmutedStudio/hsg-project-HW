@@ -130,7 +130,6 @@ function Layout() {
             <span className="dock-label">Login</span>
           </button>
         )}
-
         </nav>
     </main>
   );

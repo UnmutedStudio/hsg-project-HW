@@ -1,11 +1,12 @@
 import { useEffect, useCallback, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { fetchAPI } from "../api.mjs";
 import { useAuthenticate } from "../authentication/useAuthenticate";
 
 function BookingCreateView() {
   const { sessionId } = useParams();
   const { user } = useAuthenticate(["member"]);
+  const navigate = useNavigate();
 
   const [sessionDetail, setSessionDetail] = useState(null);
   const [status, setStatus] = useState(null);
@@ -41,13 +42,13 @@ function BookingCreateView() {
       "POST",
       "/bookings",
       {
-        sessionId,
+        sessionId: Number(sessionId),
       },
       user && user.authenticationKey,
     )
       .then((response) => {
         if (response.status == 200) {
-          setStatus("Booking created successfully");
+          navigate("/bookings");
         } else {
           setStatus(response.body.message);
         }
@@ -58,28 +59,60 @@ function BookingCreateView() {
         setStatus(error);
         setLoading(false);
       });
-  }, [sessionId, user]);
+  }, [sessionId, user, navigate]);
 
   return (
-    <section className="flex flex-col items-center gap-4 p-4">
-      {status && <span className="p-4">{status}</span>}
-
-      <h1 className="text-3xl">{sessionDetail?.activity.activityName}</h1>
-      <p>
-        {sessionDetail?.session.dateSession} at{" "}
-        {sessionDetail?.session.timeSession}
+    <section className="w-full max-w-md mx-auto bg-base-100 rounded-box shadow-md p-4 sm:p-6">
+    <h1 className="text-2xl font-bold text-primary text-center mb-4">
+      Book a Session
+    </h1>
+    {status && (
+      <p className="text-center mb-4">
+        {status}
       </p>
-      <p>{sessionDetail?.location.locationName}</p>
+    )}
+      {sessionDetail && (
+      <div className="space-y-3 mb-5 text-center">
+      <h2 className="text-xl font-bold">
+          {sessionDetail.activity.activityName}
+        </h2>
       <p>
-        Trainer: {sessionDetail?.trainer.firstName}{" "}
-        {sessionDetail?.trainer.lastName}
+        {new Date(
+          sessionDetail.session.dateSession,
+        ).toLocaleDateString("en-AU", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })}
       </p>
+      <p>
+        {sessionDetail.session.timeSession.slice(0, 5)}
+        {" | "}
+        {sessionDetail.session.duration} minutes
+      </p>
+      <p>
+        <span className="font-semibold">Location:</span>{" "}
+        {sessionDetail.location.locationName}
+      </p>
+      <p>
+        <span className="font-semibold">Trainer:</span>{" "}
+        {sessionDetail.trainer.firstName}{" "}
+        {sessionDetail.trainer.lastName}
+      </p>
+      <p>
+        <span className="font-semibold">Places available:</span>{" "}
+        {sessionDetail.session.availability}
+      </p>
+      </div>
+    )}
       <button
+        type="button"
         disabled={loading == true}
         onClick={() => submitBooking()}
-        className="btn btn-outline btn-xl self-stretch"
+        className="btn btn-primary w-full"
       >
-        Book session
+        Confirm Booking
         {loading && (
           <span className="loading loading-spinner loading-sm"></span>
         )}
