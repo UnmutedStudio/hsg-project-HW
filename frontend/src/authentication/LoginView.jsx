@@ -20,9 +20,11 @@ function LoginView() {
       navigate("/");
     } else if (user?.role === "trainer") {
       navigate("/trainer/sessions");
-    } else if (user?.role === "admin") {
-      navigate("/admin");
-    }
+    } 
+    // admin not required
+    // else if (user?.role === "admin") {
+    //   navigate("/admin");
+    // }
   }, [user, navigate]);
 
   return (

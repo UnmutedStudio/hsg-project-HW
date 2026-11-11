@@ -20,7 +20,10 @@ export class APISessionsController {
       APIAuthenticationController.restrict(["trainer"]),
       this.getTrainerSessions,
     );
-    this.routes.get("/:id", this.getSessionById);
+    this.routes.get("/:id",
+      APIAuthenticationController.restrict(["member", "trainer"]), 
+      this.getSessionById,
+    );
     // no update or create session required and no admin access.
     // this.routes.post(
     //   "/",
@@ -96,6 +99,8 @@ export class APISessionsController {
    *    get:
    *      summary: "Get the list of all sessions"
    *      tags: [Sessions]
+   *      security:
+   *        - ApiKey: []
    *      parameters:
    *        - name: filter
    *          in: query
@@ -113,6 +118,10 @@ export class APISessionsController {
    *                type: array
    *                items:
    *                  $ref: "#/components/schemas/SessionDetails"
+   *        '401':
+   *          $ref: "#/components/responses/Error" 
+   *        '403':
+   *          $ref: "#/components/responses/Error"
    *        '500':
    *          $ref: "#/components/responses/Error"
    */
@@ -228,6 +237,8 @@ export class APISessionsController {
    *    get:
    *      summary: "Get a specific session by ID"
    *      tags: [Sessions]
+   *      security:
+   *        - ApiKey: []
    *      parameters:
    *        - name: id
    *          in: path
@@ -243,10 +254,14 @@ export class APISessionsController {
    *            application/json:
    *              schema:
    *                $ref: "#/components/schemas/SessionDetails"
-   *        '500':
+   *        '401':
+   *          $ref: "#/components/responses/Error"
+   *        '403':
    *          $ref: "#/components/responses/Error"
    *        '404':
    *          $ref: "#/components/responses/NotFound"
+   *        '500':
+   *          $ref: "#/components/responses/Error"
    *
    */
   static async getSessionById(req, res) {
