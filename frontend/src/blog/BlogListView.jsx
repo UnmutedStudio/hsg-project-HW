@@ -14,7 +14,7 @@ function BlogListView() {
   const getBlogPosts = useCallback(() => {
     setBlogPosts([]);
     setError(null);
-    fetchAPI('GET', '/blog-posts')
+    fetchAPI('GET', '/blog')
       .then((response) => {
         if (response.status == 200) {
           if (response.body.length > 0) {
@@ -38,7 +38,7 @@ function BlogListView() {
     (blogPostId) => {
       fetchAPI(
         'DELETE',
-        '/blog-posts/' + blogPostId,
+        '/blog/' + blogPostId,
         null,
         user && user.authenticationKey,
       )

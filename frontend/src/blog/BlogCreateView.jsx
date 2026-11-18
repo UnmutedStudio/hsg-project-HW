@@ -17,7 +17,7 @@ function BlogCreateView() {
 
     fetchAPI(
       "POST",
-      "/blog-posts",
+      "/blog",
       {
         title,
         content,

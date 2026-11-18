@@ -28,7 +28,7 @@ export class APIBlogPostsController {
    * Create a blog post for the authenticated user.
    * @type {express.RequestHandler}
    * @openapi
-   *  /api/blog-posts:
+   *  /api/blog:
    *    post:
    *      summary: "Create a new blog post"
    *      tags: [Blog Posts]
@@ -104,7 +104,7 @@ export class APIBlogPostsController {
    *
    * @type {express.RequestHandler}
    * @openapi
-   * /api/blog-posts:
+   * /api/blog:
    *   get:
    *     summary: "Get the list of blog posts"
    *     tags: [Blog Posts]
@@ -153,7 +153,7 @@ export class APIBlogPostsController {
    *
    * @type {express.RequestHandler}
    * @openapi
-   * /api/blog-posts/{id}:
+   * /api/blog/{id}:
    *   delete:
    *     summary: "Delete a blog post"
    *     tags: [Blog Posts]

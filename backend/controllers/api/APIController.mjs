@@ -65,7 +65,7 @@ export class APIController {
     this.routes.use("/sessions", APISessionsController.routes);
     this.routes.use("/bookings", APIBookingsController.routes);
     this.routes.use("/users", APIUserController.routes);
-    this.routes.use("/blog-posts", APIBlogPostsController.routes);
+    this.routes.use("/blog", APIBlogPostsController.routes);
 
     //API error response handling
     this.routes.use((err, req, res, next) => {
