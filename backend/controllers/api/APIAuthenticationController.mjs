@@ -67,9 +67,9 @@ export class APIAuthenticationController {
    *            '200':
    *                $ref: "#/components/responses/LoginSuccessful"
    *            '400':
-   *                $ref: "#/components/responses/Error"
+   *                $ref: "#/components/responses/InvalidCredentials"
    *            '500':
-   *                $ref: "#/components/responses/Error"
+   *                $ref: "#/components/responses/AuthenticationServerError"
    *    delete:
    *        summary: "Deauthenticate with API Key header"
    *        tags: [Authentication]
@@ -77,11 +77,11 @@ export class APIAuthenticationController {
    *            - ApiKey: []
    *        responses:
    *            '200':
-   *                 $ref: "#/components/responses/Updated"
+   *                 $ref: "#/components/responses/LogoutSuccessful"
    *            '401':
-   *                $ref: "#/components/responses/Error"
+   *                $ref: "#/components/responses/LogoutUnauthorised"
    *            '500':
-   *                $ref: "#/components/responses/Error"  
+   *                $ref: "#/components/responses/LogoutServerError"  
    */
   static async handleAuthenticate(req, res) {
     if (req.method === "POST") {
@@ -160,13 +160,11 @@ export class APIAuthenticationController {
         } else {
           res.status(403).json({
             message: "Access forbidden",
-            errors: ["Role does not have access to the requested resource"],
           });
         }
       } else {
         res.status(401).json({
           message: "Not authenticated",
-          errors: ["Please authenticate to access the requested resource."],
         });
       }
     };

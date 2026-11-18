@@ -42,15 +42,15 @@ export class APIBlogPostsController {
    *              $ref: "#/components/schemas/BlogPost"
    *      responses:
    *        '200':
-   *          $ref: "#/components/responses/Created"
+   *          $ref: "#/components/responses/BlogPostCreated"
    *        '400':
-   *          $ref: "#/components/responses/Error"
+   *          $ref: "#/components/responses/BlogPostValidationError"
    *        '401':
-   *          $ref: "#/components/responses/Error"
+   *          $ref: "#/components/responses/Unauthorised"
    *        '403':
-   *          $ref: "#/components/responses/Error"
+   *          $ref: "#/components/responses/Forbidden"
    *        '500':
-   *          $ref: "#/components/responses/Error"
+   *          $ref: "#/components/responses/BlogCreateServerError"
    */
   static async createBlogPost(req, res) {
     try {
@@ -95,7 +95,6 @@ export class APIBlogPostsController {
     } catch (error) {
       res.status(500).json({
         message: "Failed to create blog post",
-        errors: [error],
       });
     }
   }
@@ -127,7 +126,7 @@ export class APIBlogPostsController {
    *               items:
    *                 $ref: "#/components/schemas/BlogPostDetails"
    *       '500':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/BlogPostLoadError"
    */
   static async getBlogPosts(req, res) {
     try {
@@ -169,17 +168,15 @@ export class APIBlogPostsController {
    *           example: 1
    *     responses:
    *       '200':
-   *         $ref: "#/components/responses/Updated"
-   *       '400':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/BlogPostDeleted"
    *       '401':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/Unauthorised"
    *       '403':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/BlogDeleteForbidden"
    *       '404':
-   *         $ref: "#/components/responses/NotFound"
+   *         $ref: "#/components/responses/BlogPostNotFound"
    *       '500':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/BlogDeleteError"
    */
   static async deleteBlogPost(req, res) {
     try {

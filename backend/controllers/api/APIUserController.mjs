@@ -43,9 +43,9 @@ export class APIUserController {
    *       '200':
    *         $ref: "#/components/responses/Created"
    *       '400':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/ValidationError"
    *       '500':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/ServerError"
    */
   static async createUser(req, res) {
     const formData = req.body;
@@ -147,9 +147,9 @@ export class APIUserController {
    *                        schema:
    *                            $ref: "#/components/schemas/User"
    *            '401':
-   *                $ref: "#/components/responses/Error"
+   *                $ref: "#/components/responses/Unauthorised"
    *            '500':
-   *                $ref: "#/components/responses/Error"
+   *                $ref: "#/components/responses/ServerError"
    *
    */
   static async getAuthenticatedUser(req, res) {
@@ -191,13 +191,13 @@ export class APIUserController {
    *       '200':
    *         $ref: "#/components/responses/Updated"
    *       '400':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/ValidationError"
    *       '401':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/Unauthorised"
    *       '404':
    *         $ref: "#/components/responses/NotFound"
    *       '500':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/ServerError"
    */
   static async replaceAuthenticatedUser(req, res) {
     try {
@@ -318,13 +318,13 @@ export class APIUserController {
    *       '200':
    *         $ref: "#/components/responses/Updated"
    *       '400':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/ValidationError"
    *       '401':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/Unauthorised"
    *       '404':
    *         $ref: "#/components/responses/NotFound"
    *       '500':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/ServerError"
    */
   static async updateAuthenticatedUser(req, res) {
     try {

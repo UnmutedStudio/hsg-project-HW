@@ -46,6 +46,8 @@ export class APIController {
      *    responses:
      *      '200':
      *        description: "The documentation page"
+     *      '500':
+     *        $ref: "#/components/responses/ServerError"
      */
     this.routes.use("/docs", swaggerUI.serve, swaggerUI.setup(specification));
     //Validate API requests and responses against the OpenAPI
@@ -69,7 +71,6 @@ export class APIController {
     this.routes.use((err, req, res, next) => {
       res.status(err.status || 500).json({
         message: err.message,
-        errors: err.errors,
       });
     });
   }

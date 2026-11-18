@@ -61,7 +61,7 @@ export class APISessionsController {
   //  *        '200':
   //  *          $ref: "#/components/responses/Created"
   //  *        '500':
-  //  *          $ref: "#/components/responses/Error"
+  //  *          $ref: "#/components/responses/ServerError"
   //  *        default:
   //  *          $ref: "#/components/responses/Error"
   //  */
@@ -119,11 +119,11 @@ export class APISessionsController {
    *                items:
    *                  $ref: "#/components/schemas/SessionDetails"
    *        '401':
-   *          $ref: "#/components/responses/Error" 
+   *          $ref: "#/components/responses/Unauthorised" 
    *        '403':
-   *          $ref: "#/components/responses/Error"
+   *          $ref: "#/components/responses/Forbidden"
    *        '500':
-   *          $ref: "#/components/responses/Error"
+   *          $ref: "#/components/responses/ServerError"
    */
   static async getSessions(req, res) {
     try {
@@ -158,11 +158,11 @@ export class APISessionsController {
    *                items:
    *                  $ref: "#/components/schemas/SessionDetails"
    *        '401':
-   *          $ref: "#/components/responses/Error"
+   *          $ref: "#/components/responses/Unauthorised"
    *        '403':
-   *          $ref: "#/components/responses/Error"
+   *          $ref: "#/components/responses/Forbidden"
    *        '500':
-   *          $ref: "#/components/responses/Error"
+   *          $ref: "#/components/responses/ServerError"
    */
   static async getTrainerSessions(req, res) {
     try {
@@ -201,11 +201,11 @@ export class APISessionsController {
    *                      items:
    *                        $ref: "#/components/schemas/SessionDetails"
    *            '401':
-   *              $ref: "#/components/responses/Error"
+   *              $ref: "#/components/responses/Unauthorised"
    *            '403':
-   *              $ref: "#/components/responses/Error"
+   *              $ref: "#/components/responses/Forbidden"
    *            '500':
-   *              $ref: "#/components/responses/Error"
+   *              $ref: "#/components/responses/ServerError"
    */
   static async getSessionsXML(req, res) {
     try {
@@ -228,7 +228,6 @@ export class APISessionsController {
       console.error(error);
       res.status(500).json({
         message: 'Failed to export sessions as XML from database',
-        errors: [error],
       });
     }
   }
@@ -257,15 +256,13 @@ export class APISessionsController {
    *              schema:
    *                $ref: "#/components/schemas/SessionDetails"
    *        '401':
-   *          $ref: "#/components/responses/Error"
-   *        '400':
-   *          $ref: "#/components/responses/Error"
+   *          $ref: "#/components/responses/Unauthorised"
    *        '403':
-   *          $ref: "#/components/responses/Error"
+   *          $ref: "#/components/responses/Forbidden"
    *        '404':
    *          $ref: "#/components/responses/NotFound"
    *        '500':
-   *          $ref: "#/components/responses/Error"
+   *          $ref: "#/components/responses/ServerError"
    *
    */
   static async getSessionById(req, res) {
@@ -314,7 +311,7 @@ export class APISessionsController {
   //  *       '404':
   //  *         $ref: "#/components/responses/NotFound"
   //  *       '500':
-  //  *         $ref: "#/components/responses/Error"
+  //  *         $ref: "#/components/responses/ServerError"
   //  */
   // static async updateSession(req, res) {
   //   try {
@@ -368,16 +365,14 @@ export class APISessionsController {
    *     responses:
    *       '200':
    *         $ref: "#/components/responses/Updated"
-   *       '400':
-   *         $ref: "#/components/responses/Error"
    *       '401':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/Unauthorised"
    *       '403':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/Forbidden"
    *       '404':
    *         $ref: "#/components/responses/NotFound"
    *       '500':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/ServerError"
    */
   static async deleteSession(req, res) {
     try {
@@ -400,13 +395,11 @@ export class APISessionsController {
       } else {
         res.status(404).json({
           message: "Session not found - delete failed",
-          errors: ["not found", "delete failed"],
         });
       }
     } catch (error) {
       res.status(500).json({
         message: "Failed to delete session - database error",
-        errors: [error],
       });
     }
   }

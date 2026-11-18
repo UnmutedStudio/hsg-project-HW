@@ -233,11 +233,23 @@ components:
           $ref: "#/components/schemas/User"
   responses:
     LoginSuccessful:
-      description: "Login successful"
+      description: "The user was successfully logged in"
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/AuthenticationKey"
+    LogoutSuccessful:
+      description: "The user was successfully logged out"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Deauthentication successful"
     Updated:
       description: "A record was updated"
       content:
@@ -264,6 +276,34 @@ components:
               message:
                 type: string
                 example: "Record created"
+    BlogPostCreated:
+      description: "The blog post was created successfully"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - id
+              - message
+            properties:
+              id:
+                type: number
+                example: 1
+              message:
+                type: string
+                example: "Blog post created"
+    BlogPostDeleted:
+      description: "The blog post was deleted successfully"
+      content:
+        application/json:
+          schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  example: "Blog post deleted"
     NotFound:
       description: "Record not found"
       content:
@@ -276,6 +316,19 @@ components:
               message:
                 type: string
                 example: "Record not found"
+    BlogPostNotFound:
+      description: "The blog post that has been requested could not be found"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Blog post not found"
+    
     Error:
       description: "An error has occurred"
       content:
@@ -298,6 +351,42 @@ components:
               message:
                 type: string
                 example: "Not authenticated"
+    ValidationError:
+      description: "The details entered did not meet the requirements to be validated"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Please enter valid information."          
+    LogoutUnauthorised:
+      description: "The user must be logged in before being able to log out"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Please login to access the requested resource"
+    InvalidCredentials:
+      description: "The email address and/or password entered is incorrect"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Invalid credentials"
     Forbidden:
       description: "The authenticated user does not have the required role permissions to access this"
       content:
@@ -308,6 +397,18 @@ components:
               message:
                 type: string
                 example: "Access forbidden"
+    BlogDeleteForbidden:
+      description: "The user cannot delete another users blog post"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "You can only delete your own blog posts"
     ServerError:
       description: "This request could not be completed due to a server error."
       content:
@@ -318,4 +419,80 @@ components:
               message:
                 type: string
                 example: "Failed to process the request"
+    LogoutServerError:
+      description: "There was a server error and the user could not be logged out"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Failed to deauthenticate user"
+    AuthenticationServerError:
+      description: "There was a server error and the user could not be authenticated"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Failed to authenticate user"
+    BlogPostValidationError:
+      description: "The blog post title or content did not meet the requirements to be validated"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Please enter a title between 1 and 100 characters. Do not use these characters: \" * : < > ? / \\ | { }."
+
+    BlogCreateServerError:
+      description: "There was a server error and the blog post could not be created."
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Failed to create blog post"
+
+    BlogPostLoadError:
+      description: "There was a server error and the blog posts could not be loaded."
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Failed to load blog posts from database"
+    BlogDeleteError:
+      description: "There was a server error and the blog post could not be deleted."
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Failed to delete blog post"
+
+
 
