@@ -163,6 +163,23 @@ function UserDetailsView() {
           <span className="loading loading-spinner loading-sm"></span>
         )}
       </button>
+            <div className="flex justify-center items-center gap-2 mt-4 text-sm">
+        <a
+            href="http://localhost:8080/privacy"
+            className="link link-hover text-primary"
+        >
+            Privacy Policy
+        </a>
+        <span aria-hidden="true">|</span>
+        <a
+            href="http://localhost:8080/contact"
+            className="link link-hover text-primary"
+        >
+            Contact Us
+        </a>
+        <span aria-hidden="true">|</span>
+        <span>© 2026 High Street Gym</span>
+        </div>
     </section>
   );
 }

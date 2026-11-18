@@ -77,6 +77,8 @@ function LoginView() {
         >
           Contact Us
         </a>
+        <span aria-hidden="true">|</span>
+        <span>© 2026 High Street Gym</span>
       </div>
       {status &&
         status !== "logged out" &&
