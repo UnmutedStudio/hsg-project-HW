@@ -260,8 +260,8 @@ components:
               message:
                 type: string
                 example: "Record updated"
-    Created:
-      description: "A new record was created"
+    AccountCreated:
+      description: "The member account was created successfully"
       content:
         application/json:
           schema:
@@ -275,7 +275,47 @@ components:
                 example: 1
               message:
                 type: string
-                example: "Record created"
+                example: "Member account created"
+    ProfileUpdated:
+      description: "The user profile was updated successfully"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Profile updated"
+    BookingCreated:
+      description: "A new booking was successfully created"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - id
+              - message
+            properties:
+              id:
+                type: number
+                example: 1
+              message:
+                type: string
+                example: "Booking created"
+    BookingDeleted:
+      description: "The booking was deleted successfully"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Booking deleted"
     BlogPostCreated:
       description: "The blog post was created successfully"
       content:
@@ -297,13 +337,13 @@ components:
       content:
         application/json:
           schema:
-              type: object
-              required:
-                - message
-              properties:
-                message:
-                  type: string
-                  example: "Blog post deleted"
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Blog post deleted"
     NotFound:
       description: "Record not found"
       content:
@@ -316,6 +356,18 @@ components:
               message:
                 type: string
                 example: "Record not found"
+    BookingNotFound:
+      description: "The booking could not be found or did not belong to the authenticated user"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Booking not found or does not belong to this member"
     BlogPostNotFound:
       description: "The blog post that has been requested could not be found"
       content:
@@ -328,7 +380,6 @@ components:
               message:
                 type: string
                 example: "Blog post not found"
-    
     Error:
       description: "An error has occurred"
       content:
@@ -387,6 +438,18 @@ components:
               message:
                 type: string
                 example: "Invalid credentials"
+    UserNotFound:
+      description: "The user could not be found"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "User not found"
     Forbidden:
       description: "The authenticated user does not have the required role permissions to access this"
       content:
@@ -409,6 +472,30 @@ components:
               message:
                 type: string
                 example: "You can only delete your own blog posts"
+    SessionNotFound:
+      description: "The requested session could not be found"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Session not found"
+    SessionDeleted:
+      description: "The session was deleted successfully"
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                example: "Session deleted"
     ServerError:
       description: "This request could not be completed due to a server error."
       content:

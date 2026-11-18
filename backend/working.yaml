@@ -1,0 +1,30 @@
+AccountCreated:
+  description: "The member account was created successfully"
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - id
+          - message
+        properties:
+          id:
+            type: number
+            example: 1
+          message:
+            type: string
+            example: "Member account created"
+
+ProfileUpdated:
+  description: "The user profile was updated successfully"
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - message
+        properties:
+          message:
+            type: string
+            example: "Profile updated"
+

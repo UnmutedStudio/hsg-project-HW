@@ -24,73 +24,12 @@ export class APISessionsController {
       APIAuthenticationController.restrict(["member", "trainer"]), 
       this.getSessionById,
     );
-    // no update or create session required and no admin access.
-    // this.routes.post(
-    //   "/",
-    //   APIAuthenticationController.restrict(["trainer"]),
-    //   this.createSession,
-    // );
-    // this.routes.patch(
-    //   "/:id",
-    //   APIAuthenticationController.restrict(["admin"]),
-    //   this.updateSession,
-    // );
     this.routes.delete(
       "/:id",
       APIAuthenticationController.restrict(["trainer"]),
       this.deleteSession,
     );
   }
-  // Create not required 
-  // /**
-  //  * @type {express.RequestHandler}
-  //  * @openapi
-  //  *  /api/sessions:
-  //  *    post:
-  //  *      summary: "Create a new session"
-  //  *      tags: [Sessions]
-  //  *      security:
-  //  *        - ApiKey: []
-  //  *      requestBody:
-  //  *        required: true
-  //  *        content:
-  //  *          application/json:
-  //  *            schema:
-  //  *              $ref: "#/components/schemas/Session"
-  //  *      responses:
-  //  *        '200':
-  //  *          $ref: "#/components/responses/Created"
-  //  *        '500':
-  //  *          $ref: "#/components/responses/ServerError"
-  //  *        default:
-  //  *          $ref: "#/components/responses/Error"
-  //  */
-  // static async createSession(req, res) {
-  //   try {
-  //     const session = new SessionModel(
-  //       req.body.id,
-  //       req.body.activityId,
-  //       req.body.locationId,
-  //       req.body.trainerId,
-  //       req.body.dateSession,
-  //       req.body.timeSession,
-  //       req.body.duration,
-  //       req.body.availability,
-  //       req.body.deleted ?? 0,
-  //     );
-
-  //     const result = await SessionModel.create(session);
-  //     res.status(200).json({
-  //       id: result.insertId,
-  //       message: "Session created",
-  //     });
-  //   } catch (error) {
-  //     res.status(500).json({
-  //       message: "Failed to create session",
-  //       errors: [error],
-  //     });
-  //   }
-  // }
 
   /**
    * @type {express.RequestHandler}
@@ -260,7 +199,7 @@ export class APISessionsController {
    *        '403':
    *          $ref: "#/components/responses/Forbidden"
    *        '404':
-   *          $ref: "#/components/responses/NotFound"
+   *          $ref: "#/components/responses/SessionNotFound"
    *        '500':
    *          $ref: "#/components/responses/ServerError"
    *
@@ -283,70 +222,6 @@ export class APISessionsController {
       }
     }
   }
-  // Update not required
-  // /**
-  //  * @type {express.RequestHandler}
-  //  * @openapi
-  //  * /api/sessions/{id}:
-  //  *   patch:
-  //  *     summary: "Update an existing session"
-  //  *     tags: [Sessions]
-  //  *     security:
-  //  *       - ApiKey: []
-  //  *     parameters:
-  //  *       - name: id
-  //  *         in: path
-  //  *         required: true
-  //  *         schema:
-  //  *           type: number
-  //  *     requestBody:
-  //  *       required: true
-  //  *       content:
-  //  *         application/json:
-  //  *           schema:
-  //  *             $ref: "#/components/schemas/Session"
-  //  *     responses:
-  //  *       '200':
-  //  *         $ref: "#/components/responses/Updated"
-  //  *       '404':
-  //  *         $ref: "#/components/responses/NotFound"
-  //  *       '500':
-  //  *         $ref: "#/components/responses/ServerError"
-  //  */
-  // static async updateSession(req, res) {
-  //   try {
-  //     const session = new SessionModel(
-  //       req.params.id,
-  //       req.body.activityId,
-  //       req.body.locationId,
-  //       req.body.trainerId,
-  //       req.body.dateSession,
-  //       req.body.timeSession,
-  //       req.body.duration,
-  //       req.body.availability,
-  //       req.body.deleted ?? 0,
-  //     );
-  //     const result = await SessionModel.update(session);
-
-  //     if (result.affectedRows === 1) {
-  //       res.status(200).json({
-  //         message: "Session updated",
-  //       });
-  //     } else {
-  //       res.status(404).json({
-  //         message: "Session not found - update failed",
-  //         errors: ["not found", "update failed"],
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(500).json({
-  //       message: "Failed to update session",
-  //       errors: [error],
-  //     });
-  //   }
-  // }
-
   /**
    * @type {express.RequestHandler}
    * @openapi
@@ -364,7 +239,7 @@ export class APISessionsController {
    *           type: number
    *     responses:
    *       '200':
-   *         $ref: "#/components/responses/Updated"
+   *         $ref: "#/components/responses/SessionDeleted"
    *       '401':
    *         $ref: "#/components/responses/Unauthorised"
    *       '403':

@@ -166,7 +166,7 @@ export class APIBookingsController {
    *            $ref: "#/components/schemas/Booking"
    *    responses:
    *      '200':
-   *        $ref: "#/components/responses/Created"
+   *        $ref: "#/components/responses/BookingCreated"
    *      '401':
    *        $ref: "#/components/responses/Unauthorised"
    *      '403':
@@ -215,13 +215,13 @@ export class APIBookingsController {
    *           example: 1
    *     responses:
    *       '200':
-   *         $ref: "#/components/responses/Updated"
+   *         $ref: "#/components/responses/BookingDeleted"
    *       '401':
    *         $ref: "#/components/responses/Unauthorised"
    *       '403':
    *         $ref: "#/components/responses/Forbidden"
    *       '404':
-   *         $ref: "#/components/responses/NotFound"
+   *         $ref: "#/components/responses/BookingNotFound"
    *       '500':
    *         $ref: "#/components/responses/ServerError"
    */

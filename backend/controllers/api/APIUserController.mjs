@@ -41,7 +41,7 @@ export class APIUserController {
    *             $ref: "#/components/schemas/UserRegistration"
    *     responses:
    *       '200':
-   *         $ref: "#/components/responses/Created"
+   *         $ref: "#/components/responses/AccountCreated"
    *       '400':
    *         $ref: "#/components/responses/ValidationError"
    *       '500':
@@ -189,13 +189,13 @@ export class APIUserController {
    *                 example: "han.solo@member.com"
    *     responses:
    *       '200':
-   *         $ref: "#/components/responses/Updated"
+   *         $ref: "#/components/responses/ProfileUpdated"
    *       '400':
    *         $ref: "#/components/responses/ValidationError"
    *       '401':
    *         $ref: "#/components/responses/Unauthorised"
    *       '404':
-   *         $ref: "#/components/responses/NotFound"
+   *         $ref: "#/components/responses/UserNotFound"
    *       '500':
    *         $ref: "#/components/responses/ServerError"
    */
@@ -316,13 +316,13 @@ export class APIUserController {
    *                 description: "Must match the new password"
    *     responses:
    *       '200':
-   *         $ref: "#/components/responses/Updated"
+   *         $ref: "#/components/responses/ProfileUpdated"
    *       '400':
    *         $ref: "#/components/responses/ValidationError"
    *       '401':
    *         $ref: "#/components/responses/Unauthorised"
    *       '404':
-   *         $ref: "#/components/responses/NotFound"
+   *         $ref: "#/components/responses/UserNotFound"
    *       '500':
    *         $ref: "#/components/responses/ServerError"
    */
