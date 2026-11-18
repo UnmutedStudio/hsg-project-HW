@@ -13,9 +13,12 @@ function BookingCreateView() {
 
   useEffect(() => {
     if (sessionId) {
-      fetchAPI("GET", "/sessions/" + sessionId)
+      fetchAPI("GET", "/sessions/" + sessionId,
+        null,
+        user && user.authenticationKey,
+      )
         .then((response) => {
-          console.log("////");
+          // console.log("////"); debegging check
           console.log(
             "Session Details response body: " + JSON.stringify(response.body),
           );
@@ -31,7 +34,7 @@ function BookingCreateView() {
           setStatus(error);
         });
     }
-  }, [sessionId, setSessionDetail, setStatus]);
+  }, [sessionId, user, setSessionDetail, setStatus]);
 
   const [loading, setLoading] = useState(false);
   const submitBooking = useCallback(() => {

@@ -63,14 +63,12 @@ export class APIBookingsController {
    *              type: array
    *              items:
    *                $ref: "#/components/schemas/BookingDetails"
-   *      '400':
-   *        $ref: "#/components/responses/Error"
    *      '401':
-   *        $ref: "#/components/responses/Error"
+   *        $ref: "#/components/responses/Unauthorised"
    *      '403':
-   *        $ref: "#/components/responses/Error"
+   *        $ref: "#/components/responses/Forbidden"
    *      '500':
-   *        $ref: "#/components/responses/Error"
+   *        $ref: "#/components/responses/ServerError"
    */
   static async getBookings(req, res) {
     try { 
@@ -98,7 +96,6 @@ export class APIBookingsController {
         console.error(error);
         res.status(500).json({
           message: "Bookings could not be loaded.",
-          errors: [error],
         });
       }
   }
@@ -125,11 +122,11 @@ export class APIBookingsController {
    *                      items:
    *                        $ref: "#/components/schemas/BookingDetails"
    *            '401':
-   *              $ref: "#/components/responses/Error"
+   *              $ref: "#/components/responses/Unauthorised"
    *            '403':
-   *              $ref: "#/components/responses/Error" 
+   *              $ref: "#/components/responses/Forbidden" 
    *            '500':
-   *              $ref: "#/components/responses/Error"
+   *              $ref: "#/components/responses/ServerError"
    */
   static async getBookingsXML(req, res) {
     try {
@@ -146,7 +143,6 @@ export class APIBookingsController {
       console.error(error);
       res.status(500).json({
         message: 'Failed to export bookings as XML from database',
-        errors: [error],
       });
     }
   }
@@ -171,14 +167,12 @@ export class APIBookingsController {
    *    responses:
    *      '200':
    *        $ref: "#/components/responses/Created"
-   *      '400':
-   *        $ref: "#/components/responses/Error"
    *      '401':
-   *        $ref: "#/components/responses/Error"
+   *        $ref: "#/components/responses/Unauthorised"
    *      '403':
-   *        $ref: "#/components/responses/Error"
+   *        $ref: "#/components/responses/Forbidden"
    *      '500':
-   *        $ref: "#/components/responses/Error"
+   *        $ref: "#/components/responses/ServerError"
    */
   static async createBooking(req, res) {
     try {
@@ -198,7 +192,6 @@ export class APIBookingsController {
       console.error(error);
       res.status(500).json({
         message: 'Failed to create booking.',
-        errors: [error],
       });
     }
   }
@@ -223,16 +216,14 @@ export class APIBookingsController {
    *     responses:
    *       '200':
    *         $ref: "#/components/responses/Updated"
-   *       '400':
-   *         $ref: "#/components/responses/Error"
    *       '401':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/Unauthorised"
    *       '403':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/Forbidden"
    *       '404':
    *         $ref: "#/components/responses/NotFound"
    *       '500':
-   *         $ref: "#/components/responses/Error"
+   *         $ref: "#/components/responses/ServerError"
    */
   static async deleteBooking(req, res) {
     try {

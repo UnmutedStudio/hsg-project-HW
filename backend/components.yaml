@@ -288,9 +288,34 @@ components:
               message:
                 type: string
                 example: "Something went wrong"
-              errors:
-                type: array
-                items:
-                  type: string
-                  example: "Validation failed"
+    Unauthorised:
+      description: "The user needs to log in and be authenticated to access this"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Not authenticated"
+    Forbidden:
+      description: "The authenticated user does not have the required role permissions to access this"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Access forbidden"
+    ServerError:
+      description: "This request could not be completed due to a server error."
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Failed to process the request"
 
