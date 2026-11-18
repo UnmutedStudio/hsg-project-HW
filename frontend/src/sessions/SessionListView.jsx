@@ -7,6 +7,7 @@ import { useAuthenticate } from "../authentication/useAuthenticate";
 function SessionListView() {
   const navigate = useNavigate();
   const [sessions, setSessions] = useState([]);
+  const [bookings, setBookings] = useState([]);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("");
   const [weekOffset, setWeekOffset] = useState(0);
@@ -85,6 +86,17 @@ function SessionListView() {
       useEffect(() => {
         if (user) {
           getSessions();
+          if (user.role === "member") {
+            fetchAPI("GET", "/bookings", null, user.authenticationKey)
+              .then((response) => {
+                if (response.status === 200) {
+                  setBookings(response.body);
+                } else {
+                  setError(response.body.message);
+                }
+              })
+            .catch((error) => setError(error.message));
+          }
         }
       }, [user, getSessions]);
     return (
@@ -169,23 +181,30 @@ function SessionListView() {
                     Spots left: {sessionDetail.session.availability}
                 </div>
               </div>
-              {user?.role == "member" && (
-              <button
-                onClick={() =>
-                  navigate("/bookings/create/" + sessionDetail.session.id)
-                }
-                className="btn btn-primary"
-              >
-                Book now
-              </button>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
-  );
-}
+              {user?.role === "member" && 
+                (bookings.some(
+                  (bookingDetail) => 
+                    bookingDetail.booking.sessionId === sessionDetail.session.id
+                ) ? (
+                <span className="btn btn-disabled">Booked</span>
+                ) : (
+                <button
+                  type="button"
+                  onClick={() =>
+                    navigate("/bookings/create/" + sessionDetail.session.id)
+                  }
+                  className="btn btn-primary"
+                >
+                  Book now
+                </button>
+                ))}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    );
+  }
   function toLocaleDateString(date) {
   const year = date.toLocaleString("en-AU", { year: "numeric" });
   const month = date.toLocaleString("en-AU", { month: "2-digit" });
