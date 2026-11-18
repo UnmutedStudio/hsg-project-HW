@@ -169,8 +169,8 @@ function SessionListView() {
                     Spots left: {sessionDetail.session.availability}
                 </div>
               </div>
+              {user?.role == "member" && (
               <button
-                disabled={!(user && user.role == "member")}
                 onClick={() =>
                   navigate("/bookings/create/" + sessionDetail.session.id)
                 }
@@ -178,6 +178,7 @@ function SessionListView() {
               >
                 Book now
               </button>
+              )}
             </li>
           ))}
         </ul>
